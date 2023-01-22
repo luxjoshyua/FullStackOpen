@@ -14,6 +14,15 @@ const Content = ({ part, exercise }) => {
   );
 };
 
+// other spread syntax
+// const Content = ({ ...props }) => {
+//   return (
+//     <div>
+//       <Part {...props} />
+//     </div>
+//   );
+// };
+
 const Part = ({ part, exercise }) => {
   return (
     <>
