@@ -6,21 +6,34 @@ const Header = ({ title }) => <h1>{title}</h1>;
 
 // Button
 const Button = ({ name, onClick }) => {
-  // listten if the  button has been clicked
-  const hasValue = true;
   return <button onClick={onClick}>{name}</button>;
 };
 
-// Statistics
-const Statistics = ({ name, value }) => {
-  // console.log(value);
-
+const StatisticsLine = ({ name, value }) => {
   return (
-    <p>
+    <td>
       {name}: {value}
-    </p>
+    </td>
   );
 };
+
+// Statistics
+const Statistics = ({ ...props }) => {
+  return (
+    <tr>
+      <StatisticsLine {...props} />
+    </tr>
+  );
+};
+
+// Statistics - longer syntax
+// const Statistics = ({ name, value }) => {
+//   return (
+//     <tr>
+//       <StatisticsLine name={name} value={value} />
+//     </tr>
+//   );
+// };
 
 const App = () => {
   // save clicks of each button to their own state
@@ -62,19 +75,69 @@ const App = () => {
         <p>No feedback given</p>
       ) : (
         <>
-          <Statistics name="good" value={good} />
-          <Statistics name="neutral" value={neutral} />
-          <Statistics name="bad" value={bad} />
-          <Statistics name="all" value={good + neutral + bad} />
-          <Statistics name="average" value={((good - bad) / (good + neutral + bad)).toFixed(2)} />
-          <Statistics
-            name="positive"
-            value={((good / (good + neutral + bad)) * 100).toFixed(2) + `%`}
-          />
+          <table>
+            <tbody>
+              <Statistics name="good" value={good} />
+              <Statistics name="neutral" value={neutral} />
+              <Statistics name="bad" value={bad} />
+              <Statistics name="all" value={good + neutral + bad} />
+              <Statistics
+                name="average"
+                value={((good - bad) / (good + neutral + bad)).toFixed(2)}
+              />
+              <Statistics
+                name="positive"
+                value={((good / (good + neutral + bad)) * 100).toFixed(2) + `%`}
+              />
+            </tbody>
+          </table>
         </>
       )}
     </div>
   );
+
+  // return (
+  //   <div>
+  //     <Header title="Give Feedback" />
+  //     <Button
+  //       name="good"
+  //       onClick={() => {
+  //         setGood(good + 1);
+  //         handleClick();
+  //       }}
+  //     />
+  //     <Button
+  //       name="neutral"
+  //       onClick={() => {
+  //         setNeutral(neutral + 1);
+  //         handleClick();
+  //       }}
+  //     />
+  //     <Button
+  //       name="bad"
+  //       onClick={() => {
+  //         setBad(bad + 1);
+  //         handleClick();
+  //       }}
+  //     />
+  //     <Header title="Statistics" />
+  //     {isClicked === false ? (
+  //       <p>No feedback given</p>
+  //     ) : (
+  //       <>
+  //         <Statistics name="good" value={good} />
+  //         <Statistics name="neutral" value={neutral} />
+  //         <Statistics name="bad" value={bad} />
+  //         <Statistics name="all" value={good + neutral + bad} />
+  //         <Statistics name="average" value={((good - bad) / (good + neutral + bad)).toFixed(2)} />
+  //         <Statistics
+  //           name="positive"
+  //           value={((good / (good + neutral + bad)) * 100).toFixed(2) + `%`}
+  //         />
+  //       </>
+  //     )}
+  //   </div>
+  // );
 };
 
 export default App;
