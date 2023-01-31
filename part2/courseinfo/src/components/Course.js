@@ -17,12 +17,12 @@ const TotalExercises = ({ parts }) => {
     return part.exercises === undefined ? null : part.exercises;
   });
   const total = nums.reduce((sum, num) => sum + num, 0);
-  return <p style={{ fontWeight: '700' }}>Total of {total} exercises</p>;
+  return <p style={{ fontWeight: '700', paddingBottom: '2rem' }}>Total of {total} exercises</p>;
 };
 
 const Course = ({ course: { name, parts } }) => {
   return (
-    <div className="container">
+    <div>
       <Header name={name} />
       <Content parts={parts} />
       <TotalExercises parts={parts} />

@@ -27,10 +27,6 @@ li {
   padding-bottom: 2rem;
 }
 
-.container {
-  padding: 2vh 2vw;
-}
-
-.exercise-name {
-  padding-right: 0.5rem;
+li:last-of-type {
+  padding-bottom: 1rem;
 }
