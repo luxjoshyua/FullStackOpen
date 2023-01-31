@@ -46,6 +46,7 @@ const App = () => {
     setHighestNumber(highest);
   };
 
+  // find the first item in the array that has the highest number of votes
   const mostVoted = anecdotes[votes.indexOf(Math.max(...votes))];
 
   return (
