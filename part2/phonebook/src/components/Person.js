@@ -1,5 +1,11 @@
 import React from 'react';
 
-const Person = ({ person }) => <p>{person.name}</p>;
+const Person = ({ person: { name, number } }) => {
+  return (
+    <p>
+      {name} {number}
+    </p>
+  );
+};
 
 export { Person };
