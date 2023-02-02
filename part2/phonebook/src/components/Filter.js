@@ -22,14 +22,9 @@ const Filter = ({ persons }) => {
           <p>No filter yet</p>
         ) : (
           persons
-            .filter((person) => person.name.includes(filter))
+            .filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
             .map((person) => <Person key={person.id} person={person} />)
         )}
-        {/* {persons
-          .filter((person) => person.name.includes(filter))
-          .map((person) => (
-            <Person key={person.id} person={person} />
-          ))} */}
       </div>
     </div>
   );

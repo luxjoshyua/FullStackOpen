@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Person } from './components/Person';
+import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { testData } from './testData';
+import { PersonForm } from './components/PersonForm';
 
 const Heading = ({ title }) => <h2>{title}</h2>;
 
@@ -37,40 +38,16 @@ const App = () => {
     <div style={{ padding: '2vh 2vw' }}>
       <Heading title="Phonebook" />
       <Filter persons={persons} />
-
       <Heading title="Add a new person" />
-      <form onSubmit={addNote}>
-        <div style={{ paddingBottom: '.5rem' }}>
-          name:{' '}
-          <input
-            type="text"
-            placeholder="add name here"
-            onChange={(event) => setNewName(event.target.value.toLowerCase())}
-            value={newName}
-          />
-        </div>
-        <div style={{ paddingBottom: '.5rem' }}>
-          number:{' '}
-          <input
-            type="number"
-            placeholder="add number here"
-            onChange={(event) => setNewNumber(event.target.value)}
-            // aus format
-            pattern="[0]{1}[0-9]{9}"
-            value={newNumber}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-
+      <PersonForm
+        onSubmit={addNote}
+        setNewName={setNewName}
+        newName={newName}
+        setNewNumber={setNewNumber}
+        newNumber={newNumber}
+      />
       <Heading title="Numbers" />
-      <div>
-        {persons.map((person) => (
-          <Person key={person.id} person={person} />
-        ))}
-      </div>
+      <Persons persons={persons} />
     </div>
   );
 };
