@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
-import { testData } from './testData';
 import { PersonForm } from './components/PersonForm';
 
 const Heading = ({ title }) => <h2>{title}</h2>;
 
 const App = () => {
-  const [persons, setPersons] = useState(testData);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/persons`)
+      .then((response) => {
+        const persons = response.data;
+        setPersons(persons);
+      })
+      .catch((error) => {
+        console.warn(`Oh no, error has occurred: `, error.message);
+      });
+  }, []);
 
   const addNote = (event) => {
     event.preventDefault();
