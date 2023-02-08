@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-// import axios from 'axios';
 import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { PersonForm } from './components/PersonForm';
 import { Heading } from './components/Heading';
-import { getAll, create } from './services/utilities';
+import { getAll, create, handleDelete } from './services/utilities';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -43,8 +42,16 @@ const App = () => {
       setNewName('');
       setNewNumber('');
     });
+  };
 
-    // setPersons(persons.concat(personObject));
+  const deleteUser = (id) => {
+    console.log('button being pressed successfully!');
+    const person = persons.find((p) => p.id === id);
+
+    // run delete here
+    handleDelete(id).then((person) => {
+      setPersons(persons.map((person) => (person.id !== id ? person : null)));
+    });
   };
 
   return (
@@ -60,7 +67,7 @@ const App = () => {
         newNumber={newNumber}
       />
       <Heading title="Numbers" />
-      <Persons persons={persons} />
+      <Persons persons={persons} onClick={deleteUser} />
     </div>
   );
 };
