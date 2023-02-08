@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { PersonForm } from './components/PersonForm';
-
-const Heading = ({ title }) => <h2>{title}</h2>;
+import { Heading } from './components/Heading';
+import { getAll, create } from './services/utilities';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,21 +12,19 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/persons`)
-      .then((response) => {
-        const persons = response.data;
+    getAll()
+      .then((persons) => {
         setPersons(persons);
       })
       .catch((error) => {
-        console.warn(`Oh no, error has occurred: `, error.message);
+        throw new Error(`${error} exeperienced, try again`);
       });
   }, []);
 
   const addNote = (event) => {
     event.preventDefault();
 
-    const personObject = {
+    const personObjectNew = {
       name: newName,
       id: persons.length + 1,
       number: newNumber,
@@ -39,11 +37,14 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat(personObject));
+    create(personObjectNew).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      // clear input fields after submission
+      setNewName('');
+      setNewNumber('');
+    });
 
-    // clear input field on submit
-    setNewName('');
-    setNewNumber('');
+    // setPersons(persons.concat(personObject));
   };
 
   return (
