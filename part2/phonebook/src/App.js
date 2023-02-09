@@ -3,7 +3,7 @@ import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { PersonForm } from './components/PersonForm';
 import { Heading } from './components/Heading';
-import { getAll, create, handleDelete } from './services/utilities';
+import { getAll, create, handleDelete, update } from './services/utilities';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -20,21 +20,57 @@ const App = () => {
       });
   }, []);
 
+  // update existing user
+  const handleUpdate = () => {
+    const pNewName = persons.find((p) => p.name === newName);
+    const pNewNum = persons.find((n) => n.number === newNumber);
+
+    if (!pNewName || !pNewName) {
+      return false;
+    }
+
+    let match = null;
+    for (const person of persons) {
+      if (person.name === newName) {
+        match = person;
+      }
+    }
+
+    const confirm = window.confirm(
+      `${pNewName.name} is already added to phonebook, replace the old number with a new one?`
+    );
+    if (match) {
+      if (!confirm) {
+        return false;
+      }
+    }
+
+    const p = pNewName || pNewNum;
+    const id = p.id;
+
+    update(id, { ...p, name: newName, number: newNumber })
+      .then((updatedPerson) => {
+        setPersons(persons.map((p) => (p.id !== id ? p : updatedPerson)));
+        // setNewName('');
+        // setNewNumber('');
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+
+  // normal add new user
   const addNote = (event) => {
     event.preventDefault();
+    if (handleUpdate() === true) {
+      return;
+    }
 
     const personObjectNew = {
       name: newName,
       id: persons.length + 1,
       number: newNumber,
     };
-
-    const duplicate = persons.some((person) => person.name === newName);
-
-    if (duplicate) {
-      alert(`${newName} is already added to phonebook!`);
-      return;
-    }
 
     create(personObjectNew).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));

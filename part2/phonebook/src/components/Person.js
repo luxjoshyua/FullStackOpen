@@ -6,6 +6,7 @@ const Person = ({ person, person: { name, number }, onClick }) => {
       <p>
         {name} {number}
       </p>
+
       <button style={{ display: 'inline' }} onClick={() => onClick(person.id)}>
         delete
       </button>
