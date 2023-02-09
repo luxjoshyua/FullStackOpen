@@ -48,16 +48,10 @@ const App = () => {
   };
 
   const deleteUser = (id) => {
-    // axios.delete(`http://localhost:3001/persons/${id}`).then((response) => {
-    //   const del = persons.filter((p) => p.id !== id);
-    //   console.log(response);
-    //   setPersons(del);
-    // });
-
     handleDelete(id).then((response) => {
       const del = persons.filter((p) => p.id !== id);
       setPersons(del);
-      console.log('delete response', response);
+      // console.log('delete response', response);
     });
   };
 
