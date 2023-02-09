@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { PersonForm } from './components/PersonForm';
@@ -9,6 +10,8 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+
+  const baseURL = `http://localhost:3001/persons`;
 
   useEffect(() => {
     getAll()
@@ -45,12 +48,16 @@ const App = () => {
   };
 
   const deleteUser = (id) => {
-    console.log('button being pressed successfully!');
-    const person = persons.find((p) => p.id === id);
+    // axios.delete(`http://localhost:3001/persons/${id}`).then((response) => {
+    //   const del = persons.filter((p) => p.id !== id);
+    //   console.log(response);
+    //   setPersons(del);
+    // });
 
-    // run delete here
-    handleDelete(id).then((person) => {
-      setPersons(persons.map((person) => (person.id !== id ? person : null)));
+    handleDelete(id).then((response) => {
+      const del = persons.filter((p) => p.id !== id);
+      setPersons(del);
+      console.log('delete response', response);
     });
   };
 
