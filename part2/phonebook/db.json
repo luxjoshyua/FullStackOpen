@@ -16,9 +16,9 @@
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
+      "name": "steve",
+      "id": 4,
+      "number": "111"
     },
     {
       "name": "sam",
@@ -26,24 +26,9 @@
       "number": "999"
     },
     {
-      "name": "dave",
+      "name": "scott",
       "id": 6,
-      "number": "000"
-    },
-    {
-      "name": "sam",
-      "id": 7,
-      "number": "999"
-    },
-    {
-      "name": "sam",
-      "id": 8,
-      "number": "999"
-    },
-    {
-      "name": "dave",
-      "id": 9,
-      "number": "000"
+      "number": "111"
     }
   ]
 }

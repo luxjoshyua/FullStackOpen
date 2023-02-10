@@ -22,4 +22,11 @@ const update = (id, newPerson) => {
   return request.then((response) => response.data);
 };
 
-export { getAll, create, handleDelete, update };
+const personService = {
+  getAll,
+  create,
+  handleDelete,
+  update,
+};
+
+export default personService;
