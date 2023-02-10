@@ -1,10 +1,5 @@
 import React from 'react';
-
-// const Input = (props) => (
-//   <>
-//     <input {...props} />
-//   </>
-// );
+import { formatString } from '../services/utilities';
 
 const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) => {
   return (
@@ -16,11 +11,7 @@ const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) 
             type="text"
             placeholder="add name here"
             onChange={(event) => {
-              const editedString = event.target.value
-                .toLowerCase()
-                .split(' ')
-                .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
-                .join(' ');
+              const editedString = formatString(event.target.value);
               setNewName(editedString);
             }}
             value={newName}

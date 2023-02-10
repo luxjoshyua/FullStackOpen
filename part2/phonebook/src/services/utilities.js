@@ -22,6 +22,14 @@ const update = (id, newPerson) => {
   return request.then((response) => response.data);
 };
 
+export const formatString = (string) => {
+  return string
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(' ');
+};
+
 const personService = {
   getAll,
   create,

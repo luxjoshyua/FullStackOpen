@@ -1,15 +1,16 @@
 import React from 'react';
 
-const Person = ({ person, person: { name, number }, onClick }) => {
+const Person = ({ person, person: { name, number }, onClick, value }) => {
   return (
     <>
       <p>
         {name} {number}
       </p>
-
-      <button style={{ display: 'inline' }} onClick={() => onClick(person.id)}>
-        delete
-      </button>
+      {!value === true ? (
+        <button style={{ display: 'inline' }} onClick={() => onClick(person.id)}>
+          delete
+        </button>
+      ) : null}
     </>
   );
 };

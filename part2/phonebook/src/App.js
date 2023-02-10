@@ -71,13 +71,22 @@ const App = () => {
       });
   };
 
+  // let reset = false;
+
   const deleteUser = (id) => {
     personService.handleDelete(id).then((response) => {
       const filteredPersonArr = persons.filter((p) => p.id !== id);
       const personDel = persons.filter((p) => p.id === id);
       const name = personDel[0].name;
-      window.confirm(`Delete ${name}?`);
-      setPersons(filteredPersonArr);
+      const confirmMsg = `Delete ${name}?`;
+      const confirmPrompt = window.confirm(confirmMsg);
+
+      if (confirmPrompt) {
+        setPersons(filteredPersonArr);
+        handleInputReset();
+      } else {
+        console.log('said no, reset filter');
+      }
     });
   };
 
