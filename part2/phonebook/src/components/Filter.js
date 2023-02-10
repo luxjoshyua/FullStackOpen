@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Person } from './Person';
 
-const Filter = ({ persons }) => {
+const Filter = ({ persons, onClick }) => {
   const [filter, setFilter] = useState('');
 
   return (
@@ -12,7 +12,14 @@ const Filter = ({ persons }) => {
           type="text"
           name="filter"
           placeholder="search person here"
-          onChange={(event) => setFilter(event.target.value)}
+          onChange={(event) => {
+            const editedString = event.target.value
+              .toLowerCase()
+              .split(' ')
+              .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+              .join(' ');
+            setFilter(editedString);
+          }}
           value={filter}
         />
       </div>
@@ -23,7 +30,7 @@ const Filter = ({ persons }) => {
         ) : (
           persons
             .filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
-            .map((person) => <Person key={person.id} person={person} />)
+            .map((person) => <Person key={person.id} person={person} onClick={onClick} />)
         )}
       </div>
     </div>

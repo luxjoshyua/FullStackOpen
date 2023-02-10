@@ -84,7 +84,7 @@ const App = () => {
   return (
     <div style={{ padding: '2vh 2vw' }}>
       <Heading title="Phonebook" />
-      <Filter persons={persons} />
+      <Filter persons={persons} onClick={deleteUser} />
       <Heading title="Add a new person" />
       <PersonForm
         onSubmit={addPerson}

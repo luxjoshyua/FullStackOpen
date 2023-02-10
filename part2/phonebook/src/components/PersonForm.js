@@ -1,3 +1,11 @@
+import React from 'react';
+
+// const Input = (props) => (
+//   <>
+//     <input {...props} />
+//   </>
+// );
+
 const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) => {
   return (
     <>
@@ -7,7 +15,14 @@ const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) 
           <input
             type="text"
             placeholder="add name here"
-            onChange={(event) => setNewName(event.target.value.toLowerCase())}
+            onChange={(event) => {
+              const editedString = event.target.value
+                .toLowerCase()
+                .split(' ')
+                .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+                .join(' ');
+              setNewName(editedString);
+            }}
             value={newName}
           />
         </div>
@@ -17,7 +32,7 @@ const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) 
             type="number"
             placeholder="add number here"
             onChange={(event) => setNewNumber(event.target.value)}
-            // aus format
+            // aus format regex
             pattern="[0]{1}[0-9]{9}"
             value={newNumber}
           />

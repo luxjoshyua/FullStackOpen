@@ -16,19 +16,14 @@
       "id": 3
     },
     {
-      "name": "steve",
+      "name": "Jessica",
       "id": 4,
-      "number": "111"
+      "number": "222"
     },
     {
-      "name": "sam",
+      "name": "Steve",
       "id": 5,
-      "number": "999"
-    },
-    {
-      "name": "scott",
-      "id": 6,
-      "number": "111"
+      "number": "222"
     }
   ]
 }
