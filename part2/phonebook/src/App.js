@@ -77,12 +77,15 @@ const App = () => {
     }, 5000);
   };
 
-  // const handleError = (errorLog) => {
-  //   setErrorMessage(`Error experienced ${errorLog}`);
-  //   setTimeout(() => {
-  //     setErrorMessage('');
-  //   }, 5000);
-  // };
+  const handleError = (error) => {
+    setErrorMessage(
+      `Error occurred, specifically status: ${error.response.status}, status text: ${error.response.statusText}`
+    );
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 5000);
+    setError(true);
+  };
 
   // update existing user
   const update = (personObj) => {
@@ -95,17 +98,8 @@ const App = () => {
         setPersons(persons.map((p) => (p.id !== newPersonId ? p : updatedPerson)));
       })
       .catch((error) => {
-        // console.log(error.response);
         setPersons(persons.filter((p) => p.id !== newPersonId));
-        // console.log('error caught, show component !');
-        console.log(error.response);
-        setErrorMessage(
-          `Error occurred, specifically status: ${error.response.status}, status text: ${error.response.statusText} `
-        );
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 5000);
-        setError(true);
+        handleError(error);
       });
   };
 
@@ -128,14 +122,6 @@ const App = () => {
   return (
     <div style={{ padding: '2vh 2vw' }}>
       <Heading title="Phonebook" />
-
-      {/* <Notification
-        message={successMessage}
-        success={success}
-        errorMsg={errorMessage}
-        error={error}
-      /> */}
-
       {(success || error) && (
         <Notification
           message={successMessage}
@@ -144,7 +130,6 @@ const App = () => {
           error={error}
         />
       )}
-
       <Filter persons={persons} onClick={deleteUser} />
       <Heading title="Add a new person" />
       <PersonForm

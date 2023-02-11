@@ -6,11 +6,11 @@ const Person = ({ person, person: { name, number }, onClick, value }) => {
       <p>
         {name} {number}
       </p>
-      {!value === true ? (
+      {!value && (
         <button style={{ display: 'inline' }} onClick={() => onClick(person.id)}>
           delete
         </button>
-      ) : null}
+      )}
     </>
   );
 };
