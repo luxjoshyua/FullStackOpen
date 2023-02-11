@@ -11,6 +11,9 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     personService
@@ -61,6 +64,7 @@ const App = () => {
 
   const handleSuccess = (name) => {
     setSuccessMessage(`Added ${name}!`);
+    setSuccess(true);
     setTimeout(() => {
       setSuccessMessage('');
     }, 5000);
@@ -73,6 +77,13 @@ const App = () => {
     }, 5000);
   };
 
+  // const handleError = (errorLog) => {
+  //   setErrorMessage(`Error experienced ${errorLog}`);
+  //   setTimeout(() => {
+  //     setErrorMessage('');
+  //   }, 5000);
+  // };
+
   // update existing user
   const update = (personObj) => {
     const newPerson = persons.find((p) => p.name === personObj.name);
@@ -84,8 +95,17 @@ const App = () => {
         setPersons(persons.map((p) => (p.id !== newPersonId ? p : updatedPerson)));
       })
       .catch((error) => {
-        console.log(error.response);
+        // console.log(error.response);
         setPersons(persons.filter((p) => p.id !== newPersonId));
+        // console.log('error caught, show component !');
+        console.log(error.response);
+        setErrorMessage(
+          `Error occurred, specifically status: ${error.response.status}, status text: ${error.response.statusText} `
+        );
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000);
+        setError(true);
       });
   };
 
@@ -108,7 +128,23 @@ const App = () => {
   return (
     <div style={{ padding: '2vh 2vw' }}>
       <Heading title="Phonebook" />
-      {successMessage.length > 0 ? <Notification message={successMessage} /> : null}
+
+      {/* <Notification
+        message={successMessage}
+        success={success}
+        errorMsg={errorMessage}
+        error={error}
+      /> */}
+
+      {(success || error) && (
+        <Notification
+          message={successMessage}
+          success={success}
+          errorMsg={errorMessage}
+          error={error}
+        />
+      )}
+
       <Filter persons={persons} onClick={deleteUser} />
       <Heading title="Add a new person" />
       <PersonForm
