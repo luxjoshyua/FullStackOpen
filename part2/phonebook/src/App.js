@@ -3,12 +3,14 @@ import { Persons } from './components/Persons';
 import { Filter } from './components/Filter';
 import { PersonForm } from './components/PersonForm';
 import { Heading } from './components/Heading';
+import { Notification } from './components/Notification';
 import personService from './services/utilities';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     personService
@@ -38,6 +40,7 @@ const App = () => {
       const confirmPrompt = window.confirm(confirmMsg);
       if (confirmPrompt) {
         update(personObjectNew);
+        handleSuccess(personObjectNew.name);
         handleInputReset();
       } else {
         handleInputReset();
@@ -45,6 +48,7 @@ const App = () => {
     } else {
       personService.create(personObjectNew).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        handleSuccess(returnedPerson.name);
         handleInputReset();
       });
     }
@@ -53,6 +57,20 @@ const App = () => {
   const handleInputReset = () => {
     setNewName('');
     setNewNumber('');
+  };
+
+  const handleSuccess = (name) => {
+    setSuccessMessage(`Added ${name}!`);
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 5000);
+  };
+
+  const handleDelete = (name) => {
+    setSuccessMessage(`Deleted ${name}!`);
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 5000);
   };
 
   // update existing user
@@ -71,8 +89,6 @@ const App = () => {
       });
   };
 
-  // let reset = false;
-
   const deleteUser = (id) => {
     personService.handleDelete(id).then((response) => {
       const filteredPersonArr = persons.filter((p) => p.id !== id);
@@ -80,19 +96,19 @@ const App = () => {
       const name = personDel[0].name;
       const confirmMsg = `Delete ${name}?`;
       const confirmPrompt = window.confirm(confirmMsg);
-
       if (confirmPrompt) {
         setPersons(filteredPersonArr);
+        handleDelete(name);
         handleInputReset();
-      } else {
-        console.log('said no, reset filter');
       }
+      return;
     });
   };
 
   return (
     <div style={{ padding: '2vh 2vw' }}>
       <Heading title="Phonebook" />
+      {successMessage.length > 0 ? <Notification message={successMessage} /> : null}
       <Filter persons={persons} onClick={deleteUser} />
       <Heading title="Add a new person" />
       <PersonForm
