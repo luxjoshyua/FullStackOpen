@@ -16,19 +16,9 @@
       "important": false
     },
     {
-      "content": "some shit sucks",
+      "content": "Some hot new note",
       "important": true,
       "id": 4
-    },
-    {
-      "content": "some shit not so much",
-      "important": true,
-      "id": 5
-    },
-    {
-      "content": "some other shit",
-      "important": true,
-      "id": 6
     }
   ]
 }

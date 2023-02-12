@@ -24,4 +24,10 @@ const update = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
-export { getAll, create, update };
+const personService = {
+  getAll,
+  create,
+  update,
+};
+
+export default personService;
