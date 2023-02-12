@@ -2,53 +2,56 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const handleFilter = ({}) => {
-  // check if search value has length
-  // if the searchValue,.length === 1,just return that country, otherwise do a filter of the countries
-  // then do filter to match === country
-  // const filtered = return null
+const useField = (type) => {
+  const [value, setValue] = useState('');
+
+  const onChange = (event) => setValue(event.target.value);
+
+  return { type, value, onChange };
 };
 
-function App() {
-  // handle the search
-  const [value, setValue] = useState('');
+const useCountryFilter = (countryName) => {
   // handle the fetch all data
   const [allCountries, setAllCountries] = useState(null);
-  // handle the single country we want to display - prolly store in country component
   const [country, setCountry] = useState('');
 
   // useEffect to set all countries in data
   useEffect(() => {
     axios.get(`https://restcountries.com/v3.1/all`).then((response) => {
-      setAllCountries(response.data);
+      // setAllCountries(response.data);
+      // maybe do all our data store here so don't save to allCountries state?
     });
-  }, [country]);
+  }, []);
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+  // const filteredMatch = allCountries.filter((c) => {
+  //   if (c.name.common.toLowerCase() === country.toLowerCase()) {
+  //     console.log('we have a match, show country component?');
+  //   } else {
+  //     console.log('no match, show some other component?');
+  //   }
+  // });
 
-  const onSearch = (event) => {
+  // return country
+};
+
+// country component here
+
+function App() {
+  // handle the search
+  const countryInput = useField('text');
+  const [name, setName] = useState('');
+  // handle the single country we want to display - prolly store in country component
+  const country = useCountryFilter(name);
+
+  const search = (event) => {
     event.preventDefault();
-    setCountry(value);
-    handleFilter();
-    // maybe move all this handle filter functionality into here ?
-  };
-
-  const handleFilter = () => {
-    const filteredMatch = allCountries.filter((c) => {
-      if (c.name.common.toLowerCase() === country.toLowerCase()) {
-        console.log('we have a match, show country component?');
-      } else {
-        console.log('no match, show some other component?');
-      }
-    });
+    setName(event.target.value);
   };
 
   return (
     <div>
-      <form onSubmit={onSearch}>
-        find countries <input type="text" onChange={handleChange} />
+      <form onSubmit={search}>
+        find countries <input type="text" {...countryInput} />
       </form>
 
       <h1>country app</h1>
