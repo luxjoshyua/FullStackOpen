@@ -10,38 +10,54 @@ const useField = (type) => {
   return { type, value, onChange };
 };
 
-const useCountryFilter = (countryName) => {
-  // handle the fetch all data
-  const [allCountries, setAllCountries] = useState(null);
-  const [country, setCountry] = useState('');
+const useCountryFilter = (value) => {
+  const [countries, setCountries] = useState([]);
 
   // useEffect to set all countries in data
   useEffect(() => {
-    axios.get(`https://restcountries.com/v3.1/all`).then((response) => {
-      // setAllCountries(response.data);
-      // maybe do all our data store here so don't save to allCountries state?
-    });
+    axios
+      .get(`https://restcountries.com/v3.1/all`)
+      .then((response) => {
+        setCountries(response.data);
+      })
+      .catch((error) => {
+        console.log(`Error caught in data fetch: ${error}`);
+      });
   }, []);
 
-  // const filteredMatch = allCountries.filter((c) => {
-  //   if (c.name.common.toLowerCase() === country.toLowerCase()) {
-  //     console.log('we have a match, show country component?');
-  //   } else {
-  //     console.log('no match, show some other component?');
-  //   }
-  // });
+  let country =
+    value !== ''
+      ? countries.filter(
+          (country) => country.name.common.toLowerCase().indexOf(value.toLowerCase()) !== -1
+        )
+      : countries;
 
-  // return country
+  return country;
 };
 
-// country component here
+const Country = ({ country }) => {
+  // console.log(country);
+
+  return (
+    <div>
+      <h1>country component</h1>
+      {country.length === 1 && (
+        <div>
+          <p>normal single country component</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 function App() {
   // handle the search
   const countryInput = useField('text');
+  const { value } = countryInput;
+
   const [name, setName] = useState('');
-  // handle the single country we want to display - prolly store in country component
-  const country = useCountryFilter(name);
+
+  const country = useCountryFilter(value);
 
   const search = (event) => {
     event.preventDefault();
@@ -55,7 +71,7 @@ function App() {
       </form>
 
       <h1>country app</h1>
-      {/* country component here */}
+      <Country country={country} />
     </div>
   );
 }
