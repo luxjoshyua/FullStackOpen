@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import { Countries } from './components/Countries';
 
 const useField = (type) => {
   const [value, setValue] = useState('');
@@ -35,28 +36,11 @@ const useCountryFilter = (value) => {
   return country;
 };
 
-const Country = ({ country }) => {
-  // console.log(country);
-
-  return (
-    <div>
-      <h1>country component</h1>
-      {country.length === 1 && (
-        <div>
-          <p>normal single country component</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
 function App() {
   // handle the search
   const countryInput = useField('text');
   const { value } = countryInput;
-
   const [name, setName] = useState('');
-
   const country = useCountryFilter(value);
 
   const search = (event) => {
@@ -71,7 +55,7 @@ function App() {
       </form>
 
       <h1>country app</h1>
-      <Country country={country} />
+      <Countries country={country} />
     </div>
   );
 }
