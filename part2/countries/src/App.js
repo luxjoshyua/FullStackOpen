@@ -50,8 +50,9 @@ function App() {
 
   return (
     <div>
-      <form onSubmit={search}>
+      <form>
         find countries <input type="text" {...countryInput} />
+        <button onSubmit={search}>search</button>
       </form>
 
       <h1>country app</h1>

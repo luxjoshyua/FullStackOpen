@@ -1,32 +1,28 @@
+import Country from './Country';
+
 const Countries = ({ country }) => {
-  // console.log(country);
-  if (!country) {
-    return null;
-  }
-
-  console.log(country);
-
-  // console.log(country);
-
-  // title
-  // area in country
-  // languages map through
-  // image of map
-  // console.log(country.length.common);
-  // console.log(country.name.common);
-
-  // if (!country.found) {
-  //   return <div>not found....</div>;
-  // }
-
-  if (country.length === 1) {
-    console.log('show single country');
+  if (country.length > 10) {
+    console.log('too many countries');
+    return (
+      <div>
+        <p>Too many matches, specify another filter</p>
+      </div>
+    );
+  } else if (country.length > 1 && country.length <= 10) {
+    console.log('more than 1 country, less than or equal to 10');
+    return (
+      <div>
+        {country.map((c, index) => (
+          <p key={index}>{c.name.common}</p>
+        ))}
+      </div>
+    );
+  } else if (country.length === 1) {
+    console.log('show normal single country map');
     return (
       <>
-        <p>{country[0].name.common}</p>
-        <p>{country[0].area}</p>
-        <p>{country[0]}</p>
-        <img src={country[0].flags.png} alt={country[0].flags.alt} />
+        <p>One country matched!</p>
+        <Country country={country} />
       </>
     );
   }
