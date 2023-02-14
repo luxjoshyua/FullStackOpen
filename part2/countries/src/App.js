@@ -5,7 +5,6 @@ import { Countries } from './components/Countries';
 
 const useField = (type) => {
   const [value, setValue] = useState('');
-
   const onChange = (event) => setValue(event.target.value);
 
   return { type, value, onChange };
@@ -49,12 +48,11 @@ function App() {
   };
 
   return (
-    <div>
+    <div style={{ padding: '2vh 2vw' }}>
       <form>
         find countries <input type="text" {...countryInput} />
         <button onSubmit={search}>search</button>
       </form>
-
       <h1>country app</h1>
       <Countries country={country} />
     </div>

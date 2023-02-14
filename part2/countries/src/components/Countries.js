@@ -1,29 +1,38 @@
-import Country from './Country';
+import { useState, useEffect } from 'react';
+import { Country } from './Country';
+import { CountryInfo } from './CountryInfo';
 
 const Countries = ({ country }) => {
-  if (country.length > 10) {
-    console.log('too many countries');
+  const tooMany = country.length > 10;
+  const middle = country.length > 1 && country.length <= 10;
+  const exact = country.length === 1;
+
+  if (!country) {
+    return null;
+  }
+
+  if (tooMany) {
     return (
       <div>
         <p>Too many matches, specify another filter</p>
       </div>
     );
-  } else if (country.length > 1 && country.length <= 10) {
-    console.log('more than 1 country, less than or equal to 10');
-    return (
-      <div>
-        {country.map((c, index) => (
-          <p key={index}>{c.name.common}</p>
-        ))}
-      </div>
-    );
-  } else if (country.length === 1) {
-    console.log('show normal single country map');
+  } else if (exact) {
     return (
       <>
         <p>One country matched!</p>
-        <Country country={country} />
+        <CountryInfo country={country[0]} />
       </>
+    );
+  } else if (middle) {
+    return (
+      <div>
+        <ul>
+          {country.map((c) => (
+            <Country key={c.name.common} country={c} />
+          ))}
+        </ul>
+      </div>
     );
   }
 };
