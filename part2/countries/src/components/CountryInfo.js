@@ -1,4 +1,4 @@
-import WeatherInfo from './WeatherInfo';
+import { WeatherInfo } from './WeatherInfo';
 
 const CountryInfo = ({ country }) => {
   return (

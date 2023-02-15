@@ -25,7 +25,7 @@ const WeatherInfo = ({ country }) => {
 
   return (
     <div>
-      <h4 style={{ fontSize: '2rem', margin: '.5rem 0' }}>Weather in {capital[0]}</h4>
+      <h4 style={{ fontSize: '2rem', margin: '.5rem 0' }}>Weather in capital {capital[0]}</h4>
       <p>
         <b>temperature:</b> {weatherInfo.main.feels_like.toFixed(1)}&#8451;
       </p>
@@ -39,4 +39,4 @@ const WeatherInfo = ({ country }) => {
   );
 };
 
-export default WeatherInfo;
+export { WeatherInfo };
