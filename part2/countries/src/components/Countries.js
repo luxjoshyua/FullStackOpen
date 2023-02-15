@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Country } from './Country';
 import { CountryInfo } from './CountryInfo';
+import WeatherInfo from './WeatherInfo';
 
 const Countries = ({ country }) => {
   const tooMany = country.length > 10;
