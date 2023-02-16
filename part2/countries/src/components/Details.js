@@ -1,6 +1,7 @@
 import { WeatherInfo } from './WeatherInfo';
+import { CountryLanguages } from './CountryLanguages';
 
-const CountryInfo = ({ country }) => {
+const Details = ({ country }) => {
   return (
     <div>
       <div style={{ paddingBottom: '2rem' }}>
@@ -12,16 +13,10 @@ const CountryInfo = ({ country }) => {
         <p>
           <b>Country area:</b> {country.area}
         </p>
-        <ul style={{ padding: '0 0 1rem 0' }}>
-          <b style={{ display: 'block', padding: '0 0 1rem 0' }}>languages:</b>
-          {Object.values(country.languages).map((language, index) => {
-            return (
-              <li style={{ marginLeft: '2rem' }} key={index}>
-                {language}
-              </li>
-            );
-          })}
-        </ul>
+        <div>
+          <b style={{ display: 'block' }}>languages:</b>
+          <CountryLanguages languages={country.languages} />
+        </div>
         <img src={country.flags.png} alt={country.flags.alt} />
       </div>
       <WeatherInfo country={country} />
@@ -29,4 +24,4 @@ const CountryInfo = ({ country }) => {
   );
 };
 
-export { CountryInfo };
+export { Details };

@@ -21,17 +21,16 @@ const WeatherInfo = ({ country }) => {
     return null;
   }
 
-  const icon = `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`;
+  const weatherIcon = `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`;
 
   return (
     <div>
-      <h4 style={{ fontSize: '2rem', margin: '.5rem 0' }}>Weather in capital {capital[0]}</h4>
+      <h4 style={{ fontSize: '2rem', margin: '.5rem 0' }}>Weather in capital: {capital[0]}</h4>
       <p>
         <b>temperature:</b> {weatherInfo.main.feels_like.toFixed(1)}&#8451;
       </p>
       {/* weather icon as img ? */}
-      <img alt="weather icon" src={icon} />
-
+      <img alt="weather icon" src={weatherIcon} />
       <p>
         <b>wind</b> {weatherInfo.wind.speed} m/s
       </p>

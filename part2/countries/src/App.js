@@ -6,7 +6,6 @@ import { Countries } from './components/Countries';
 const useField = (type) => {
   const [value, setValue] = useState('');
   const onChange = (event) => setValue(event.target.value);
-
   return { type, value, onChange };
 };
 
@@ -39,19 +38,12 @@ function App() {
   // handle the search
   const countryInput = useField('text');
   const { value } = countryInput;
-  const [name, setName] = useState('');
   const country = useCountryFilter(value);
-
-  const search = (event) => {
-    event.preventDefault();
-    setName(event.target.value);
-  };
 
   return (
     <div style={{ padding: '2vh 2vw' }}>
       <form>
         find countries <input type="text" {...countryInput} />
-        <button onSubmit={search}>search</button>
       </form>
       <h1>country app</h1>
       <Countries country={country} />

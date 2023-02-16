@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { CountryInfo } from './CountryInfo';
+import { Details } from './Details';
 
 const Country = ({ country }) => {
-  const [state, setState] = useState(false);
+  const [showComponent, setShowComponent] = useState(false);
 
-  const handleClick = () => {
-    setState(!state);
-  };
+  const toggleComponent = () => setShowComponent(!showComponent);
 
   return (
     <>
-      <li style={{ marginBottom: '1rem' }}>
-        {country.name.common} <button onClick={handleClick}>show country</button>
-        {state && <CountryInfo country={country} />}
-      </li>
+      <div style={{ marginBottom: '2rem' }}>
+        {country.name.common} <button onClick={toggleComponent}>show country</button>
+        {showComponent ? <Details country={country} /> : null}
+      </div>
     </>
   );
 };
