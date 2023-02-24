@@ -1,8 +1,6 @@
-# Full Stack Open 2023
+# [Full Stack Open 2023](https://fullstackopen.com/en/)
 
-<!-- ## [Full Stack Open 2023](https://fullstackopen.com/en/) -->
-
-The repo is based on a [course held at the Department of Computer Science, University of Helsinki, in collaboration with Open University.](https://fullstackopen.com/en/).
+The repo is based on a course held at the Department of Computer Science, University of Helsinki, in collaboration with Open University.
 
 It introducs fullstack modern JavaScript-based web development, primarily focusing on building Single Page Applications with React that use REST APIs build with Node.js.
 
