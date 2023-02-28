@@ -33,6 +33,32 @@ app.get('/api/notes', (request, response) => {
   response.json(notes);
 });
 
+app.get('/api/notes/:id', (request, response) => {
+  // need id as a number to compare
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+  const id = Number(request.params.id);
+  // console.log(id);
+  // const note = notes.find((note) => note.id === id);
+  // const note = notes.find((note) => {
+  //   // console.log(note.id, typeof note.id, id, typeof id, note.id === id);
+  //   return note.id === id;
+  // });
+
+  const note = notes.find((note) => note.id === id);
+  if (note) {
+    response.json(note);
+  } else {
+    // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
+    response.status(404).send('Note not found').end();
+  }
+});
+
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id);
+  notes = notes.filter((note) => note.id !== id);
+  response.status(204).end();
+});
+
 // const app = http.createServer((request, response) => {
 //   response.writeHead(200, { 'Content-Type': 'application/json' });
 //   response.end(JSON.stringify(notes));
