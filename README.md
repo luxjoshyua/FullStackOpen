@@ -2,17 +2,17 @@
 
 The repo is based on a course held at the Department of Computer Science, University of Helsinki, in collaboration with Open University.
 
-It introducs fullstack modern JavaScript-based web development, primarily focusing on building Single Page Applications with React that use REST APIs build with Node.js.
+It introducs fullstack modern JavaScript-based web development, primarily focusing on building Single Page Applications with React that use REST APIs built with Node.js.
 
 Specific subjects are:
 
-- React,
-- Redux,
-- Node.js,
-- MongoDB,
-- GraphQL,
-- TypeScript,
-- React Native,
+- React
+- Redux
+- Node.js
+- MongoDB
+- GraphQL
+- TypeScript
+- React Native
 - GitHub Actions
 - Docker
 
