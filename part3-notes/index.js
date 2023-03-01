@@ -3,6 +3,9 @@
 const express = require('express');
 const app = express();
 
+// get everything in json format
+app.use(express.json());
+
 let notes = [
   {
     id: 1,
@@ -30,6 +33,8 @@ app.get('/', (request, response) => {
 });
 
 app.get('/api/notes', (request, response) => {
+  // log request.headers to check all the headers of a request
+  // console.log(request.headers);
   response.json(notes);
 });
 
@@ -37,12 +42,6 @@ app.get('/api/notes/:id', (request, response) => {
   // need id as a number to compare
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
   const id = Number(request.params.id);
-  // console.log(id);
-  // const note = notes.find((note) => note.id === id);
-  // const note = notes.find((note) => {
-  //   // console.log(note.id, typeof note.id, id, typeof id, note.id === id);
-  //   return note.id === id;
-  // });
 
   const note = notes.find((note) => note.id === id);
   if (note) {
@@ -53,16 +52,42 @@ app.get('/api/notes/:id', (request, response) => {
   }
 });
 
+const generateId = () => {
+  // finds the largest number in notes
+  // the spread operator turns the notes array into objects where we can then map through and access the individual numbers, which can be passed
+  // as a parameter to Math.max, whereas notes without spread can't because it's an array
+  // and will return NaN
+  // console.log(...notes);
+  // console.log(notes);
+  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
+  return maxId + 1;
+};
+
+app.post('/api/notes', (request, response) => {
+  const body = request.body;
+  if (!body.content) {
+    // need this return here, otherwise code will keep executing and malformed note will be saved
+    return response.status(400).json({
+      error: 'content missing',
+    });
+  }
+
+  const note = {
+    content: body.content,
+    important: body.important || false,
+    id: generateId(),
+  };
+
+  notes = notes.concat(note);
+
+  response.json(note);
+});
+
 app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id);
   notes = notes.filter((note) => note.id !== id);
   response.status(204).end();
 });
-
-// const app = http.createServer((request, response) => {
-//   response.writeHead(200, { 'Content-Type': 'application/json' });
-//   response.end(JSON.stringify(notes));
-// });
 
 const PORT = 3001;
 app.listen(PORT, () => {
