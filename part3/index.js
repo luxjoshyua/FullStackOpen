@@ -31,6 +31,11 @@ app.get('/', (request, response) => {
 });
 
 // setup get request to handle all data
+app.get('/api/persons', (request, response) => {
+  // check the headers being set
+  // console.log(request.headers);
+  response.json(persons);
+});
 
 const PORT = 3001;
 app.listen(PORT, () => {
