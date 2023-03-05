@@ -3,8 +3,29 @@
 const express = require('express');
 const app = express();
 
+// middleware function
+// has to be taken into use before declaring routes
+// has to be used after app.use(express.json()), otherwise `request.body`
+// will not be initialised when the logger is executed
+const requestLogger = (request, response, next) => {
+  console.log('Method: ', request.method);
+  console.log('Path: ', request.path);
+  console.log('Body: ', request.body);
+  console.log('---');
+  // next function yields control to the next middleware
+  next();
+};
+
+// middleware for catching requests to non-existent routes
+// will return an error in JSON format
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
 // get everything in json format
 app.use(express.json());
+// pass the middleware
+app.use(requestLogger);
 
 let notes = [
   {
@@ -88,6 +109,8 @@ app.delete('/api/notes/:id', (request, response) => {
   notes = notes.filter((note) => note.id !== id);
   response.status(204).end();
 });
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
