@@ -1,8 +1,28 @@
 const express = require('express');
+// https://github.com/expressjs/morgan
+const morgan = require('morgan');
 const app = express();
-const faker = require('@faker-js/faker');
 
 app.use(express.json());
+
+// default short setting
+// app.use(morgan('tiny'));
+
+// log data sent in HTTP POST requests
+// need the request.body object
+// morgan.token('body', (req, res) => {
+//   // don't  forget to return !
+//   return JSON.stringify(req.body);
+// });
+
+// shorter implicit return syntax
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+
+app.use(
+  morgan(
+    ':method :url :status - response-time ms :response-time ms - :res[content-length] :body - content-length :req[content-length]'
+  )
+);
 
 let persons = [
   {
