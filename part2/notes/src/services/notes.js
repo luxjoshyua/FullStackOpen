@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const baseUrl = `http://localhost:3001/notes`;
+// const baseUrl = 'http://localhost:3001/notes';
+const baseUrl = `/api/notes`;
 
 const getAll = () => {
   const request = axios.get(baseUrl);
@@ -24,10 +24,14 @@ const update = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
-const personService = {
+const noteService = {
   getAll,
   create,
   update,
 };
 
-export default personService;
+export default noteService;
+
+// const exportedObject = { getAll, create, update };
+
+// export default exportedObject;

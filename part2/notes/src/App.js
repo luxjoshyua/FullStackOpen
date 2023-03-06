@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Note } from './components/Note';
 import { Notification } from './components/Notification';
 import { Footer } from './components/Footer';
-import personService from './services/notes';
+import noteService from './services/notes';
 
 const App = () => {
   // initialise with the initial notes array passed in the props
@@ -20,7 +20,7 @@ const App = () => {
     //   // console.log('notes: ', notes);
     //   setNotes(notes);
     // });
-    personService.getAll().then((initialNotes) => {
+    noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
   }, []);
@@ -38,7 +38,7 @@ const App = () => {
     // spread into new object, flip the value of important property (from true to false, false to true), as it overrides in the spread
     const changedNote = { ...note, important: !note.important };
 
-    personService
+    noteService
       .update(id, changedNote)
       .then((returnedNote) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
@@ -72,7 +72,7 @@ const App = () => {
       // id: notes.length + 1,
     };
 
-    personService.create(noteObject).then((returnedNote) => {
+    noteService.create(noteObject).then((returnedNote) => {
       setNotes(notes.concat(returnedNote));
       setNewNote('');
     });

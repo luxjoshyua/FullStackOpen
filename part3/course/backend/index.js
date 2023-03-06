@@ -2,6 +2,7 @@
 // const http = require('http');
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 // middleware function
 // has to be taken into use before declaring routes
@@ -22,10 +23,12 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
 
+app.use(cors());
 // get everything in json format
 app.use(express.json());
 // pass the middleware
 app.use(requestLogger);
+app.use(express.static('build'));
 
 let notes = [
   {
@@ -59,20 +62,6 @@ app.get('/api/notes', (request, response) => {
   response.json(notes);
 });
 
-app.get('/api/notes/:id', (request, response) => {
-  // need id as a number to compare
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
-  const id = Number(request.params.id);
-
-  const note = notes.find((note) => note.id === id);
-  if (note) {
-    response.json(note);
-  } else {
-    // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
-    response.status(404).send('Note not found').end();
-  }
-});
-
 const generateId = () => {
   // finds the largest number in notes
   // the spread operator turns the notes array into objects where we can then map through and access the individual numbers, which can be passed
@@ -96,12 +85,27 @@ app.post('/api/notes', (request, response) => {
   const note = {
     content: body.content,
     important: body.important || false,
+    date: new Date(),
     id: generateId(),
   };
 
   notes = notes.concat(note);
 
   response.json(note);
+});
+
+app.get('/api/notes/:id', (request, response) => {
+  // need id as a number to compare
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+  const id = Number(request.params.id);
+
+  const note = notes.find((note) => note.id === id);
+  if (note) {
+    response.json(note);
+  } else {
+    // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
+    response.status(404).send('Note not found').end();
+  }
 });
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -112,7 +116,7 @@ app.delete('/api/notes/:id', (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
