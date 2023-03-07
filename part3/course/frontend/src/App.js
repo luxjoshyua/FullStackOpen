@@ -14,54 +14,10 @@ const App = () => {
   // perform side-effect
   // calls/executes immediately on render
   useEffect(() => {
-    // a promise is an object that represents an asynchronous operation
-    // axios.get('http://localhost:3001/notes').then((response) => {
-    //   const notes = response.data;
-    //   // console.log('notes: ', notes);
-    //   setNotes(notes);
-    // });
     noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
   }, []);
-
-  // conditional rendering, resolve problem of notes being null on initial load
-  if (!notes) {
-    return null;
-  }
-
-  const toggleImportanceOf = (id) => {
-    console.log(`importance of ${id} needs to be toggled`);
-    // unique url for each note resource based on its id
-    // const url = `http://localhost:3001/notes/${id}`;
-    const note = notes.find((n) => n.id === id);
-    // spread into new object, flip the value of important property (from true to false, false to true), as it overrides in the spread
-    const changedNote = { ...note, important: !note.important };
-
-    noteService
-      .update(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
-      })
-      .catch((error) => {
-        alert(`the note ${note.content} was already deleted from server, throw ${error}`);
-        setErrorMessage(`Note ${note.content} was already removed from server`);
-        // reset the error message after 5 seconds
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-        // deleted note gets filtered out from the state
-        // filter returns new array
-        setNotes(notes.filter((n) => n.id !== id));
-      });
-
-    // axios.put(url, changedNote).then((response) => {
-    //  update the notes array with all the items from the previous notes array,
-    //  except for the old note which is replaced by the updated version of it returned from the server
-    //  map returns a new array
-    //   setNotes(notes.map((n) => (n.id !== id ? n : response.data)));
-    // });
-  };
 
   const addNote = (event) => {
     event.preventDefault(); // prevent default action of submitting the form, reloading the page
@@ -82,8 +38,56 @@ const App = () => {
     setNewNote(event.target.value);
   };
 
-  // const notesToShow = showAll ? notes : notes.filter((note) => note.important === true);
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
+
+  // conditional rendering, resolve problem of notes being null on initial load
+  // if (!notes) {
+  //   return null;
+  // }
+
+  // const toggleImportanceOf = (id) => {
+  //   console.log(`importance of ${id} needs to be toggled`);
+  //   // unique url for each note resource based on its id
+  //   // const url = `http://localhost:3001/notes/${id}`;
+  //   const note = notes.find((n) => n.id === id);
+  //   // spread into new object, flip the value of important property (from true to false, false to true), as it overrides in the spread
+  //   const changedNote = { ...note, important: !note.important };
+
+  //   noteService
+  //     .update(id, changedNote)
+  //     .then((returnedNote) => {
+  //       setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+  //     })
+  //     .catch((error) => {
+  //       alert(`the note ${note.content} was already deleted from server, throw ${error}`);
+  //       setErrorMessage(`Note ${note.content} was already removed from server`);
+  //       // reset the error message after 5 seconds
+  //       setTimeout(() => {
+  //         setErrorMessage(null);
+  //       }, 5000);
+  //       // deleted note gets filtered out from the state
+  //       // filter returns new array
+  //       setNotes(notes.filter((n) => n.id !== id));
+  //     });
+  // };
+
+  const toggleImportanceOf = (id) => {
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    noteService
+      .update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      })
+      .catch((error) => {
+        setErrorMessage(`Note '${note.content}' was already removed from server`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+        setNotes(notes.filter((n) => n.id !== id));
+      });
+  };
 
   return (
     <div>
