@@ -60,7 +60,7 @@ const App = () => {
 
   return (
     <div>
-      <h1 style={{ color: 'blue' }}>Notes</h1>
+      <h1 style={{ color: 'green' }}>Notes</h1>
       <Notification message={errorMessage} />
       <div>
         {/* toggle the showAll state from true to false / vice versa on click */}
