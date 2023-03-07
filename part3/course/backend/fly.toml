@@ -1,6 +1,6 @@
-# fly.toml file generated for patient-haze-1163 on 2023-03-07T06:57:53+11:00
+# fly.toml file generated for still-firefly-6098 on 2023-03-07T14:28:18+11:00
 
-app = "patient-haze-1163"
+app = "still-firefly-6098"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

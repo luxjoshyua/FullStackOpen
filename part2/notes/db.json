@@ -17,8 +17,13 @@
     },
     {
       "content": "Some hot new note",
-      "important": true,
+      "important": false,
       "id": 4
+    },
+    {
+      "content": "some dumb shit",
+      "important": false,
+      "id": 5
     }
   ]
 }

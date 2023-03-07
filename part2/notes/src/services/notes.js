@@ -4,14 +4,8 @@ const baseUrl = `/api/notes`;
 
 const getAll = () => {
   const request = axios.get(baseUrl);
-
-  const nonExisting = {
-    id: 1000,
-    content: 'This note is not saved to server',
-    important: true,
-  };
   // concat joins the arrays, returning a new array
-  return request.then((response) => response.data.concat(nonExisting));
+  return request.then((response) => response.data);
 };
 
 const create = (newObject) => {
@@ -31,7 +25,3 @@ const noteService = {
 };
 
 export default noteService;
-
-// const exportedObject = { getAll, create, update };
-
-// export default exportedObject;
