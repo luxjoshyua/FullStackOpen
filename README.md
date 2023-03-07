@@ -1,4 +1,4 @@
-# [Full Stack Open 2023](https://fullstackopen.com/en/)
+# [Full Stack Open 2023](https://www.helsinki.fi/en/admissions-and-education/open-university/multidisciplinary-themed-modules/full-stack)
 
 The repo is based on a course held at the Department of Computer Science, University of Helsinki, in collaboration with Open University.
 
