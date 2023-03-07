@@ -41,7 +41,7 @@ The repo is a WIP that contains my solutions to the various exercises.
 ### [Part 3 - Programming a server with NodeJS and Express](https://fullstackopen.com/en/part3)
 
 - Node.js and Express
-- Deploying app to internet
+- Deploying app to internet (deployed using [render] (https://render-test-fu9h.onrender.com/) )
 - Saving data to MongoDB
 - Validation and ESLint
 
