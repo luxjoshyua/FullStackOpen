@@ -1,14 +1,21 @@
 const express = require('express');
 // https://github.com/expressjs/morgan
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 
-app.use(express.json());
-app.use(cors());
-app.use(express.static('build'));
-// default short setting
-// app.use(morgan('tiny'));
+// middleware function
+// has to be taken into use before declaring routes
+// has to be used after app.use(express.json()), otherwise `request.body`
+// will not be initialised when the logger is executed
+const requestLogger = (request, response, next) => {
+  console.log('Method: ', request.method);
+  console.log('Path: ', request.path);
+  console.log('Body: ', request.body);
+  console.log('---');
+  // next function yields control to the next middleware
+  next();
+};
 
 // log data sent in HTTP POST requests
 // need the request.body object
@@ -21,14 +28,21 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
 
-// shorter implicit return syntax
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+app.use(cors());
+app.use(express.json());
+app.use(requestLogger);
+app.use(express.static('build'));
+// default short setting
+// app.use(morgan('tiny'));
 
-app.use(
-  morgan(
-    ':method :url :status - response-time ms :response-time ms - :res[content-length] :body - content-length :req[content-length]'
-  )
-);
+// shorter implicit return syntax
+// morgan.token('body', (req, res) => JSON.stringify(req.body));
+
+// app.use(
+//   morgan(
+//     ':method :url :status - response-time ms :response-time ms - :res[content-length] :body - content-length :req[content-length]'
+//   )
+// );
 
 let persons = [
   {
