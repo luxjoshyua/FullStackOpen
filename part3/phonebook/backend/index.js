@@ -2,9 +2,11 @@ const express = require('express');
 // https://github.com/expressjs/morgan
 const morgan = require('morgan');
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
-
+app.use(cors());
+app.use(express.static('build'));
 // default short setting
 // app.use(morgan('tiny'));
 
@@ -14,6 +16,10 @@ app.use(express.json());
 //   // don't  forget to return !
 //   return JSON.stringify(req.body);
 // });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
 
 // shorter implicit return syntax
 morgan.token('body', (req, res) => JSON.stringify(req.body));
@@ -124,7 +130,9 @@ app.post('/api/persons', (request, response) => {
   response.json(person);
 });
 
-const PORT = 3001;
+app.use(unknownEndpoint);
+
+const PORT = process.env.port || 3001;
 app.listen(PORT, () => {
   console.log(`Server up and running on ${PORT}`);
 });
