@@ -19,6 +19,11 @@ const App = () => {
     });
   }, []);
 
+  // important! otehrwise breaks as no notee on initial render
+  if (!notes) {
+    return null;
+  }
+
   const addNote = (event) => {
     event.preventDefault(); // prevent default action of submitting the form, reloading the page
     const noteObject = {
