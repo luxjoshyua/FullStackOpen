@@ -6,7 +6,7 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2];
-const url = `mongodb+srv://josh:${password}@cluster0.can6okv.mongodb.net/?retryWrites=true&w=majority`;
+const url = `mongodb+srv://josh:${password}@cluster0.can6okv.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
 // mongoose - works but is much worse than async method
 //   .connect(url, {
