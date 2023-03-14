@@ -7,8 +7,10 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
-// const url = `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`;
-const url = `mongodb+srv://joshefielding:${password}@cluster0.olnwxpd.mongodb.net/?retryWrites=true&w=majority`;
+// const url =
+//   `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`
+
+const url = `mongodb+srv://josh:${password}@cluster0.can6okv.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.set('strictQuery', false);
 mongoose.connect(url);
