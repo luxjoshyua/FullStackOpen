@@ -8,19 +8,27 @@ if (process.argv.length < 3) {
 const password = process.argv[2];
 const url = `mongodb+srv://josh:${password}@cluster0.can6okv.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
-// mongoose - works but is much worse than async method
-//   .connect(url, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log('MongoDB Connected');
-//     note.save();
-//     console.log('New note added!');
-//   })
-//   .catch((error) => {
-//     console.log(`Oh no, error: ${error}`);
+// establishes the schema to be used in the database
+const noteSchema = new mongoose.Schema({
+  content: String,
+  date: Date,
+  important: Boolean,
+});
+
+const Note = mongoose.model('Note', noteSchema);
+
+// creates a new object based on the Note model constructor function
+const note = new Note({
+  content: 'Adding new test content!',
+  date: new Date(),
+  important: true,
+});
+
+// Note.find({ important: true }).then((result) => {
+//   result.forEach((note) => {
+//     console.log(note);
 //   });
+// });
 
 const dbConnect = async () => {
   let db = null;
@@ -30,9 +38,9 @@ const dbConnect = async () => {
       useUnifiedTopology: true,
     });
     db = mongoose.connection;
-    console.log('connected!');
-
+    console.log('datbase connected!');
     let dbRes = await note.save();
+    // close the connection after note is sent
     db.close();
     return dbRes;
   } catch (error) {
@@ -45,17 +53,3 @@ const dbConnect = async () => {
 dbConnect()
   .then((res) => console.log(`Connected to db: ${res}`))
   .catch((error) => console.log(`Error calling: ${error}`));
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  date: Date,
-  important: Boolean,
-});
-
-const Note = mongoose.model('Note', noteSchema);
-
-const note = new Note({
-  content: 'Adding heaps heaps more test content!',
-  date: new Date(),
-  important: true,
-});
