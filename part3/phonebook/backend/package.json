@@ -1,22 +1,26 @@
 {
-  "name": "part3",
+  "name": "phonebook-backend",
   "version": "1.0.0",
-  "description": "Part 3 exercises for FullStack",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
-  "author": "",
+  "keywords": [],
+  "author": "Josh",
   "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.12.0",
+    "nodemon": "^2.0.15"
+  },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "mongoose": "^7.0.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.9",
     "morgan": "^1.10.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
   }
 }

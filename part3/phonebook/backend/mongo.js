@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
-
-// if (process.argv.length < 3) {
-//   console.log('give password as argument');
-//   process.exit(1);
-// }
+const dotenv = require('dotenv').config();
 
 if (!(process.argv.length === 3 || process.argv.length === 5)) {
   console.log(
@@ -12,17 +8,26 @@ if (!(process.argv.length === 3 || process.argv.length === 5)) {
   process.exit(1);
 }
 
-const password = process.argv[2];
+// const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
-const url = `mongodb+srv://josh:${password}@cluster0.lalfif0.mongodb.net/phonebook?retryWrites=true&w=majority`;
+// const url = `mongodb+srv://josh:${password}@cluster0.lalfif0.mongodb.net/phonebook?retryWrites=true&w=majority`;
 
-mongoose.connect(url);
+mongoose.set('strictQuery', false);
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then((result) => {
+    console.log('connected to db');
+  })
+  .catch((error) => {
+    console.log(`error connecting to db: ${error.message}`);
+  });
 
 // establishes the schema to be used in the database
 const personSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  // number: Number,
+  number: String,
 });
 
 const Person = mongoose.model('Person', personSchema);
@@ -34,7 +39,7 @@ const person = new Person({
 });
 
 if (process.argv.length === 3) {
-  console.log('phonebook:');
+  console.log('phonebook entries:');
   Person.find({}).then((persons) => {
     persons.forEach((person) => {
       console.log(`${person.name} ${person.number}`);
@@ -42,16 +47,12 @@ if (process.argv.length === 3) {
     mongoose.connection.close();
   });
 } else if (process.argv.length === 5) {
+  console.log('save new person to database');
   person.save().then((result) => {
     console.log(`result: ${result}`);
     console.log(`added ${personName} number ${personNumber} to phonebook`);
     mongoose.connection.close();
   });
-} else {
-  console.log(
-    `Please either enter 3 entries e.g. node mongo.js password or 5 entries e.g. node mongo.js password TestName 000-111`
-  );
-  process.exit();
 }
 
 // const dbConnect = async (person) => {

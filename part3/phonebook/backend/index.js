@@ -1,6 +1,6 @@
 const express = require('express');
 // https://github.com/expressjs/morgan
-// const morgan = require('morgan');
+const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 
@@ -19,10 +19,10 @@ const requestLogger = (request, response, next) => {
 
 // log data sent in HTTP POST requests
 // need the request.body object
-// morgan.token('body', (req, res) => {
-//   // don't  forget to return !
-//   return JSON.stringify(req.body);
-// });
+morgan.token('body', (req, res) => {
+  // don't  forget to return !
+  return JSON.stringify(req.body);
+});
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
