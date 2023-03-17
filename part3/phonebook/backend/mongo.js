@@ -19,7 +19,9 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema);
 
 const connect = async () => {
+  console.log('Connecting...');
   await mongoose.connect(process.env.MONGO_URL);
+  console.log('Connected !');
 };
 
 const closeConnection = async () => {
