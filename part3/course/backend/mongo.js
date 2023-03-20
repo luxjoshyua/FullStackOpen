@@ -6,9 +6,12 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2];
-const url = `mongodb+srv://josh:${password}@cluster0.can6okv.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
-// establishes the schema to be used in the database
+const url = `mongodb+srv://josh:${password}h@cluster0.can6okv.mongodb.net/noteApp?retryWrites=true&w=majority`;
+
+mongoose.set('strictQuery', false);
+mongoose.connect(url);
+
 const noteSchema = new mongoose.Schema({
   content: String,
   date: Date,
@@ -17,39 +20,22 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema);
 
-// creates a new object based on the Note model constructor function
 const note = new Note({
-  content: 'Adding new test content!',
+  content: 'Mongoose makes things easy',
   date: new Date(),
   important: true,
 });
 
-// Note.find({ important: true }).then((result) => {
-//   result.forEach((note) => {
-//     console.log(note);
-//   });
-// });
+/*
+note.save().then(result => {
+  console.log('note saved!')
+  mongoose.connection.close()
+})
+*/
 
-const dbConnect = async () => {
-  let db = null;
-  try {
-    await mongoose.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    db = mongoose.connection;
-    console.log('datbase connected!');
-    let dbRes = await note.save();
-    // close the connection after note is sent
-    db.close();
-    return dbRes;
-  } catch (error) {
-    db && db.close();
-    console.log(`Error in database connection: ${error}`);
-    throw error;
-  }
-};
-
-dbConnect()
-  .then((res) => console.log(`Connected to db: ${res}`))
-  .catch((error) => console.log(`Error calling: ${error}`));
+Note.find({}).then((result) => {
+  result.forEach((note) => {
+    console.log(note);
+  });
+  mongoose.connection.close();
+});
