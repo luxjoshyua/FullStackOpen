@@ -10,6 +10,7 @@ if (!(process.argv.length === 3 || process.argv.length === 5)) {
 // const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
+console.log(`name ${name}, number ${number} `);
 
 // establishes the schema to be used in the database
 const personSchema = new mongoose.Schema({
