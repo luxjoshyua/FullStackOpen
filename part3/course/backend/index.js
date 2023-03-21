@@ -29,20 +29,29 @@ const noteSchema = new mongoose.Schema({
   important: Boolean,
 });
 
+noteSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
+
 const Note = mongoose.model('Note', noteSchema);
 
 // middleware function
+// similar to morgan, but is our own version
 // has to be taken into use before declaring routes
 // has to be used after app.use(express.json()), otherwise `request.body`
 // will not be initialised when the logger is executed
-const requestLogger = (request, response, next) => {
-  console.log('Method: ', request.method);
-  console.log('Path: ', request.path);
-  console.log('Body: ', request.body);
-  console.log('---');
-  // next function yields control to the next middleware
-  next();
-};
+// const requestLogger = (request, response, next) => {
+//   console.log('Method: ', request.method);
+//   console.log('Path: ', request.path);
+//   console.log('Body: ', request.body);
+//   console.log('---');
+//   // next function yields control to the next middleware
+//   next();
+// };
 
 // middleware for catching requests to non-existent routes
 // will return an error in JSON format
@@ -54,26 +63,29 @@ app.use(cors());
 // get everything in json format
 app.use(express.json());
 // pass the middleware
-app.use(requestLogger);
+// app.use(requestLogger);
 app.use(express.static('build'));
 
-let notes = [
-  {
-    id: 1,
-    content: 'HTML is easy',
-    important: true,
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only JavaScript',
-    important: false,
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true,
-  },
-];
+// our notes are coming from atlasdb now
+// let notes = [
+//   {
+//     id: 1,
+//     content: 'HTML is easy',
+//     important: true,
+//   },
+//   {
+//     id: 2,
+//     content: 'Browser can execute only JavaScript',
+//     important: false,
+//   },
+//   {
+//     id: 3,
+//     content: 'GET and POST are the most important methods of HTTP protocol',
+//     important: true,
+//   },
+// ];
+
+// let notes = []
 
 app.get('/', (request, response) => {
   // the request is answered by using the send method of the response object
