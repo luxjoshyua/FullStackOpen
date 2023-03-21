@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 
 const url = process.env.MONGO_URL;
 console.log(`URL in use: ${url}`);
@@ -15,6 +15,11 @@ const connect = async () => {
     console.log(`Error connecting to database: ${error.message}`);
   }
 };
+
+// mongoose
+//   .connect(url)
+//   .then((result) => console.log(`Connected to db: ${result}`))
+//   .catch((error) => console.log(`Error connecting to db: ${error.message}`));
 
 // close database connection when finished
 const closeConnection = async () => {
@@ -40,7 +45,6 @@ module.exports = Note;
 
 const main = async () => {
   await connect();
-
   // await closeConnection()
 };
 

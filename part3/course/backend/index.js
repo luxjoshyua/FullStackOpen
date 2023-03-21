@@ -1,25 +1,9 @@
-// import node's built-in web-server module
-// const http = require('http');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const Note = require('./models/note');
-
-// middleware function
-// similar to morgan, but is our own version
-// has to be taken into use before declaring routes
-// has to be used after app.use(express.json()), otherwise `request.body`
-// will not be initialised when the logger is executed
-// const requestLogger = (request, response, next) => {
-//   console.log('Method: ', request.method);
-//   console.log('Path: ', request.path);
-//   console.log('Body: ', request.body);
-//   console.log('---');
-//   // next function yields control to the next middleware
-//   next();
-// };
 
 // middleware for catching requests to non-existent routes
 // will return an error in JSON format
@@ -30,8 +14,8 @@ const unknownEndpoint = (request, response) => {
 app.use(cors());
 // get everything in json format
 app.use(express.json());
-// pass the middleware
-// app.use(requestLogger);
+// log with morgan
+app.use(morgan('tiny'));
 app.use(express.static('build'));
 
 app.get('/', (request, response) => {
