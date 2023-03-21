@@ -35,17 +35,10 @@ const saveNote = async (content) => {
 
 const loadNote = async () => {
   const allNotes = await Note.find({}).then((result) => {
-    if (!result) {
-      return;
-    } else if (result.length === 1) {
-      console.log(`One note in collection: ${result}`);
-    } else if (result.length > 1) {
-      result.forEach((note) => {
-        console.log(`Note in note collection ${note.content}`);
-      });
-    }
+    result.forEach((note) => {
+      console.log(`Note in note collection ${note.content}`);
+    });
   });
-  // const allNotes = await Note.find({});
   return allNotes;
 };
 
