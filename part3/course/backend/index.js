@@ -23,6 +23,14 @@ const closeConnection = async () => {
   mongoose.connection.close();
 };
 
+// establish the noteSchema
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+});
+
+const Note = mongoose.model('Note', noteSchema);
+
 // middleware function
 // has to be taken into use before declaring routes
 // has to be used after app.use(express.json()), otherwise `request.body`
@@ -75,10 +83,18 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello world!</h1>');
 });
 
-app.get('/api/notes', (request, response) => {
+const loadNote = async (response) => {
+  const allNotes = await Note.find({}).then((notes) => {
+    response.json(notes);
+  });
+  return allNotes;
+};
+
+app.get('/api/notes', async (request, response) => {
   // log request.headers to check all the headers of a request
   // console.log(request.headers);
-  response.json(notes);
+  // response.json(notes);
+  await loadNote(response);
 });
 
 const generateId = () => {
