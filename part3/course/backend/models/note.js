@@ -16,11 +16,6 @@ const connect = async () => {
   }
 };
 
-// mongoose
-//   .connect(url)
-//   .then((result) => console.log(`Connected to db: ${result}`))
-//   .catch((error) => console.log(`Error connecting to db: ${error.message}`));
-
 // close database connection when finished
 const closeConnection = async () => {
   mongoose.connection.close();
