@@ -5,39 +5,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
-
-const url = process.env.MONGO_URL;
-console.log(`URL: ${url}`);
-
-mongoose.set('strictQuery', false);
-
-// establish database connection
-const connect = async () => {
-  console.log(`Connecting...`);
-  await mongoose.connect(url);
-  console.log(`Connected!`);
-};
-
-// close database connection when finished
-const closeConnection = async () => {
-  mongoose.connection.close();
-};
-
-// establish the noteSchema
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-});
-
-noteSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-
-const Note = mongoose.model('Note', noteSchema);
+const Note = require('./models/note');
 
 // middleware function
 // similar to morgan, but is our own version
@@ -66,27 +34,6 @@ app.use(express.json());
 // app.use(requestLogger);
 app.use(express.static('build'));
 
-// our notes are coming from atlasdb now
-// let notes = [
-//   {
-//     id: 1,
-//     content: 'HTML is easy',
-//     important: true,
-//   },
-//   {
-//     id: 2,
-//     content: 'Browser can execute only JavaScript',
-//     important: false,
-//   },
-//   {
-//     id: 3,
-//     content: 'GET and POST are the most important methods of HTTP protocol',
-//     important: true,
-//   },
-// ];
-
-// let notes = []
-
 app.get('/', (request, response) => {
   // the request is answered by using the send method of the response object
   // calling the method makes the server respond to the HTTP request by sending a response containing the string 'hello world'
@@ -112,10 +59,7 @@ app.get('/api/notes', async (request, response) => {
 const generateId = () => {
   // finds the largest number in notes
   // the spread operator turns the notes array into objects where we can then map through and access the individual numbers, which can be passed
-  // as a parameter to Math.max, whereas notes without spread can't because it's an array
-  // and will return NaN
-  // console.log(...notes);
-  // console.log(notes);
+  // as a parameter to Math.max, whereas notes without spread can't because it's an array and will return NaN
   const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
   return maxId + 1;
 };
@@ -163,15 +107,6 @@ app.delete('/api/notes/:id', (request, response) => {
 
 app.use(unknownEndpoint);
 
-const main = async () => {
-  await connect();
-
-  // await closeConnection()
-};
-
-main();
-
-// const PORT = process.env.PORT || 3001;
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on https:localhost/${PORT}`);
