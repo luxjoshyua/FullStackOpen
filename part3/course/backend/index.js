@@ -3,6 +3,25 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv').config();
+
+const url = process.env.MONGO_URL;
+console.log(`URL: ${url}`);
+
+mongoose.set('strictQuery', false);
+
+// establish database connection
+const connect = async () => {
+  console.log(`Connecting...`);
+  await mongoose.connect(url);
+  console.log(`Connected!`);
+};
+
+// close database connection when finished
+const closeConnection = async () => {
+  mongoose.connection.close();
+};
 
 // middleware function
 // has to be taken into use before declaring routes
@@ -116,8 +135,16 @@ app.delete('/api/notes/:id', (request, response) => {
 
 app.use(unknownEndpoint);
 
+const main = async () => {
+  await connect();
+
+  // await closeConnection()
+};
+
+main();
+
 // const PORT = process.env.PORT || 3001;
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`Server running on https:localhost/${PORT}`);
 });
