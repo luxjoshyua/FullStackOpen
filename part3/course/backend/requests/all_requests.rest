@@ -5,6 +5,6 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "Testing Postman with some FAT body copy",
+  "content": "Node.js is a backend JavaScript runtime environment.",
   "important": true
 }

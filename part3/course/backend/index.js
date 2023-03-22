@@ -40,16 +40,9 @@ app.get('/api/notes', async (request, response) => {
   await loadNote(response);
 });
 
-const generateId = () => {
-  // finds the largest number in notes
-  // the spread operator turns the notes array into objects where we can then map through and access the individual numbers, which can be passed
-  // as a parameter to Math.max, whereas notes without spread can't because it's an array and will return NaN
-  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
+app.post('/api/notes', async (request, response) => {
+  const body = await request.body;
 
-app.post('/api/notes', (request, response) => {
-  const body = request.body;
   if (!body.content) {
     // need this return here, otherwise code will keep executing and malformed note will be saved
     return response.status(400).json({
@@ -57,37 +50,35 @@ app.post('/api/notes', (request, response) => {
     });
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date(),
-    id: generateId(),
-  };
+  });
 
-  notes = notes.concat(note);
-
-  response.json(note);
+  return await note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 });
 
-app.get('/api/notes/:id', (request, response) => {
-  // need id as a number to compare
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
-  const id = Number(request.params.id);
+// app.get('/api/notes/:id', (request, response) => {
+//   // need id as a number to compare
+//   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+//   const id = Number(request.params.id);
 
-  const note = notes.find((note) => note.id === id);
-  if (note) {
-    response.json(note);
-  } else {
-    // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
-    response.status(404).send('Note not found').end();
-  }
-});
+//   const note = notes.find((note) => note.id === id);
+//   if (note) {
+//     response.json(note);
+//   } else {
+//     // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
+//     response.status(404).send('Note not found').end();
+//   }
+// });
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-  response.status(204).end();
-});
+// app.delete('/api/notes/:id', (request, response) => {
+//   const id = Number(request.params.id);
+//   notes = notes.filter((note) => note.id !== id);
+//   response.status(204).end();
+// });
 
 app.use(unknownEndpoint);
 
