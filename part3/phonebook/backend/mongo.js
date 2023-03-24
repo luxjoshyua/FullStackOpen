@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
 
-if (!(process.argv.length === 3 || process.argv.length === 5)) {
+if (!(process.argv.length === 2 || process.argv.length === 4)) {
   console.log(`
-    Please either enter 3 entries e.g. node mongo.js josh or 5 entries e.g. node mongo.js josh TestName 000-111`);
+    Please either enter 2 entries e.g. node mongo.js or 4 entries e.g. node mongo.js TestName 000-111`);
   process.exit(1);
 }
 
-// const password = process.argv[2];
-const name = process.argv[3];
-const number = process.argv[4];
+const name = process.argv[2];
+const number = process.argv[3];
 
 // establishes the schema to be used in the database
 const personSchema = new mongoose.Schema({
@@ -33,7 +32,6 @@ const savePerson = async (name, number) => {
   const person = new Person({
     name,
     number,
-    // number: number,
   });
   await person.save();
   console.log(`Added ${name} number ${number} to phonebook`);
@@ -50,11 +48,11 @@ const loadPeople = async () => {
 
 const main = async () => {
   await connect();
-  if (process.argv.length === 3) {
+  if (process.argv.length === 2) {
     await loadPeople();
   }
 
-  if (process.argv.length === 5) {
+  if (process.argv.length === 4) {
     await savePerson(name, number);
     // console.log(`Added ${name} number ${number} to phonebook`);
   }
