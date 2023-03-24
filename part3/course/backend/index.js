@@ -18,6 +18,8 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('build'));
 
+let notes = [];
+
 app.get('/', (request, response) => {
   // the request is answered by using the send method of the response object
   // calling the method makes the server respond to the HTTP request by sending a response containing the string 'hello world'
@@ -60,25 +62,17 @@ app.post('/api/notes', async (request, response) => {
   });
 });
 
-// app.get('/api/notes/:id', (request, response) => {
-//   // need id as a number to compare
-//   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
-//   const id = Number(request.params.id);
+app.get('/api/notes/:id', (request, response) => {
+  Note.findById(request.params.id).then((note) => {
+    response.json(note);
+  });
+});
 
-//   const note = notes.find((note) => note.id === id);
-//   if (note) {
-//     response.json(note);
-//   } else {
-//     // https://stackoverflow.com/questions/14154337/how-to-send-a-custom-http-status-message-in-node-express/36507614#36507614
-//     response.status(404).send('Note not found').end();
-//   }
-// });
-
-// app.delete('/api/notes/:id', (request, response) => {
-//   const id = Number(request.params.id);
-//   notes = notes.filter((note) => note.id !== id);
-//   response.status(204).end();
-// });
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id);
+  notes = notes.filter((note) => note.id !== id);
+  response.status(204).end();
+});
 
 app.use(unknownEndpoint);
 
