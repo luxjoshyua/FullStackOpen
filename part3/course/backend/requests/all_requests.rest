@@ -1,13 +1,13 @@
 GET http://localhost:3001/api/notes/
 ###
 
-GET http://localhost:3001/api/notes/:id
+GET http://localhost:3001/api/notes/6418017238850d2204eea707
 ###
 
 POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "Node.js is a backend JavaScript runtime environment.",
+  "content": "HTML is the bedrock of the web.",
   "important": true
 }

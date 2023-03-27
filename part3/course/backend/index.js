@@ -2,14 +2,10 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
+const mongoose = require('mongoose');
+
 require('dotenv').config();
 const Note = require('./models/note');
-
-// middleware for catching requests to non-existent routes
-// will return an error in JSON format
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
 
 const errorHandler = (error, request, response, next) => {
   console.log(`Error handler called: ${error.message}`);
@@ -24,26 +20,20 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-app.use(express.static('build'));
+// middleware for catching requests to non-existent routes
+// will return an error in JSON format
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(cors());
 // get everything in json format - should be one of the first middlewares to be loaded into Express
 app.use(express.json());
-app.use(cors());
 // log with morgan
 app.use(morgan('tiny'));
-app.use(unknownEndpoint);
-// handler of requests with results to errors
-// has to be the last loaded middleware
-app.use(errorHandler);
+app.use(express.static('build'));
 
-let notes = [];
-
-app.get('/', (request, response) => {
-  // the request is answered by using the send method of the response object
-  // calling the method makes the server respond to the HTTP request by sending a response containing the string 'hello world'
-  // that was passed to the `send` method. As it's a string, express automatically sets the value of the Content-Type header
-  // to be text/htmt, status code defaults to 200
-  response.send('<h1>Hello world!</h1>');
-});
+// let notes = [];
 
 const loadNote = async (response) => {
   const allNotes = await Note.find({}).then((notes) => {
@@ -60,7 +50,7 @@ app.get('/api/notes', async (request, response) => {
 });
 
 app.post('/api/notes', async (request, response) => {
-  const body = await request.body;
+  const body = request.body;
 
   if (!body.content) {
     // need this return here, otherwise code will keep executing and malformed note will be saved
@@ -75,19 +65,31 @@ app.post('/api/notes', async (request, response) => {
   });
 
   return await note.save().then((savedNote) => {
+    console.log(`Saved note: ${savedNote}`);
     response.json(savedNote);
   });
 });
 
-// app.get('/api/notes/:id', (request, response) => {
-//   Note.findById(request.params.id).then((note) => {
-//     response.json(note);
-//   });
+// app.get('/api/notes/:id', (request, response, next) => {
+//   Note.findById(request.params.id)
+//     .then((note) => {
+//       if (note) {
+//         response.json(note);
+//       } else {
+//         response.status(404).end();
+//       }
+//     })
+//     .catch((error) => next(error));
 // });
 
 app.get('/api/notes/:id', async (request, response, next) => {
   try {
-    const note = await Note.findById({});
+    console.log(request.params.id);
+
+    const note = await Note.findById(request.params.id);
+    // console.log(`Note: ${note}`);
+
+    // if note exists, return it, otherwise return 404
     return note ? response.json(note) : response.status(404).end();
   } catch (error) {
     console.log(`Error in api/notes/:id route: ${error}`);
@@ -96,11 +98,62 @@ app.get('/api/notes/:id', async (request, response, next) => {
   }
 });
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-  response.status(204).end();
+// app.delete('/api/notes/:id', (request, response, next) => {
+//   Note.findByIdAndRemove(request.params.id)
+//   .then((result) => {
+//     console.log(`Delete result: ${result}`);
+//     response.status(204).end()
+//   })
+//   .catch(error => {
+//     next(error)
+//   })
+// });
+
+app.delete('/api/notes/:id', async (request, response, next) => {
+  try {
+    const result = await Note.findByIdAndRemove(request.params.id);
+    console.log(`Delete result: ${result}`);
+    // status code 204 - no content
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
+
+// app.put('/api/notes/:id', (request, response, next) => {
+//   const body = request.body
+
+//   const note = {
+//     content: body.content,
+//     important: body.important,
+//   }
+
+//   Note.findByIdAndUpdate(request.params.id, note, { new: true })
+//     .then(updatedNote => {
+//       response.json(updatedNote)
+//     })
+//     .catch(error => next(error))
+// })
+
+app.put('/api/notes/:id', async (request, response, next) => {
+  try {
+    const body = request.body;
+    const note = {
+      content: body.content,
+      important: body.important,
+    };
+    // new: true parameter says call event handler with the new modified document instead of the original
+    const updatedNote = await Note.findByIdAndUpdate(request.params.id, note, { new: true });
+    response.json(updatedNote);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.use(unknownEndpoint);
+// handler of requests with results to errors
+// has to be the last loaded middleware!
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
