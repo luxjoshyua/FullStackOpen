@@ -11,12 +11,29 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
 
-app.use(cors());
-// get everything in json format
+const errorHandler = (error, request, response, next) => {
+  console.log(`Error handler called: ${error.message}`);
+
+  // CastError exception is an invalid object id for Mongo
+  if (error.name === 'CastError') {
+    // 400 - request can't be understood by the server due to malformed syntax
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  // in all other error cases, pass error forward on to default Express error handler
+  next(error);
+};
+
+app.use(express.static('build'));
+// get everything in json format - should be one of the first middlewares to be loaded into Express
 app.use(express.json());
+app.use(cors());
 // log with morgan
 app.use(morgan('tiny'));
-app.use(express.static('build'));
+app.use(unknownEndpoint);
+// handler of requests with results to errors
+// has to be the last loaded middleware
+app.use(errorHandler);
 
 let notes = [];
 
@@ -62,10 +79,21 @@ app.post('/api/notes', async (request, response) => {
   });
 });
 
-app.get('/api/notes/:id', (request, response) => {
-  Note.findById(request.params.id).then((note) => {
-    response.json(note);
-  });
+// app.get('/api/notes/:id', (request, response) => {
+//   Note.findById(request.params.id).then((note) => {
+//     response.json(note);
+//   });
+// });
+
+app.get('/api/notes/:id', async (request, response, next) => {
+  try {
+    const note = await Note.findById({});
+    return note ? response.json(note) : response.status(404).end();
+  } catch (error) {
+    console.log(`Error in api/notes/:id route: ${error}`);
+    // pass error on to error handler middleware - if no param given, execute moves onto next route or middleware
+    next(error);
+  }
 });
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -73,8 +101,6 @@ app.delete('/api/notes/:id', (request, response) => {
   notes = notes.filter((note) => note.id !== id);
   response.status(204).end();
 });
-
-app.use(unknownEndpoint);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
