@@ -36,10 +36,11 @@ personSchema.set('toJSON', {
 });
 
 const Person = mongoose.model('Person', personSchema);
-module.exports = Person;
 
 const main = async () => {
   await connect();
 };
 
 main();
+
+module.exports = Person;

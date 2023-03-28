@@ -37,14 +37,31 @@ app.get('/api/persons', async (request, response) => {
 });
 
 // get request to return general info
-app.get('/info', (request, response) => {
-  const date = new Date();
-  response.send(`
-    <div>
-      <p>Phonebook has info for ${persons.length} people</p>
-      <p>${date}</p>
-    </div>
-    `);
+// app.get('/info', (request, response) => {
+//   const date = new Date();
+//   response.send(`
+//     <div>
+//       <p>Phonebook has info for ${persons.length} people</p>
+//       <p>${date}</p>
+//     </div>
+//     `);
+// });
+
+app.get('/info', async (request, response) => {
+  try {
+    const date = new Date();
+    const info = await loadPerson(response);
+    console.log(`INFO in GET info route: ${info}`);
+
+    response.send(`
+      <div>
+        <p>Phonebook has info for some people</p>
+        <p>${date}</p>
+      </div>
+      `);
+  } catch (error) {
+    console.log(`Error in GET info route: ${error}`);
+  }
 });
 
 // post request to handle creating new person data
@@ -63,24 +80,36 @@ app.post('/api/persons', async (request, response) => {
     number: body.number,
   });
 
-  return await person.save().then((savedPerson) => {
-    console.log(`Person successfully saved to database: ${savedPerson}`);
-    response.json(savedPerson);
-  });
+  const savedPerson = await person.save();
+  console.log(`Person successfully saved to database: ${savedPerson}`);
+  response.json(savedPerson);
 });
 
 // get request to handle single person data
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    response.json(person);
-  });
+// app.get('/api/persons/:id', (request, response) => {
+//   Person.findById(request.params.id).then((person) => {
+//     response.json(person);
+//   });
+// });
+
+// get request to handle single person data
+app.get('/api/persons/:id', async (request, response) => {
+  try {
+    const person = await Person.findById(request.params.id);
+    return person ? response.json(person) : response.status(404).end();
+  } catch (error) {
+    console.log(`Error in GET api/persons/:id route: ${error}`);
+  }
 });
 
 // delete request to handle deleting single person data
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-  response.status(204).end();
+app.delete('/api/persons/:id', async (request, response) => {
+  try {
+    const personToDelete = await Person.findByIdAndRemove(request.params.id);
+    return personToDelete ? response.status(204).end() : response.status(404).end();
+  } catch (error) {
+    console.log(`Error in DELETE api/persons/:id route: ${error}`);
+  }
 });
 
 app.use(unknownEndpoint);
