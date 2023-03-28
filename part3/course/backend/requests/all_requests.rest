@@ -1,8 +1,12 @@
 GET http://localhost:3001/api/notes/
 ###
 
-GET http://localhost:3001/api/notes/6418017238850d2204eea707
+GET http://localhost:3001/api/notes/:id
 ###
+
+DELETE http://localhost:3001/api/notes/:id
+###
+
 
 POST http://localhost:3001/api/notes/
 Content-Type: application/json

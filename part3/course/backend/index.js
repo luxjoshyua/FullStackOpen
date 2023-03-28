@@ -64,76 +64,37 @@ app.post('/api/notes', async (request, response) => {
     important: body.important || false,
   });
 
-  return await note.save().then((savedNote) => {
-    console.log(`Saved note: ${savedNote}`);
-    response.json(savedNote);
-  });
+  const savedNote = await note.save();
+  response.json(savedNote);
 });
-
-// app.get('/api/notes/:id', (request, response, next) => {
-//   Note.findById(request.params.id)
-//     .then((note) => {
-//       if (note) {
-//         response.json(note);
-//       } else {
-//         response.status(404).end();
-//       }
-//     })
-//     .catch((error) => next(error));
-// });
 
 app.get('/api/notes/:id', async (request, response, next) => {
   try {
-    console.log(request.params.id);
-
     const note = await Note.findById(request.params.id);
-    // console.log(`Note: ${note}`);
-
-    // if note exists, return it, otherwise return 404
-    return note ? response.json(note) : response.status(404).end();
+    if (note) {
+      response.json(note);
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
-    console.log(`Error in api/notes/:id route: ${error}`);
     // pass error on to error handler middleware - if no param given, execute moves onto next route or middleware
     next(error);
   }
 });
 
-// app.delete('/api/notes/:id', (request, response, next) => {
-//   Note.findByIdAndRemove(request.params.id)
-//   .then((result) => {
-//     console.log(`Delete result: ${result}`);
-//     response.status(204).end()
-//   })
-//   .catch(error => {
-//     next(error)
-//   })
-// });
-
 app.delete('/api/notes/:id', async (request, response, next) => {
   try {
-    const result = await Note.findByIdAndRemove(request.params.id);
-    console.log(`Delete result: ${result}`);
-    // status code 204 - no content
-    response.status(204).end();
+    const noteToDelete = await Note.findByIdAndRemove(request.params.id);
+    if (noteToDelete) {
+      // status code 204 - no content
+      response.status(204).end();
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
     next(error);
   }
 });
-
-// app.put('/api/notes/:id', (request, response, next) => {
-//   const body = request.body
-
-//   const note = {
-//     content: body.content,
-//     important: body.important,
-//   }
-
-//   Note.findByIdAndUpdate(request.params.id, note, { new: true })
-//     .then(updatedNote => {
-//       response.json(updatedNote)
-//     })
-//     .catch(error => next(error))
-// })
 
 app.put('/api/notes/:id', async (request, response, next) => {
   try {

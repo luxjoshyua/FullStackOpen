@@ -36,17 +36,7 @@ app.get('/api/persons', async (request, response) => {
   await loadPerson(response);
 });
 
-// get request to return general info
-// app.get('/info', (request, response) => {
-//   const date = new Date();
-//   response.send(`
-//     <div>
-//       <p>Phonebook has info for ${persons.length} people</p>
-//       <p>${date}</p>
-//     </div>
-//     `);
-// });
-
+// get request to return general info - NOT WORKING
 app.get('/info', async (request, response) => {
   try {
     const date = new Date();
@@ -86,17 +76,14 @@ app.post('/api/persons', async (request, response) => {
 });
 
 // get request to handle single person data
-// app.get('/api/persons/:id', (request, response) => {
-//   Person.findById(request.params.id).then((person) => {
-//     response.json(person);
-//   });
-// });
-
-// get request to handle single person data
 app.get('/api/persons/:id', async (request, response) => {
   try {
     const person = await Person.findById(request.params.id);
-    return person ? response.json(person) : response.status(404).end();
+    if (person) {
+      response.json(person);
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
     console.log(`Error in GET api/persons/:id route: ${error}`);
   }
@@ -106,7 +93,11 @@ app.get('/api/persons/:id', async (request, response) => {
 app.delete('/api/persons/:id', async (request, response) => {
   try {
     const personToDelete = await Person.findByIdAndRemove(request.params.id);
-    return personToDelete ? response.status(204).end() : response.status(404).end();
+    if (personToDelete) {
+      response.status(204).end();
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
     console.log(`Error in DELETE api/persons/:id route: ${error}`);
   }
