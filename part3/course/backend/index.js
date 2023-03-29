@@ -2,8 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
-
 require('dotenv').config();
 const Note = require('./models/note');
 
@@ -36,10 +34,8 @@ app.use(express.static('build'));
 // let notes = [];
 
 const loadNote = async (response) => {
-  const allNotes = await Note.find({}).then((notes) => {
-    response.json(notes);
-  });
-  return allNotes;
+  const allNotes = await Note.find({});
+  return response.json(allNotes);
 };
 
 app.get('/api/notes', async (request, response) => {
@@ -65,7 +61,7 @@ app.post('/api/notes', async (request, response) => {
   });
 
   const savedNote = await note.save();
-  response.json(savedNote);
+  return response.json(savedNote);
 });
 
 app.get('/api/notes/:id', async (request, response, next) => {

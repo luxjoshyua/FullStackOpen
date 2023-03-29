@@ -5,6 +5,19 @@ const app = express();
 const cors = require('cors');
 const Person = require('./models/person');
 
+const errorHandler = (error, request, response, next) => {
+  console.log(`Error handler called: ${error.message}`);
+
+  // CastError exception is an invalid object id for Mongo
+  if (error.name === 'CastError') {
+    // 400 - request can't be understood by the server due to malformed syntax
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  // in all other error cases, pass error forward on to default Express error handler
+  next(error);
+};
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
@@ -14,7 +27,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('build'));
 
-let persons = [];
+// let persons = [];
 
 // check base route is working
 app.get('/', (request, response) => {
@@ -23,10 +36,8 @@ app.get('/', (request, response) => {
 });
 
 const loadPerson = async (response) => {
-  const allPeople = await Person.find({}).then((people) => {
-    response.json(people);
-  });
-  return allPeople;
+  const allPeople = await Person.find({});
+  return response.json(allPeople);
 };
 
 // get request to handle all data
@@ -36,19 +47,13 @@ app.get('/api/persons', async (request, response) => {
   await loadPerson(response);
 });
 
-// get request to return general info - NOT WORKING
 app.get('/info', async (request, response) => {
+  const date = new Date();
   try {
-    const date = new Date();
-    const info = await loadPerson(response);
-    console.log(`INFO in GET info route: ${info}`);
-
-    response.send(`
-      <div>
-        <p>Phonebook has info for some people</p>
-        <p>${date}</p>
-      </div>
-      `);
+    const people = await Person.find({});
+    return response.send(
+      `<div><p>Phonebook has info for ${people.length} people</p><p>${date}</p></div>`
+    );
   } catch (error) {
     console.log(`Error in GET info route: ${error}`);
   }
@@ -76,7 +81,7 @@ app.post('/api/persons', async (request, response) => {
 });
 
 // get request to handle single person data
-app.get('/api/persons/:id', async (request, response) => {
+app.get('/api/persons/:id', async (request, response, next) => {
   try {
     const person = await Person.findById(request.params.id);
     if (person) {
@@ -85,7 +90,7 @@ app.get('/api/persons/:id', async (request, response) => {
       response.status(404).end();
     }
   } catch (error) {
-    console.log(`Error in GET api/persons/:id route: ${error}`);
+    next(error);
   }
 });
 
@@ -99,13 +104,16 @@ app.delete('/api/persons/:id', async (request, response) => {
       response.status(404).end();
     }
   } catch (error) {
-    console.log(`Error in DELETE api/persons/:id route: ${error}`);
+    next(error);
   }
 });
 
 app.use(unknownEndpoint);
+// handler of requests with results to errors
+// has to the last loaded middleware!
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Server up and running on ${PORT}`);
+  console.log(`Server up and running on localhost:${PORT}`);
 });
