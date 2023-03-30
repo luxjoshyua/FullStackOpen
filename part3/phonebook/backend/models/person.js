@@ -21,10 +21,18 @@ const closeConnection = async () => {
   mongoose.connection.close();
 };
 
-// establish the personSchema
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    required: true,
+    minlength: [3, 'Name should contain at least three characters.'],
+    maxlength: [20, 'Name should contain no more than twenty characters.'],
+  },
+  // validation already happening in frontend
+  number: {
+    type: String,
+    required: true,
+  },
 });
 
 personSchema.set('toJSON', {
