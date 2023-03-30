@@ -4,7 +4,7 @@ GET http://localhost:3001/api/notes/
 GET http://localhost:3001/api/notes/:id
 ###
 
-DELETE http://localhost:3001/api/notes/6421f7c413db89e53b8da785
+DELETE http://localhost:3001/api/notes/:id
 ###
 
 
