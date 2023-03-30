@@ -47,7 +47,7 @@ app.get('/api/persons', async (request, response) => {
   await loadPerson(response);
 });
 
-app.get('/info', async (request, response) => {
+app.get('/info', async (request, response, next) => {
   const date = new Date();
   try {
     const people = await Person.find({});
@@ -55,12 +55,12 @@ app.get('/info', async (request, response) => {
       `<div><p>Phonebook has info for ${people.length} people</p><p>${date}</p></div>`
     );
   } catch (error) {
-    console.log(`Error in GET info route: ${error}`);
+    next(error);
   }
 });
 
 // post request to handle creating new person data
-app.post('/api/persons', async (request, response) => {
+app.post('/api/persons', async (request, response, next) => {
   const body = await request.body;
 
   if (!body.name || !body.number) {
@@ -75,9 +75,17 @@ app.post('/api/persons', async (request, response) => {
     number: body.number,
   });
 
-  const savedPerson = await person.save();
-  console.log(`Person successfully saved to database: ${savedPerson}`);
-  response.json(savedPerson);
+  try {
+    const savedPerson = await person.save();
+    if (savedPerson) {
+      response.json(savedPerson);
+      console.log(`Person successfully saved to database: ${savedPerson}`);
+    } else {
+      response.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // get request to handle single person data
@@ -89,6 +97,25 @@ app.get('/api/persons/:id', async (request, response, next) => {
     } else {
       response.status(404).end();
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// put request to handle updating single person data
+// using the same name but a different number will update the existing person with the new number
+app.put('/api/persons/:id', async (request, response, next) => {
+  try {
+    const body = await request.body;
+    const { name, number } = body;
+
+    const person = {
+      name,
+      number,
+    };
+
+    const updatedPerson = await Person.findByIdAndUpdate(request.params.id, person, { new: true });
+    response.json(updatedPerson);
   } catch (error) {
     next(error);
   }
