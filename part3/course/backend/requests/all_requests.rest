@@ -12,6 +12,6 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "HTML is the bedrock of the web.",
+  "content": "I.",
   "important": true
 }
