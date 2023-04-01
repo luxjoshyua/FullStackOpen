@@ -5,19 +5,6 @@ const app = express();
 const cors = require('cors');
 const Person = require('./models/person');
 
-const errorHandler = (error, request, response, next) => {
-  console.log(`Error handler called: ${error.message}`);
-
-  // CastError exception is an invalid object id for Mongo
-  if (error.name === 'CastError') {
-    // 400 - request can't be understood by the server due to malformed syntax
-    return response.status(400).send({ error: 'malformatted id' });
-  }
-
-  // in all other error cases, pass error forward on to default Express error handler
-  next(error);
-};
-
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
@@ -114,7 +101,10 @@ app.put('/api/persons/:id', async (request, response, next) => {
       number,
     };
 
-    const updatedPerson = await Person.findByIdAndUpdate(request.params.id, person, { new: true });
+    const updatedPerson = await Person.findByIdAndUpdate(request.params.id, person, {
+      new: true,
+      runValidators: true,
+    });
     response.json(updatedPerson);
   } catch (error) {
     next(error);
@@ -135,6 +125,19 @@ app.delete('/api/persons/:id', async (request, response) => {
   }
 });
 
+const errorHandler = (error, request, response, next) => {
+  // console.log(`Error handler called: ${error.message}`);
+  // CastError exception is an invalid object id for Mongo
+  if (error.name === 'CastError') {
+    // 400 - request can't be understood by the server due to malformed syntax
+    return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
+  }
+  // in all other error cases, pass error forward on to default Express error handler
+  next(error);
+};
+
 app.use(unknownEndpoint);
 // handler of requests with results to errors
 // has to the last loaded middleware!
@@ -142,5 +145,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Server up and running on localhost:${PORT}`);
+  console.log(`Server up and running on https://localhost:${PORT}`);
 });

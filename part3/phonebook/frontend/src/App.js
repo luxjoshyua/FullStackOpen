@@ -22,7 +22,7 @@ const App = () => {
         setPersons(persons);
       })
       .catch((error) => {
-        throw new Error(`${error} exeperienced, try again`);
+        throw new Error(`${error} experienced, try again`);
       });
   }, []);
 
@@ -49,11 +49,16 @@ const App = () => {
         handleInputReset();
       }
     } else {
-      personService.create(personObjectNew).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        handleSuccess(returnedPerson.name);
-        handleInputReset();
-      });
+      personService
+        .create(personObjectNew)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          handleSuccess(returnedPerson.name);
+          handleInputReset();
+        })
+        .catch((error) => {
+          handleValidationError(error);
+        });
     }
   };
 
@@ -81,6 +86,14 @@ const App = () => {
     setErrorMessage(
       `Error occurred, specifically status: ${error.response.status}, status text: ${error.response.statusText}`
     );
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 5000);
+    setError(true);
+  };
+
+  const handleValidationError = (error) => {
+    setErrorMessage(error.response.data.error);
     setTimeout(() => {
       setErrorMessage('');
     }, 5000);

@@ -23,8 +23,6 @@ const PersonForm = ({ onSubmit, setNewName, newName, setNewNumber, newNumber }) 
             type="number"
             placeholder="add number here"
             onChange={(event) => setNewNumber(event.target.value)}
-            // aus format regex
-            pattern="[0]{1}[0-9]{9}"
             value={newNumber}
           />
         </div>

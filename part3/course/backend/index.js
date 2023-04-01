@@ -45,15 +45,7 @@ app.get('/api/notes', async (request, response) => {
 
 app.post('/api/notes', async (request, response, next) => {
   try {
-    // const body = request.body;
-
     const { content, important } = request.body;
-
-    // const note = new Note({
-    //   content: body.content,
-    //   important: body.important || false,
-    // });
-
     const note = new Note({ content, important: important || false });
     const noteToSave = await note.save();
     response.json(noteToSave);
@@ -93,7 +85,6 @@ app.delete('/api/notes/:id', async (request, response, next) => {
 app.put('/api/notes/:id', async (request, response, next) => {
   try {
     const { content, important } = request.body;
-
     // new: true parameter says call event handler with the new modified document instead of the original
     const updatedNote = await Note.findByIdAndUpdate(
       request.params.id,

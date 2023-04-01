@@ -2,6 +2,7 @@ import axios from 'axios';
 
 // for local
 // const baseURL = `http://localhost:3001/persons`;
+// for database
 const baseURL = `/api/persons`;
 
 const getAll = () => {
