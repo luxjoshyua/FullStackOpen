@@ -17,9 +17,9 @@ const connect = async () => {
 };
 
 // close database connection when finished
-const closeConnection = async () => {
-  mongoose.connection.close();
-};
+// const closeConnection = async () => {
+//   mongoose.connection.close();
+// };
 
 // establish the noteSchema
 const noteSchema = new mongoose.Schema({

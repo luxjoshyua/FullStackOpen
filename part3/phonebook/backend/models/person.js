@@ -25,13 +25,16 @@ const personSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: [3, 'Name should contain at least three characters.'],
-    maxlength: [20, 'Name should contain no more than twenty characters.'],
+    minLength: 3,
   },
-  // validation already happening in frontend
   number: {
     type: String,
     required: true,
+    minLength: 8,
+    validate: {
+      validator: (value) => /\d{2,3}-\d{3,}/.test(value),
+      message: (props) => `${props.value} is not a valid phone number!`,
+    },
   },
 });
 

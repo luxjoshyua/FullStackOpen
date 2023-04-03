@@ -48,21 +48,30 @@ app.get('/info', async (request, response, next) => {
 
 // post request to handle creating new person data
 app.post('/api/persons', async (request, response, next) => {
-  const body = await request.body;
-
-  if (!body.name || !body.number) {
-    // 400: server cannot process request because of client side error
-    return response.status(400).json({
-      error: 'content missing',
-    });
-  }
-
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  });
-
   try {
+    const { name, number } = await request.body;
+
+    // check if name or number is missing
+    if (!name || !number) {
+      // 400: server cannot process request because of client side error
+      return response.status(400).json({
+        error: 'Name or number missing',
+      });
+    }
+
+    // check if name already exists in database
+    const duplicatePerson = await Person.findOne({ name });
+    if (duplicatePerson) {
+      return response.status(400).json({
+        error: `${name} already exists in the database`,
+      });
+    }
+
+    const person = new Person({
+      name: name,
+      number: number,
+    });
+
     const savedPerson = await person.save();
     if (savedPerson) {
       response.json(savedPerson);
@@ -93,8 +102,7 @@ app.get('/api/persons/:id', async (request, response, next) => {
 // using the same name but a different number will update the existing person with the new number
 app.put('/api/persons/:id', async (request, response, next) => {
   try {
-    const body = await request.body;
-    const { name, number } = body;
+    const { name, number } = await request.body;
 
     const person = {
       name,
