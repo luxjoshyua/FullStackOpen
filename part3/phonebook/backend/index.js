@@ -14,14 +14,6 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('build'));
 
-// let persons = [];
-
-// check base route is working
-app.get('/', (request, response) => {
-  // console.log(request);
-  response.send('<h1>Hello world, app is working</h1>');
-});
-
 const loadPerson = async (response) => {
   const allPeople = await Person.find({});
   return response.json(allPeople);
@@ -74,10 +66,10 @@ app.post('/api/persons', async (request, response, next) => {
 
     const savedPerson = await person.save();
     if (savedPerson) {
-      response.json(savedPerson);
       console.log(`Person successfully saved to database: ${savedPerson}`);
+      return response.json(savedPerson);
     } else {
-      response.status(404).end();
+      return response.status(404).end();
     }
   } catch (error) {
     next(error);
@@ -89,9 +81,9 @@ app.get('/api/persons/:id', async (request, response, next) => {
   try {
     const person = await Person.findById(request.params.id);
     if (person) {
-      response.json(person);
+      return response.json(person);
     } else {
-      response.status(404).end();
+      return response.status(404).end();
     }
   } catch (error) {
     next(error);
@@ -113,20 +105,20 @@ app.put('/api/persons/:id', async (request, response, next) => {
       new: true,
       runValidators: true,
     });
-    response.json(updatedPerson);
+    return response.json(updatedPerson);
   } catch (error) {
     next(error);
   }
 });
 
 // delete request to handle deleting single person data
-app.delete('/api/persons/:id', async (request, response) => {
+app.delete('/api/persons/:id', async (request, response, next) => {
   try {
     const personToDelete = await Person.findByIdAndRemove(request.params.id);
     if (personToDelete) {
-      response.status(204).end();
+      return response.status(204).end();
     } else {
-      response.status(404).end();
+      return response.status(404).end();
     }
   } catch (error) {
     next(error);

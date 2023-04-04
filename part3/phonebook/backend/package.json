@@ -7,13 +7,13 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "Josh",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.12.0",
+    "eslint": "^8.37.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
