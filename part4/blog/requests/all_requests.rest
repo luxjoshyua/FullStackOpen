@@ -1,0 +1,20 @@
+GET http://localhost:3003/api/blogs/
+###
+
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+
+{
+  "title": "My third awesome blog post.",
+  "author": "Samantha Aardvark",
+  "url": "http://example.com",
+  "likes": 2
+}
+###
+
+GET http://localhost:3003/api/blogs/:id
+###
+
+DELETE http://localhost:3003/api/blogs/6435c4eaa7dd53ac4f9e92ba
+###
+
