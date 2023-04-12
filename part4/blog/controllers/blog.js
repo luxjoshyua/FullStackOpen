@@ -55,6 +55,16 @@ blogRouter.delete('/:id', async (request, response, next) => {
 });
 
 // PUT a specific blog
+blogRouter.put('/:id', async (request, response, next) => {
+  try {
+    const { title, author, url, likes } = request.body;
+    const blog = { title, author, url, likes };
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+    return response.json(updatedBlog);
+  } catch (error) {
+    return next(error);
+  }
+});
 
 // module exports the router to be available for all consumers of the model
 module.exports = blogRouter;
