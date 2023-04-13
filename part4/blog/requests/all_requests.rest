@@ -5,10 +5,10 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "Some sexy and saucy blog post.",
-  "author": "Samantha Bezos",
-  "url": "http://samantha.com",
-  "likes": 1
+  "title": "My fourth new lame blog post.",
+  "author": "Trotsky",
+  "url": "http://trotsky.com",
+  "likes": 10
 }
 ###
 
