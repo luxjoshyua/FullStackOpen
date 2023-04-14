@@ -43,9 +43,37 @@ const mostBlogs = (blogs) => {
   return total;
 };
 
+const mostLikes = (blogs) => {
+  if (!blogs) return;
+  // function returns the author whose blog posts have the largest amount of likes
+  // function also returns the total number of likes the author has received
+  // e.g. {
+  //   author: "Edsger W. Dijkstra",
+  //   likes: 17
+  // }
+
+  // get the object with just the values we need: author, likes
+  let authorLikes = blogs.reduce((op, { author, likes }) => {
+    op[author] = op[author] || 0;
+    op[author] += likes;
+    return op;
+  }, {});
+
+  let highestLikes = Math.max(...Object.values(authorLikes));
+  let highestAuthor = Object.keys(authorLikes).find((key) => authorLikes[key] === highestLikes);
+
+  const total = {
+    author: highestAuthor,
+    likes: highestLikes,
+  };
+
+  return total;
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favouriteBlog,
   mostBlogs,
+  mostLikes,
 };
