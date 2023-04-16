@@ -26,14 +26,8 @@ const connect = async () => {
   }
 };
 
-// close database connection when finished
-// const closeConnection = async () => {
-//   mongoose.connection.close();
-// };
-
 const main = async () => {
   await connect();
-  // await closeConnection()
 };
 
 main();

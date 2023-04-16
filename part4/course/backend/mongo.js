@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const content = process.argv[2];
 
 if (process.argv.length < 2) {
@@ -19,7 +19,8 @@ const Note = mongoose.model('Note', noteSchema);
 
 const connect = async () => {
   console.log('Connecting...');
-  await mongoose.connect(process.env.MONGO_URL);
+  // await mongoose.connect(process.env.MONGO_URL);
+  await mongoose.connect(process.env.TEST_MONGO_URL);
   console.log('Connected!');
 };
 
