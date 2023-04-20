@@ -12,7 +12,7 @@ const initialNotes = [
   },
 ];
 
-// creates a database object ID that does not belong to any note object stored in the database
+// used to create a database object ID that does not belong to any note object stored in the database
 const nonExistingId = async () => {
   const note = new Note({ content: 'willremovethissoon' });
   await note.save();
