@@ -31,7 +31,8 @@ notesRouter.post('/', async (request, response, next) => {
     const { content, important } = request.body;
     const note = new Note({ content, important: important || false });
     const noteToSave = await note.save();
-    response.json(noteToSave);
+    // 201 created instead of 200 OK
+    response.status(201).json(noteToSave);
   } catch (error) {
     return next(error);
   }
