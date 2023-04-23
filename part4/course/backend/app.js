@@ -1,5 +1,9 @@
 const config = require('./utils/config');
 const express = require('express');
+// removes the need to wrap async functions in try/catch blocks
+// if error occurs, passes next(error) to the error handler middleware
+// https://github.com/davidbanham/express-async-errors
+require('express-async-errors');
 const app = express();
 const cors = require('cors');
 
