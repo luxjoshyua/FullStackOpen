@@ -1,60 +1,41 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
-const content = process.argv[2];
+const mongoose = require('mongoose')
 
-if (process.argv.length < 2) {
-  // console.log('give password as argument');
-  console.log('give node and filename as arguments');
-  process.exit(1);
+if (process.argv.length<3) {
+  console.log('give password as argument')
+  process.exit(1)
 }
 
-// establishes the schema to be used in the database
+const password = process.argv[2]
+
+const url =
+  `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/testing?retryWrites=true&w=majority`
+
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+
 const noteSchema = new mongoose.Schema({
   content: String,
   date: Date,
   important: Boolean,
-});
+})
 
-const Note = mongoose.model('Note', noteSchema);
+const Note = mongoose.model('Note', noteSchema)
 
-const connect = async () => {
-  console.log('Connecting...');
-  // await mongoose.connect(process.env.MONGO_URL);
-  await mongoose.connect(process.env.TEST_MONGO_URL);
-  console.log('Connected!');
-};
+const note = new Note({
+  content: 'CSS is hard',
+  date: new Date(),
+  important: true,
+})
 
-const closeConnection = async () => {
-  mongoose.connection.close();
-};
+note.save().then(result => {
+  console.log('note saved!')
+  mongoose.connection.close()
+})
+/*
 
-const saveNote = async (content) => {
-  const note = new Note({ content: content, date: new Date(), important: true });
-  await note.save();
-  console.log(`Added content ${content} to note`);
-};
-
-const loadNote = async () => {
-  const allNotes = await Note.find({}).then((result) => {
-    result.forEach((note) => {
-      console.log(`Note in note collection ${note.content}`);
-    });
-  });
-  return allNotes;
-};
-
-const main = async () => {
-  await connect();
-
-  if (process.argv.length === 2) {
-    await loadNote();
-  }
-
-  if (process.argv.length === 3) {
-    await saveNote(content);
-  }
-
-  await closeConnection();
-};
-
-main();
+Note.find({}).then(result => {
+  result.forEach(note => {
+    console.log(note)
+  })
+  mongoose.connection.close()
+})*/

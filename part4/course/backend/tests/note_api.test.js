@@ -5,24 +5,19 @@ const app = require('../app');
 const api = supertest(app);
 
 const Note = require('../models/note');
-const helper = require('./test_helper.test');
+const helper = require('./test_helper');
 
 beforeEach(async () => {
   await Note.deleteMany({});
-
-  let noteObject = new Note(helper.initialNotes[0]);
-  await noteObject.save();
-
-  noteObject = new Note(helper.initialNotes[1]);
-  return await noteObject.save();
-}, 20000);
+  await Note.insertMany(helper.initialNotes);
+});
 
 test('notes are returned as json', async () => {
   await api
     .get('/api/notes')
     .expect(200)
     .expect('Content-Type', /application\/json/);
-}, 20000);
+});
 
 test('all notes are returned', async () => {
   const response = await api.get('/api/notes');
