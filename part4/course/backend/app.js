@@ -13,24 +13,14 @@ mongoose.set('strictQuery', false);
 
 logger.info('URL in use', config.MONGODB_URI);
 
-// mongoose
-//   .connect(config.MONGODB_URI)
-//   .then(() => {
-//     logger.info('connected to MongoDB');
-//   })
-//   .catch((error) => {
-//     logger.error('error connecting to MongoDB:', error.message);
-//   });
-
 const connect = async () => {
-  console.log('connecting...');
-  await mongoose.connect(config.MONGODB_URI);
-  console.log('connected');
-  // try {
-
-  // } catch (error) {
-  //   logger.error('error connecting to MongoDB:', error.message);
-  // }
+  try {
+    console.log('connecting...');
+    await mongoose.connect(config.MONGODB_URI);
+    console.log('connected');
+  } catch (error) {
+    logger.error('error connecting to MongoDB:', error.message);
+  }
 };
 
 const main = async () => {
