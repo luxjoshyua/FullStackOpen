@@ -3,14 +3,16 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
 
-const loadBlog = async (response) => {
-  const allBlogs = await Blog.find({});
-  return response.json(allBlogs);
-};
+// const loadBlog = async (response) => {
+//   const allBlogs = await Blog.find({});
+//   return response.json(allBlogs);
+// };
 
-// GET all blogs
+// GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
-  await loadBlog(response);
+  const allBlogs = await Blog.find({});
+  // await loadBlog(response);
+  response.json(allBlogs.map((blog) => blog.toJSON()));
 });
 
 // POST a new blog

@@ -9,7 +9,7 @@
     "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint",
-    "test": "jest --verbose"
+    "test": "jest --verbose --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +20,8 @@
     "express": "^4.18.2",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "eslint": "^8.37.0",
@@ -29,6 +30,8 @@
     "nodemon": "^2.0.20"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js",
+    "testTimeout": 50000
   }
 }

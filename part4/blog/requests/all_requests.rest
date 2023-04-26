@@ -1,13 +1,16 @@
 GET http://localhost:3003/api/blogs/
 ###
 
+GET http://localhost:3003/
+###
+
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "My fourth new lame blog post.",
-  "author": "Trotsky",
-  "url": "http://trotsky.com",
+  "title": "My second awesome blog post.",
+  "author": "Jack Bezos",
+  "url": "http://amazon.com",
   "likes": 10
 }
 ###
