@@ -8,12 +8,16 @@ const { initialBlogs } = require('./test_helper');
 
 const url = '/api/blogs';
 
+beforeAll(async () => {
+  // establish mongoose connection here?
+});
+
 // cleanup before each test
 beforeEach(async () => {
   // await mongoose.connect(process.env.MONGO_URL);
   await Blog.deleteMany({});
   await Blog.insertMany(initialBlogs);
-}, 20000);
+});
 
 describe('GET /api/blogs', () => {
   test('correct amount of blog posts are returned', async () => {
@@ -32,10 +36,11 @@ describe('GET /api/blogs', () => {
   });
 });
 
-// afterEach(async () => {
-//   await mongoose.connection.close();
-// });
+afterEach(async () => {
+  // await Blog.deleteMany({});
+  // await mongoose.connection.close();
+});
 
-afterAll(() => {
-  mongoose.connection.close();
+afterAll(async () => {
+  await mongoose.connection.close();
 });
