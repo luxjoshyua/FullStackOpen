@@ -16,56 +16,40 @@ blogRouter.get('/', async (request, response) => {
 });
 
 // POST a new blog
-blogRouter.post('/', async (request, response, next) => {
-  try {
-    const { title, author, url, likes } = request.body;
-    const blog = new Blog({ title, author, url, likes });
-    const blogToSave = await blog.save();
-    return response.status(201).json(blogToSave);
-  } catch (error) {
-    return next(error);
-  }
+blogRouter.post('/', async (request, response) => {
+  const { title, author, url, likes } = request.body;
+  const blog = new Blog({ title, author, url, likes });
+  const blogToSave = await blog.save();
+  response.status(201).json(blogToSave);
 });
 
 // GET a specific blog
-blogRouter.get('/:id', async (request, response, next) => {
-  try {
-    const blog = await Blog.findById(request.params.id);
-    if (blog) {
-      return response.status(201).json(blog);
-    } else {
-      return response.status(404).end();
-    }
-  } catch (error) {
-    return next(error);
+blogRouter.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+  if (blog) {
+    response.status(201).json(blog);
+  } else {
+    response.status(404).end();
   }
 });
 
 // DELETE a specific blog
-blogRouter.delete('/:id', async (request, response, next) => {
-  try {
-    const blogToDelete = await Blog.findByIdAndRemove(request.params.id);
-    if (blogToDelete) {
-      // status code 204: no content, deletion was successful
-      return response.status(204).end();
-    } else {
-      return response.status(404).end();
-    }
-  } catch (error) {
-    return next(error);
+blogRouter.delete('/:id', async (request, response) => {
+  const blogToDelete = await Blog.findByIdAndRemove(request.params.id);
+  if (blogToDelete) {
+    // status code 204: no content, deletion was successful
+    response.status(204).end();
+  } else {
+    response.status(404).end();
   }
 });
 
 // PUT a specific blog
-blogRouter.put('/:id', async (request, response, next) => {
-  try {
-    const { title, author, url, likes } = request.body;
-    const blog = { title, author, url, likes };
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
-    return response.json(updatedBlog);
-  } catch (error) {
-    return next(error);
-  }
+blogRouter.put('/:id', async (request, response) => {
+  const { title, author, url, likes } = request.body;
+  const blog = { title, author, url, likes };
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+  response.json(updatedBlog);
 });
 
 // module exports the router to be available for all consumers of the model

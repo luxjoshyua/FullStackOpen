@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// mongoose.set('strictQuery', false);
 require('dotenv').config();
 
 // establish the blogSchema
