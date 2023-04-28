@@ -15,7 +15,7 @@ require('express-async-errors');
 mongoose.set('strictQuery', false);
 
 const url = config.MONGO_URL;
-// logger.info(`URL in use: ${url}`);
+logger.info(`URL in use: ${url}`);
 
 // establish database connection
 // const connect = async () => {
@@ -23,17 +23,6 @@ const url = config.MONGO_URL;
 //   await mongoose.connect(url);
 //   logger.info(`Connected to database!`);
 // };
-
-// logger.info('connecting to mongoddb');
-
-// mongoose
-//   .connect(config.MONGO_URL)
-//   .then(() => {
-//     logger.info('connected to MongoDB');
-//   })
-//   .catch((error) => {
-//     logger.error('error connection to MongoDB:', error.message);
-//   });
 
 // const main = async () => {
 //   await connect();

@@ -8,26 +8,26 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "My fifth awesome blog post.",
-  "author": "Lenin",
-  "url": "http://lenin.com",
-  "likes": 5
+  "title": "My third awesome blog post.",
+  "author": "Rosa Luxemburg",
+  "url": "http://rosa.com",
+  "likes": 8
 }
 ###
 
 GET http://localhost:3003/api/blogs/:id
 ###
 
-DELETE http://localhost:3003/api/blogs/6435c0e1c1d925eaf32e3a61
+DELETE http://localhost:3003/api/blogs/:id
 ###
 
-PUT http://localhost:3003/api/blogs/644acda4e9c9952e40ab477c
+PUT http://localhost:3003/api/blogs/:id
 Content-Type: application/json
 
 {
   "title": "My third awesome blog post.",
-  "author": "Elon Musk",
-  "url": "https://twitter.com",
+  "author": "Rosa Luxemburg",
+  "url": "http://rosa-luxemburg.com",
   "likes": 10
 }
 
