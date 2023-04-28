@@ -1,7 +1,7 @@
 // const mongoose = require('mongoose');
 const supertest = require('supertest');
 require('dotenv').config();
-const { setupDB } = require('./test-setup.js');
+const { setupDB } = require('./test_setup.js');
 const app = require('../app');
 const api = supertest(app);
 
