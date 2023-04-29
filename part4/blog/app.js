@@ -18,17 +18,17 @@ const url = config.MONGO_URL;
 logger.info(`URL in use: ${url}`);
 
 // establish database connection
-// const connect = async () => {
-//   logger.info(`Connecting to database...`);
-//   await mongoose.connect(url);
-//   logger.info(`Connected to database!`);
-// };
+const connect = async () => {
+  logger.info(`Connecting to database...`);
+  await mongoose.connect(url);
+  logger.info(`Connected to database!`);
+};
 
-// const main = async () => {
-//   await connect();
-// };
+const main = async () => {
+  await connect();
+};
 
-// main();
+main();
 
 app.use(cors());
 app.use(express.json());
