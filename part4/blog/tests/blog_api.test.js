@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 require('dotenv').config();
-// const { setupDB } = require('./test_setup.js');
+const { setupDB } = require('./test_setup.js');
 const Blog = require('../models/blog');
 const app = require('../app');
 const api = supertest(app);
 
-const { initialBlogs } = require('./test_helper');
+const { initialBlogs, blogsInDB } = require('./test_helper');
 
 const url = '/api/blogs';
 
@@ -17,7 +17,7 @@ const url = '/api/blogs';
 // only run specific file $ npx jest blog_api.test.js
 
 // run all test helper utilities (beforeAll, beforeEach, afterAll)
-// setupDB();
+setupDB();
 
 describe('GET /api/blogs', () => {
   beforeEach(async () => {
@@ -46,6 +46,24 @@ describe('GET /api/blogs', () => {
     const response = await api.get(url);
     const id = response.body.map((r) => r.id);
     expect(id).toBeDefined();
+  });
+
+  it('should create a new blog post when sending a HTTP post request to /api/blogs, verify by checking that the total number of blogs in the system is increased by one', async () => {
+    const newBlog = {
+      title: 'My third awesome blog post.',
+      author: 'Rosa Luxemburg',
+      url: 'http://rosa.com',
+      likes: 8,
+    };
+
+    await api
+      .post(url)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await blogsInDB();
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length + 1);
   });
 });
 
