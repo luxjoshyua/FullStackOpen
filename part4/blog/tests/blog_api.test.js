@@ -65,6 +65,25 @@ describe('GET /api/blogs', () => {
     const blogsAtEnd = await blogsInDB();
     expect(blogsAtEnd).toHaveLength(initialBlogs.length + 1);
   });
+
+  it('should default to 0 likes if likes property is missing from request', async () => {
+    const newBlog = {
+      title: 'My third awesome blog post.',
+      author: 'Rosa Luxemburg',
+      url: 'http://rosa.com',
+    };
+
+    await api
+      .post(url)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await blogsInDB();
+
+    const likes = blogsAtEnd.map((blog) => blog.likes);
+    expect(likes).toContain(0);
+  });
 });
 
 afterAll(async () => {
