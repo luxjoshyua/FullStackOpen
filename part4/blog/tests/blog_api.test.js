@@ -84,6 +84,16 @@ describe('GET /api/blogs', () => {
     const likes = blogsAtEnd.map((blog) => blog.likes);
     expect(likes).toContain(0);
   });
+
+  it('should return 400 Bad Request if title and url properties are missing from request', async () => {
+    const newBlog = {
+      author: 'Rosa Luxemburg',
+    };
+    await api.post(url).send(newBlog).expect(400);
+    const blogsAtEnd = await blogsInDB();
+    // check the length of the array is the same as the initial array
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length);
+  });
 });
 
 afterAll(async () => {

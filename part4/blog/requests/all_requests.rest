@@ -8,10 +8,10 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "My fourth awesome blog post.",
-  "author": "Antonio Gramsci",
-  "url": "http://antonio.com",
-  "likes": 10
+  "title": "My fifth awesome blog post.",
+  "author": "Leon Trotsky",
+  "url": "http://trotsky.com",
+  "likes": 5
 }
 ###
 

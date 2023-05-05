@@ -19,7 +19,13 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body;
   const blog = new Blog({ title, author, url, likes });
+
+  if (!blog.title || !blog.url) {
+    return response.status(400).end();
+  }
+
   const blogToSave = await blog.save();
+
   response.status(201).json(blogToSave);
 });
 
