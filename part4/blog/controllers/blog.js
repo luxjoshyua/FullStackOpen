@@ -10,7 +10,8 @@ const Blog = require('../models/blog');
 
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
-  const allBlogs = await Blog.find({});
+  // const allBlogs = await Blog.find({});
+  const allBlogs = await Blog.find();
   // await loadBlog(response);
   response.json(allBlogs.map((blog) => blog.toJSON()));
 });
@@ -40,14 +41,24 @@ blogRouter.get('/:id', async (request, response) => {
 });
 
 // DELETE a specific blog
+// blogRouter.delete('/:id', async (request, response) => {
+//   const blogToDelete = await Blog.findByIdAndRemove(request.params.id);
+//   if (blogToDelete) {
+//     // status code 204: no content, deletion was successful
+//     response.status(204).end();
+//   } else {
+//     response.status(404).end();
+//   }
+// });
+
 blogRouter.delete('/:id', async (request, response) => {
+  // console.log(request.params.id);
+  // request.params.id is string
+  // await Blog.findByIdAndRemove(request.params.id);
+
   const blogToDelete = await Blog.findByIdAndRemove(request.params.id);
-  if (blogToDelete) {
-    // status code 204: no content, deletion was successful
-    response.status(204).end();
-  } else {
-    response.status(404).end();
-  }
+  console.log(blogToDelete);
+  response.status(204).end();
 });
 
 // PUT a specific blog

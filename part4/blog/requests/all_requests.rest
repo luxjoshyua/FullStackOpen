@@ -8,20 +8,20 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-  "title": "My fifth awesome blog post.",
+  "title": "My third awesome blog post.",
   "author": "Leon Trotsky",
   "url": "http://trotsky.com",
-  "likes": 5
+  "likes": 3
 }
 ###
 
 GET http://localhost:3003/api/blogs/:id
 ###
 
-DELETE http://localhost:3003/api/blogs/:id
+DELETE http://localhost:3003/api/blogs/6456c7dcfc66e9b6cba1a671
 ###
 
-PUT http://localhost:3003/api/blogs/:id
+PUT http://localhost:3003/api/blogs/6456c7dcfc66e9b6cba1a671
 Content-Type: application/json
 
 {
