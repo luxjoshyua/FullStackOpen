@@ -14,11 +14,6 @@ const { setupDB } = require('./test_setup');
 // run all test helper utilities (beforeAll, beforeEach, afterAll)
 setupDB();
 
-// beforeEach(async () => {
-//   await Note.deleteMany({});
-//   await Note.insertMany(initialNotes);
-// });
-
 describe('when there is initially some notes saved', () => {
   test('notes are returned as json', async () => {
     await api
@@ -112,7 +107,3 @@ describe('deletion of a note', () => {
     expect(contents).not.toContain(noteToDelete.content);
   });
 });
-
-// afterAll(async () => {
-//   await mongoose.connection.close();
-// });
