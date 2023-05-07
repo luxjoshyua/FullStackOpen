@@ -1,7 +1,7 @@
 GET http://localhost:3003/api/blogs/
 ###
 
-GET http://localhost:3003/
+GET http://localhost:3003/api/blogs
 ###
 
 POST http://localhost:3003/api/blogs/
@@ -18,10 +18,10 @@ Content-Type: application/json
 GET http://localhost:3003/api/blogs/:id
 ###
 
-DELETE http://localhost:3003/api/blogs/6456c7dcfc66e9b6cba1a671
+DELETE http://localhost:3003/api/blogs/:id
 ###
 
-PUT http://localhost:3003/api/blogs/6456c7dcfc66e9b6cba1a671
+PUT http://localhost:3003/api/blogs/:id
 Content-Type: application/json
 
 {

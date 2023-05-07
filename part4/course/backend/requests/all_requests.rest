@@ -1,0 +1,25 @@
+GET http://localhost:3001/api/notes/
+###
+
+POST http://localhost:3001/api/notes/
+Content-Type: application/json
+
+{
+  "content": "Some new learning goal note",
+  "important": true  
+}
+###
+
+GET http://localhost:3001/api/notes/:id
+###
+
+DELETE http://localhost:3001/api/notes/:id
+###
+
+PUT http://localhost:3001/api/notes/:id
+Content-Type: application/json
+
+{
+  "content": "Some updated learning goal."
+}
+###

@@ -1,15 +1,23 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const api = supertest(app);
-const Note = require('../models/note');
+// const Note = require('../models/note');
 
 const { initialNotes, nonExistingId, notesInDb } = require('./test_helper');
 
-beforeEach(async () => {
-  await Note.deleteMany({});
-  await Note.insertMany(initialNotes);
-});
+const { setupDB } = require('./test_setup');
+
+// only run specific test $ npm test -- -t "should return blogs as json"
+// only run specific file $ npx jest blog_api.test.js
+
+// run all test helper utilities (beforeAll, beforeEach, afterAll)
+setupDB();
+
+// beforeEach(async () => {
+//   await Note.deleteMany({});
+//   await Note.insertMany(initialNotes);
+// });
 
 describe('when there is initially some notes saved', () => {
   test('notes are returned as json', async () => {
@@ -105,6 +113,6 @@ describe('deletion of a note', () => {
   });
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-});
+// afterAll(async () => {
+//   await mongoose.connection.close();
+// });

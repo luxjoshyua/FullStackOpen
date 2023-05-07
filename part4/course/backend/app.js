@@ -1,8 +1,8 @@
-const config = require('./utils/config');
+const { MONGODB_URI } = require('./utils/config');
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const logger = require('./utils/logger');
+const { info } = require('./utils/logger');
 const mongoose = require('mongoose');
 require('express-async-errors');
 
@@ -11,23 +11,23 @@ const middleware = require('./utils/middleware');
 
 mongoose.set('strictQuery', false);
 
-logger.info('URL in use', config.MONGODB_URI);
+info('URL in use', MONGODB_URI);
 
-const connect = async () => {
-  try {
-    console.log('connecting...');
-    await mongoose.connect(config.MONGODB_URI);
-    console.log('connected');
-  } catch (error) {
-    logger.error('error connecting to MongoDB:', error.message);
-  }
-};
+// const connect = async () => {
+//   try {
+//     info('connecting...');
+//     await mongoose.connect(MONGODB_URI);
+//     info('connected!');
+//   } catch (error) {
+//     error('error connecting to MongoDB:', error.message);
+//   }
+// };
 
-const main = async () => {
-  await connect();
-};
+// const main = async () => {
+//   await connect();
+// };
 
-main();
+// main();
 
 app.use(cors());
 app.use(express.static('build'));
