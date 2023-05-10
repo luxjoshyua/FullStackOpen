@@ -14,21 +14,21 @@ mongoose.set('strictQuery', false);
 
 info('URL in use', MONGODB_URI);
 
-// const connect = async () => {
-//   try {
-//     info('connecting...');
-//     await mongoose.connect(MONGODB_URI);
-//     info('connected!');
-//   } catch (error) {
-//     error('error connecting to MongoDB:', error.message);
-//   }
-// };
+const connect = async () => {
+  try {
+    info('connecting...');
+    await mongoose.connect(MONGODB_URI);
+    info('connected!');
+  } catch (error) {
+    error('error connecting to MongoDB:', error.message);
+  }
+};
 
-// const main = async () => {
-//   await connect();
-// };
+const main = async () => {
+  await connect();
+};
 
-// main();
+main();
 
 app.use(cors());
 app.use(express.static('build'));
