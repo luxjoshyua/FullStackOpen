@@ -23,7 +23,10 @@ usersRouter.post('/', async (request, response) => {
 });
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({});
+  // http://mongoosejs.com/docs/populate.html
+  // populate() lets us reference documents in other collections
+  const users = await User.find({}).populate('notes', { content: 1, important: 1 });
+
   response.json(users);
 });
 

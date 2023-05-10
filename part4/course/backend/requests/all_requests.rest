@@ -5,8 +5,9 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "Some new learning goal note",
-  "important": true  
+  "content": "User id of the note creator is sent at the start along with the request.",
+  "important": true,
+  "userId": "645bf3c614d8acf03387fc1b"
 }
 ###
 
