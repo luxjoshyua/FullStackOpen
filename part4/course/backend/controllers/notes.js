@@ -13,7 +13,6 @@ notesRouter.post('/', async (request, response) => {
 
   const user = await User.findById(body.userId);
 
-  // gh
   const note = new Note({
     content: body.content,
     important: body.important === undefined ? false : body.important,
