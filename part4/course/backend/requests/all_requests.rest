@@ -4,10 +4,11 @@ GET http://localhost:3001/api/notes/
 POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
+
 {
-  "content": "This specific user wants to learn typescript.",
+  "content": "Some dummmy learning goal unauthenticated.",
   "important": true,
-  "userId": "645bf3c614d8acf03387fc1b"
+  "userId": "645d5e5fe71b10450ffb50d6"
 }
 ###
 

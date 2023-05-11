@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const notesRouter = require('express').Router();
 const Note = require('../models/note');
 const User = require('../models/user');
@@ -8,10 +10,33 @@ notesRouter.get('/', async (request, response) => {
   response.json(notes);
 });
 
+// helper function isolates the token from the authorization header
+const getTokenForm = (request) => {
+  const authorization = request.get('authorization');
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '');
+  }
+  return null;
+};
+
 notesRouter.post('/', async (request, response) => {
   const body = request.body;
 
-  const user = await User.findById(body.userId);
+  // const user = await User.findById(body.userId);
+
+  // the validity of the token is checked with jwt.verify
+  // method also decodes the token, or returns the Object which the token was based on
+  const decodedToken = jwt.verify(getTokenForm(request), process.env.SECRET);
+  // if the object decoded from the token does not contain the user's identity
+  // (decodedToken.id is undefined), error status code 401 returned, reason
+  // is explained in the response body
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+
+  // the identity of the maker of the request is resolved, execution continues as before
+  const user = await User.findById(decodedToken.id);
 
   const note = new Note({
     content: body.content,
