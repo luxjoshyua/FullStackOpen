@@ -10,6 +10,13 @@ const blogSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // references are stored in both note and user documents (very different to relational databases);
+  // the note references the user who created it, and the user has an array of references
+  // to all of the notes created by them
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 blogSchema.set('toJSON', {

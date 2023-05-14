@@ -4,31 +4,35 @@ const app = express();
 const cors = require('cors');
 
 const blogRouter = require('./controllers/blog');
+const usersRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 const homeRouter = require('./controllers/home');
+
 const middleware = require('./utils/middleware');
-const logger = require('./utils/logger');
+const { info } = require('./utils/logger');
 
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 require('dotenv').config();
 require('express-async-errors');
+
 mongoose.set('strictQuery', false);
 
 const url = config.MONGO_URL;
-logger.info(`URL in use: ${url}`);
+info(`URL in use: ${url}`);
 
 // establish database connection
-// const connect = async () => {
-//   logger.info(`Connecting to database...`);
-//   await mongoose.connect(url);
-//   logger.info(`Connected to database!`);
-// };
+const connect = async () => {
+  info(`Connecting to database...`);
+  await mongoose.connect(url);
+  info(`Connected to database!`);
+};
 
-// const main = async () => {
-//   await connect();
-// };
+const main = async () => {
+  await connect();
+};
 
-// main();
+main();
 
 app.use(cors());
 app.use(express.json());
@@ -37,6 +41,8 @@ app.use(morgan('tiny'));
 app.use(middleware.requestLogger);
 
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/login', loginRouter);
 app.use('/', homeRouter);
 
 app.use(middleware.unknownEndpoint);

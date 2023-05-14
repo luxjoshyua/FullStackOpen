@@ -2,6 +2,7 @@
 // https://expressjs.com/en/api.html#router
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 // const loadBlog = async (response) => {
 //   const allBlogs = await Blog.find({});
@@ -11,10 +12,21 @@ const Blog = require('../models/blog');
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
   // const allBlogs = await Blog.find({});
-  const allBlogs = await Blog.find();
+  const blogs = await Blog.find().populate('user', { username: 1, name: 1 });
   // await loadBlog(response);
-  response.json(allBlogs.map((blog) => blog.toJSON()));
+  // response.json(allBlogs.map((blog) => blog.toJSON()));
+  response.json(blogs);
 });
+
+// helper function isolates the token from the authorization header
+const getTokenForm = (request) => {
+  const authorization = request.get('authorization');
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '');
+  }
+  return null;
+};
 
 // POST a new blog
 blogRouter.post('/', async (request, response) => {
