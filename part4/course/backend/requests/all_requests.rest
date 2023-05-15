@@ -6,7 +6,7 @@ Content-Type: application/json
 
 
 {
-  "content": "Some dummmy learning goal unauthenticated.",
+  "content": "User josh wants to learn cybersecurity.",
   "important": true,
   "userId": "645d5e5fe71b10450ffb50d6"
 }
