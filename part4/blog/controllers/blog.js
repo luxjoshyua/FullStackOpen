@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-// require('dotenv').config();
+require('dotenv').config();
 
 // create a new router object
 // https://expressjs.com/en/api.html#router
@@ -10,8 +10,8 @@ const User = require('../models/user');
 // helper function isolates the token from the authorization header
 const getTokenFrom = (request) => {
   const authorization = request.get('authorization');
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '');
+  if (authorization && authorization.startsWith('bearer ')) {
+    return authorization.replace('bearer ', '');
   }
   return null;
 };
@@ -30,7 +30,7 @@ blogRouter.post('/', async (request, response) => {
   // method also decodes the token, or returns the Object which the token was based on
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
 
-  console.log('DECODEDTOKEN', decodedToken);
+  // console.log('DECODEDTOKEN', decodedToken);
 
   // if the object decoded from the token does not contain the user's identity
   // (decodedToken.id is undefined), error status code 401 returned,
@@ -39,23 +39,23 @@ blogRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'token invalid' });
   }
 
-  // // the identity of the maker of the request is resolved, execution continues as before
-  // const user = await User.findById(decodedToken.id);
+  // the identity of the maker of the request is resolved, execution continues as before
+  const user = await User.findById(decodedToken.id);
 
-  // const blog = new Blog({ title, author, url, likes });
+  const blog = new Blog({ title, author, url, likes });
 
-  // // if (!blog.title || !blog.url) {
-  // //   return response.status(400).end();
-  // // }
+  if (!blog.title || !blog.url) {
+    return response.status(400).end();
+  }
 
-  // const blogToSave = await blog.save();
+  const blogToSave = await blog.save();
 
-  // // concat merges two or more arrays into new array
-  // // store the note id in the user document
-  // user.blogs = user.blogs.concat(blogToSave._id);
-  // await user.save();
+  // concat merges two or more arrays into new array
+  // store the note id in the user document
+  user.blogs = user.blogs.concat(blogToSave._id);
+  await user.save();
 
-  // response.status(201).json(blogToSave);
+  response.status(201).json(blogToSave);
 });
 
 // GET a specific blog

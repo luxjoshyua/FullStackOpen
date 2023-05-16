@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
 
 // establish the blogSchema
 const blogSchema = new mongoose.Schema({

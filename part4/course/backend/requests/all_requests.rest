@@ -1,14 +1,13 @@
 GET http://localhost:3001/api/notes/
 ###
 
-POST http://localhost:3001/api/notes/
+POST http://localhost:3001/api/notes
 Content-Type: application/json
-
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0NWQ1ZTVmZTcxYjEwNDUwZmZiNTBkNiIsImlhdCI6MTY4NDI2NDUyMSwiZXhwIjoxNjg0MjY4MTIxfQ.ziSKbsjPzp12nnbFgCuz4GLXlrIevz8ykAxzf551fh0
 
 {
   "content": "User josh wants to learn cybersecurity.",
   "important": true,
-  "userId": "645d5e5fe71b10450ffb50d6"
 }
 ###
 

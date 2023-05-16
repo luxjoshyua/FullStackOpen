@@ -12,11 +12,11 @@ notesRouter.get('/', async (request, response) => {
 });
 
 // helper function isolates the token from the authorization header
-const getTokenForm = (request) => {
+const getTokenFrom = (request) => {
   const authorization = request.get('authorization');
 
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '');
+  if (authorization && authorization.startsWith('bearer ')) {
+    return authorization.replace('bearer ', '');
   }
   return null;
 };
@@ -28,9 +28,7 @@ notesRouter.post('/', async (request, response) => {
 
   // the validity of the token is checked with jwt.verify
   // method also decodes the token, or returns the Object which the token was based on
-  const decodedToken = jwt.verify(getTokenForm(request), process.env.SECRET);
-
-  console.log('DECODEDTOKEN', decodedToken);
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
 
   // if the object decoded from the token does not contain the user's identity
   // (decodedToken.id is undefined), error status code 401 returned, reason
