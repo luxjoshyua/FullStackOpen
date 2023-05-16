@@ -40,12 +40,10 @@ describe('when there is initially one user in db', () => {
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await usersInDb();
 
-    console.log('usersAtStart', usersAtStart);
-
     const newUser = {
       username: 'root',
-      name: 'root',
-      password: 'root',
+      name: 'Superuser',
+      password: 'salainen',
     };
 
     const result = await api
