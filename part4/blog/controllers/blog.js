@@ -19,7 +19,7 @@ const getTokenFrom = (request) => {
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
-  response.json(blogs);
+  response.status(200).json(blogs);
 });
 
 // POST a new blog
@@ -40,7 +40,7 @@ blogRouter.post('/', async (request, response) => {
   // the identity of the maker of the request is resolved, execution continues as before
   const user = await User.findById(decodedToken.id);
 
-  const blog = new Blog({ title, author, url, likes });
+  const blog = new Blog({ title, author, url, likes, user: user.id });
 
   if (!blog.title || !blog.url) {
     return response.status(400).end();

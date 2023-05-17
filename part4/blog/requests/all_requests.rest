@@ -6,14 +6,13 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0NjJhYzg4MTgwZDQwODZkYzE2NTg0ZCIsImlhdCI6MTY4NDE5MTgzNCwiZXhwIjoxNjg0MTk1NDM0fQ.JJbRx9shbMMQR2h6zKt0VnrfUBaiw3YOwC4PaJi8Rbs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0NjUyODliNGJkMTY3Nzk5MjIwMDVjZSIsImlhdCI6MTY4NDM1Mzg5NSwiZXhwIjoxNjg0MzU3NDk1fQ.M7l75aGWaNjIcn4_ftDFdWR7YCIXQ4uGHklu1uckLfo
 
 {
-  "title": "My third awesome blog post that just belongs to me.",
-  "author": "Leon Trotsky",
-  "url": "http://trotsky.com",
-  "likes": 3,
-  "userId":   
+  "title": "This is another post that also belongs to Josh.",
+  "author": "Josh",
+  "url": "https://josh.com",
+  "likes": 200
 }
 ###
 
