@@ -9,10 +9,10 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0NjUyODliNGJkMTY3Nzk5MjIwMDVjZSIsImlhdCI6MTY4NDM1Mzg5NSwiZXhwIjoxNjg0MzU3NDk1fQ.M7l75aGWaNjIcn4_ftDFdWR7YCIXQ4uGHklu1uckLfo
 
 {
-  "title": "This is another post that also belongs to Josh.",
+  "title": "This is a fourth post that also belongs to Josh.",
   "author": "Josh",
-  "url": "https://josh.com",
-  "likes": 200
+  "url": "https://luxjoshyua.com",
+  "likes": 10
 }
 ###
 

@@ -26,6 +26,13 @@ notesRouter.post('/', async (request, response) => {
 
   // const user = await User.findById(body.userId);
 
+  const authorization = request.get('authorization');
+  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+    return response
+      .status(401)
+      .json({ error: 'bearer authorization token missing, please include in POST request' });
+  }
+
   // the validity of the token is checked with jwt.verify
   // method also decodes the token, or returns the Object which the token was based on
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
