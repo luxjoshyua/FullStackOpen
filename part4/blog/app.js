@@ -8,7 +8,15 @@ const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const homeRouter = require('./controllers/home');
 
-const middleware = require('./utils/middleware');
+// const middleware = require('./utils/middleware');
+
+const {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor,
+} = require('./utils/middleware');
+
 const { info } = require('./utils/logger');
 
 const mongoose = require('mongoose');
@@ -38,16 +46,18 @@ app.use(cors());
 app.use(express.json());
 // log with morgan
 app.use(morgan('tiny'));
-app.use(middleware.requestLogger);
+
+app.use(requestLogger);
+app.use(tokenExtractor);
 
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/', homeRouter);
 
-app.use(middleware.unknownEndpoint);
+app.use(unknownEndpoint);
 // handler of requests with results to errors
 // has to be the last loaded middleware!
-app.use(middleware.errorHandler);
+app.use(errorHandler);
 
 module.exports = app;

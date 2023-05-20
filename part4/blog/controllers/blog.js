@@ -8,13 +8,13 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 
 // helper function isolates the token from the authorization header
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization');
-  if (authorization && authorization.startsWith('bearer ')) {
-    return authorization.replace('bearer ', '');
-  }
-  return null;
-};
+// const getTokenFrom = (request) => {
+//   const authorization = request.get('authorization');
+//   if (authorization && authorization.startsWith('bearer ')) {
+//     return authorization.replace('bearer ', '');
+//   }
+//   return null;
+// };
 
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
@@ -35,7 +35,7 @@ blogRouter.post('/', async (request, response) => {
 
   // the validity of the token is checked with jwt.verify
   // method also decodes the token, or returns the Object which the token was based on
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
   // if the object decoded from the token does not contain the user's identity
   // (decodedToken.id is undefined), error status code 401 returned,

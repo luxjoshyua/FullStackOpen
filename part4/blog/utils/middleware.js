@@ -33,8 +33,22 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+// helper function isolates the token from the authorization header
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization');
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    // return authorization without 'bearer ' prefix, so from index 7 onwards
+    request.token = authorization.substring(7);
+  } else {
+    request.token = null;
+  }
+  // return null;
+  return next();
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
 };
