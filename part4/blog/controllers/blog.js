@@ -7,15 +7,6 @@ const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-// helper function isolates the token from the authorization header
-// const getTokenFrom = (request) => {
-//   const authorization = request.get('authorization');
-//   if (authorization && authorization.startsWith('bearer ')) {
-//     return authorization.replace('bearer ', '');
-//   }
-//   return null;
-// };
-
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -73,9 +64,37 @@ blogRouter.get('/:id', async (request, response) => {
   }
 });
 
+// blogRouter.delete('/:id', async (request, response) => {
+//   await Blog.findByIdAndRemove(request.params.id);
+//   response.status(204).end();
+// });
+
 blogRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+  const authorization = request.get('authorization');
+  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+    return response
+      .status(401)
+      .json({ error: 'bearer authorization token missing, please include in POST request' });
+  }
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  // the identity of the maker of the request is resolved, execution continues as before
+  const user = await User.findById(decodedToken.id);
+
+  if (!decodedToken.id || !user) {
+    return response.status(401).json({ error: 'authentication failed' });
+  }
+
+  const blogToDelete = await Blog.findById(request.params.id);
+
+  if (user.id === blogToDelete.user.toString()) {
+    await Blog.findByIdAndRemove(request.params.id);
+    response.status(204).end();
+  } else {
+    return response.status(401).json({
+      error: 'user id associated with the blog post does not match the sent user',
+    });
+  }
 });
 
 // PUT a specific blog

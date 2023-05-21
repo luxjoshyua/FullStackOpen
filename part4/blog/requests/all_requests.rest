@@ -6,7 +6,7 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0NjUyODliNGJkMTY3Nzk5MjIwMDVjZSIsImlhdCI6MTY4NDYxODQ3NCwiZXhwIjoxNjg0NjIyMDc0fQ.rC6Hu0_Xt4gBYa82OlgVllD-qSF5-0x-boRkncacxP4
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0Njk5YmJmNzViNWY4YTFhYzExOTc1NyIsImlhdCI6MTY4NDY0MzY2OSwiZXhwIjoxNjg0NjQ3MjY5fQ.H79sEz0P8i_42YTHM-5pdFE-xA0eTTcNeaCsNCDqLLw
 
 {
   "title": "This is a test post that also belongs to Josh.",

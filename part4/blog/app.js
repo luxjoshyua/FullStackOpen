@@ -8,8 +8,6 @@ const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const homeRouter = require('./controllers/home');
 
-// const middleware = require('./utils/middleware');
-
 const {
   requestLogger,
   unknownEndpoint,
@@ -28,6 +26,8 @@ mongoose.set('strictQuery', false);
 
 const url = config.MONGO_URL;
 info(`URL in use: ${url}`);
+
+console.log('test');
 
 // establish database connection
 const connect = async () => {
