@@ -15,29 +15,25 @@ blogRouter.get('/', async (request, response) => {
 // POST a new blog
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body;
-
-  // the validity of the token is checked with jwt.verify
-  // method also decodes the token, or returns the Object which the token was based on
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-  // if the object decoded from the token does not contain the user's identity
-  // (decodedToken.id is undefined), error status code 401 returned,
-  // reason is explained in the response body
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
+  if (!title || !url) {
+    return response.status(400).json({ error: 'title or url missing' }).end();
   }
 
-  // the identity of the maker of the request is resolved, execution continues as before
+  const token = request.token;
   const user = request.user;
-  if (!user) {
-    return response.status(401).json({ error: 'no authenticated user' });
+
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!decodedToken.id || !user) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  if (decodedToken.id !== user._id.toString()) {
+    return response
+      .status(401)
+      .json({ error: 'user id associated with the blog post does not match the sent user' });
   }
 
   const blog = new Blog({ title, author, url, likes, user: user.id });
-
-  if (!blog.title || !blog.url) {
-    return response.status(400).end();
-  }
 
   const blogToSave = await blog.save();
 
@@ -61,9 +57,10 @@ blogRouter.get('/:id', async (request, response) => {
 
 // DELETE a specific blog
 blogRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
+  const token = request.token;
   const user = request.user;
+
+  const decodedToken = jwt.verify(token, process.env.SECRET);
 
   if (!decodedToken.id || !user) {
     return response.status(401).json({ error: 'authentication failed' });

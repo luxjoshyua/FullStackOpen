@@ -42,11 +42,7 @@ const errorHandler = (error, request, response, next) => {
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization');
 
-  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
-    return response
-      .status(401)
-      .json({ error: 'bearer authorization token missing, please include in POST request' });
-  } else if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     // return authorization without 'bearer ' prefix, so from index 7 onwards
     request.token = authorization.substring(7);
   } else {

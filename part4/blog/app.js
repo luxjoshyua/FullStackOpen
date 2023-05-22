@@ -28,20 +28,18 @@ mongoose.set('strictQuery', false);
 const url = config.MONGO_URL;
 info(`URL in use: ${url}`);
 
-console.log('test');
-
 // establish database connection
-const connect = async () => {
-  info(`Connecting to database...`);
-  await mongoose.connect(url);
-  info(`Connected to database!`);
-};
+// const connect = async () => {
+//   info(`Connecting to database...`);
+//   await mongoose.connect(url);
+//   info(`Connected to database!`);
+// };
 
-const main = async () => {
-  await connect();
-};
+// const main = async () => {
+//   await connect();
+// };
 
-main();
+// main();
 
 app.use(cors());
 app.use(express.json());
