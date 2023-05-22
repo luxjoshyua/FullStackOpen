@@ -5,7 +5,6 @@ require('dotenv').config();
 // https://expressjs.com/en/api.html#router
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
-const User = require('../models/user');
 
 // GET all blogs - home is localhost:3003/api/blogs , defined in app.js
 blogRouter.get('/', async (request, response) => {
@@ -16,13 +15,6 @@ blogRouter.get('/', async (request, response) => {
 // POST a new blog
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body;
-
-  const authorization = request.get('authorization');
-  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
-    return response
-      .status(401)
-      .json({ error: 'bearer authorization token missing, please include in POST request' });
-  }
 
   // the validity of the token is checked with jwt.verify
   // method also decodes the token, or returns the Object which the token was based on
@@ -36,7 +28,10 @@ blogRouter.post('/', async (request, response) => {
   }
 
   // the identity of the maker of the request is resolved, execution continues as before
-  const user = await User.findById(decodedToken.id);
+  const user = request.user;
+  if (!user) {
+    return response.status(401).json({ error: 'no authenticated user' });
+  }
 
   const blog = new Blog({ title, author, url, likes, user: user.id });
 
@@ -64,22 +59,11 @@ blogRouter.get('/:id', async (request, response) => {
   }
 });
 
-// blogRouter.delete('/:id', async (request, response) => {
-//   await Blog.findByIdAndRemove(request.params.id);
-//   response.status(204).end();
-// });
-
+// DELETE a specific blog
 blogRouter.delete('/:id', async (request, response) => {
-  const authorization = request.get('authorization');
-  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
-    return response
-      .status(401)
-      .json({ error: 'bearer authorization token missing, please include in POST request' });
-  }
   const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
-  // the identity of the maker of the request is resolved, execution continues as before
-  const user = await User.findById(decodedToken.id);
+  const user = request.user;
 
   if (!decodedToken.id || !user) {
     return response.status(401).json({ error: 'authentication failed' });

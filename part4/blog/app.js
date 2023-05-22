@@ -13,6 +13,7 @@ const {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
+  userExtractor,
 } = require('./utils/middleware');
 
 const { info } = require('./utils/logger');
@@ -50,9 +51,10 @@ app.use(morgan('tiny'));
 app.use(requestLogger);
 app.use(tokenExtractor);
 
-app.use('/api/blogs', blogRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
+// register the userExtractor middleware so it only executes when a request is made to /api/blogs route
+app.use('/api/blogs', userExtractor, blogRouter);
 app.use('/', homeRouter);
 
 app.use(unknownEndpoint);
