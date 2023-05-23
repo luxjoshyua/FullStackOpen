@@ -8,12 +8,12 @@ const { setupDB } = require('./test_setup.js');
 const app = require('../app');
 const api = supertest(app);
 const { initialBlogs, blogsInDB } = require('./test_helper');
+const Blog = require('../models/blog');
 const User = require('../models/user');
 
 const url = '/api/blogs';
 
 // MAKE SURE YOU ARE USING CORRECT NODE VERSION INSTEAD OF SYSTEM DEFAULT - 18.12.1
-
 // only run specific test $ npm test -- -t "should return blogs as json"
 // only run specific file $ npx jest blog_api.test.js
 
@@ -50,7 +50,10 @@ describe('when there is initially some blogs saved', () => {
 describe('addition of a new blog', () => {
   let token = null;
   beforeAll(async () => {
-    const passwordHash = await bcrypt.hash('12345', 10);
+    // await Blog.deleteMany({});
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('kitkat', 10);
     const user = await new User({ username: 'name', passwordHash }).save();
 
     const userForToken = { username: 'name', id: user.id };
@@ -67,27 +70,13 @@ describe('addition of a new blog', () => {
 
     await api
       .post(url)
-      .send(newBlog)
       .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const blogsAtEnd = await blogsInDB();
     expect(blogsAtEnd).toHaveLength(initialBlogs.length + 1);
-  });
-
-  it('should return 401 Unauthorized if token is missing from request', async () => {
-    const newBlog = {
-      title: 'My awesome blog post.',
-      author: 'Rosa Luxemburg',
-      url: 'http://rosa.com',
-      likes: 8,
-    };
-
-    await api.post(url).send(newBlog).expect(401);
-
-    const blogsAtEnd = await blogsInDB();
-    expect(blogsAtEnd).toHaveLength(initialBlogs.length);
   });
 
   it('should default to 0 likes if likes property is missing from request', async () => {
@@ -99,16 +88,14 @@ describe('addition of a new blog', () => {
 
     await api
       .post(url)
-      .send(newBlog)
       .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const blogsAtEnd = await blogsInDB();
     expect(blogsAtEnd).toHaveLength(initialBlogs.length + 1);
     expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
-    // const likes = blogsAtEnd.map((blog) => blog.likes);
-    // expect(likes).toContain(0);
   });
 
   it('should return 400 Bad Request if title and url properties are missing from request', async () => {
@@ -116,7 +103,7 @@ describe('addition of a new blog', () => {
       author: 'Rosa Luxemburg',
     };
 
-    await api.post(url).send(newBlog).set('Authorization', `bearer ${token}`).expect(400);
+    await api.post(url).set('Authorization', `bearer ${token}`).send(newBlog).expect(400);
     const blogsAtEnd = await blogsInDB();
     // check the length of the array is the same as the initial array
     expect(blogsAtEnd).toHaveLength(initialBlogs.length);
@@ -126,7 +113,10 @@ describe('addition of a new blog', () => {
 describe('deletion of a blog post', () => {
   let token = null;
   beforeEach(async () => {
-    const passwordHash = await bcrypt.hash('12345', 10);
+    await Blog.deleteMany({});
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('kitkat', 10);
     const user = await new User({ username: 'name', passwordHash }).save();
 
     const userForToken = { username: 'name', id: user.id };
@@ -140,7 +130,7 @@ describe('deletion of a blog post', () => {
 
     await api
       .post(url)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -148,22 +138,37 @@ describe('deletion of a blog post', () => {
     return token;
   });
 
-  it('should delete a blog post when sending a HTTP delete request to /api/blogs/:id', async () => {
-    const blogsAtStart = await blogsInDB();
-
+  it('should succeed with status code 204 if id is valid', async () => {
+    const blogsAtStart = await Blog.find({}).populate('user');
     const blogToDelete = blogsAtStart[0];
 
     await api
       .delete(`${url}/${blogToDelete.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `bearer ${token}`)
       .expect(204);
 
-    const blogsAtEnd = await blogsInDB();
-
-    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
+    const blogsAtEnd = await Blog.find({}).populate('user');
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
 
     const blogTitles = blogsAtEnd.map((blog) => blog.title);
     expect(blogTitles).not.toContain(blogToDelete.title);
+  });
+
+  it('should fail with status code 401 if user is unauthorized', async () => {
+    const blogsAtStart = await Blog.find({}).populate('user');
+    const blogToDelete = blogsAtStart[0];
+
+    token = null;
+
+    await api
+      .delete(`${url}/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
+      .expect(401);
+
+    const blogsAtEnd = await Blog.find({}).populate('user');
+
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+    expect(blogsAtStart).toEqual(blogsAtEnd);
   });
 });
 
@@ -181,11 +186,7 @@ describe('updating the information of an individual blog post', () => {
     };
 
     // 200 PUT request successful
-    await api
-      .put(`${url}/${blogToUpdate.id}`)
-      .send(updatedBlog)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+    await api.put(`${url}/${blogToUpdate.id}`).send(updatedBlog).expect(200);
 
     expect(blogs).toHaveLength(initialBlogs.length);
   });

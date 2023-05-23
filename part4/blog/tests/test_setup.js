@@ -7,20 +7,21 @@ const User = require('../models/user');
 
 const { initialBlogs } = require('./test_helper');
 const { info } = require('../utils/logger');
-// const { MONGO_URL } = require('../utils/config');
+const { MONGO_URL } = require('../utils/config');
 
 module.exports = {
   setupDB() {
     // connect to db
     beforeAll(async () => {
       info('connecting...');
-      await mongoose.connect(process.env.MONGO_URL);
+      await mongoose.connect(MONGO_URL);
       info('connected!');
     });
 
     // cleanup db before each test
     beforeEach(async () => {
       await Blog.deleteMany({});
+      // await User.deleteMany({});
 
       for (let blog of initialBlogs) {
         let blogObject = new Blog(blog);
@@ -38,7 +39,7 @@ module.exports = {
     // connect to db
     beforeAll(async () => {
       info('connecting...');
-      await mongoose.connect(process.env.MONGO_URL);
+      await mongoose.connect(MONGO_URL);
       info('connected!');
     });
 

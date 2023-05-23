@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const User = require('../models/user');
-
+const { SECRET } = require('./config');
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
@@ -27,7 +27,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message });
   } else if (error.name === 'JsonWebTokenError') {
-    return response.status(400).json({ error: error.message });
+    return response.status(401).json({ error: error.message });
   } else if (error.name === 'TokenExpiredError') {
     return response.status(401).json({
       error: 'token expired',
@@ -54,25 +54,12 @@ const tokenExtractor = (request, response, next) => {
 
 const userExtractor = async (request, response, next) => {
   const token = request.token;
-  if (!token) {
-    return response.status(401).json({ error: 'token missing' });
+
+  if (token) {
+    const decodedToken = jwt.verify(token, SECRET);
+    const user = await User.findById(decodedToken.id);
+    request.user = user;
   }
-
-  // the validity of the token is checked with jwt.verify
-  // method also decodes the token, or returns the Object which the token was based on
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-
-  // if the object decoded from the token does not contain the user's identity
-  // (decodedToken.id is undefined), error status code 401 returned,
-  // reason is explained in the response body
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id);
-
-  // the identity of the maker of the request is resolved, assign request.user to authenticated user
-  request.user = user;
 
   return next();
 };

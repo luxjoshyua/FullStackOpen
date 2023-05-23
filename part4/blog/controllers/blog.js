@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { SECRET } = require('../utils/config');
 require('dotenv').config();
 
 // create a new router object
@@ -23,7 +24,7 @@ blogRouter.post('/', async (request, response) => {
   const user = request.user;
 
   const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!decodedToken.id || !user) {
+  if (!(token || decodedToken.id)) {
     return response.status(401).json({ error: 'token missing or invalid' });
   }
 
@@ -59,17 +60,18 @@ blogRouter.get('/:id', async (request, response) => {
 blogRouter.delete('/:id', async (request, response) => {
   const token = request.token;
   const user = request.user;
+  const decodedToken = jwt.verify(token, SECRET);
+  const id = request.params.id;
 
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-
-  if (!decodedToken.id || !user) {
-    return response.status(401).json({ error: 'authentication failed' });
+  if (!(token || decodedToken.id)) {
+    return response.status(401).json({ error: 'token missing or invalid' });
   }
 
   const blogToDelete = await Blog.findById(request.params.id);
 
-  if (user.id === blogToDelete.user.toString()) {
-    await Blog.findByIdAndRemove(request.params.id);
+  if (blogToDelete.user.toString() === user.id.toString()) {
+    // await Blog.findByIdAndRemove(request.params.id);
+    await Blog.deleteOne({ _id: id });
     response.status(204).end();
   } else {
     return response.status(401).json({
