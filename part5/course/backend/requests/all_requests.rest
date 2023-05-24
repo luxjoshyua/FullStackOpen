@@ -1,0 +1,26 @@
+GET http://localhost:3001/api/notes/
+###
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2h5IiwiaWQiOiI2NDZlNjQwMWRlZjI0MzVmYjIyNjdlNDkiLCJpYXQiOjE2ODQ5NTYyNDcsImV4cCI6MTY4NDk1OTg0N30.k1BZSTDXWWBPNypYydseIvDj-IJrxZZbpNSk9S0jBmU
+
+{
+  "content": "User joshy wants to learn cybersecurity.",
+  "important": true
+}
+###
+
+GET http://localhost:3001/api/notes/:id
+###
+
+DELETE http://localhost:3001/api/notes/:id
+###
+
+PUT http://localhost:3001/api/notes/:id
+Content-Type: application/json
+
+{
+  "content": "Some updated learning goal."
+}
+###
