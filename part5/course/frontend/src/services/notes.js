@@ -1,18 +1,24 @@
 import axios from 'axios';
-// url for dev mode
-const baseUrl = 'http://localhost:3001/api/notes';
-// url for server mode
-// const baseUrl = '/api/notes';
+const baseUrl = '/api/notes';
+
+let token = null;
+
+const setToken = (newToken) => {
+  token = `Bearer ${newToken}`;
+};
 
 const getAll = () => {
   const request = axios.get(baseUrl);
-  // concat joins the arrays, returning a new array
   return request.then((response) => response.data);
 };
 
-const create = (newObject) => {
-  const request = axios.post(baseUrl, newObject);
-  return request.then((response) => response.data);
+const create = async (newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.post(baseUrl, newObject, config);
+  return response.data;
 };
 
 const update = (id, newObject) => {
@@ -20,10 +26,5 @@ const update = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
-const noteService = {
-  getAll,
-  create,
-  update,
-};
-
-export default noteService;
+// eslint-disable-next-line import/no-anonymous-default-export
+export default { getAll, create, update, setToken };

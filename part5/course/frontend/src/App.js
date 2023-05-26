@@ -11,18 +11,33 @@ const App = () => {
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  // perform side-effect
+  // calls/executes immediately on render
+  useEffect(() => {
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
+    });
+  }, []);
+
+  // important! otherwise breaks as no notee on initial render
+  if (!notes) {
+    return null;
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log('logging in with ', username, password);
 
     try {
       // if login is successful, the user object is saved to the state
       // and the username and password fields are cleared
       const user = await loginService.login({ username, password });
+      noteService.setToken(user.token);
+      // save successful user login to app state
       setUser(user);
       setUsername('');
       setPassword('');
@@ -33,19 +48,6 @@ const App = () => {
       }, 5000);
     }
   };
-
-  // perform side-effect
-  // calls/executes immediately on render
-  useEffect(() => {
-    noteService.getAll().then((initialNotes) => {
-      setNotes(initialNotes);
-    });
-  }, []);
-
-  // important! otehrwise breaks as no notee on initial render
-  if (!notes) {
-    return null;
-  }
 
   const addNote = (event) => {
     event.preventDefault(); // prevent default action of submitting the form, reloading the page
@@ -86,34 +88,52 @@ const App = () => {
       });
   };
 
+  const loginForm = () => (
+    <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
+      <div style={{ marginBottom: '.5rem' }}>
+        username
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+          style={{ marginLeft: '.25rem' }}
+        />
+      </div>
+      <div style={{ marginBottom: '.5rem' }}>
+        password
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+          style={{ marginLeft: '.25rem' }}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  );
+
+  const noteForm = () => (
+    <form onSubmit={addNote}>
+      <input type="text" placeholder="new note here..." onChange={handleNoteChange} />
+      <button type="submit">save</button>
+    </form>
+  );
+
   return (
     <div>
       <h1 style={{ color: 'green' }}>Notes</h1>
       <Notification message={errorMessage} />
 
-      <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
-        <div style={{ marginBottom: '.5rem' }}>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-            style={{ marginLeft: '.25rem' }}
-          />
+      {!user && loginForm()}
+
+      {user && (
+        <div>
+          <p>{user.name} logged in</p>
+          {noteForm()}
         </div>
-        <div style={{ marginBottom: '.5rem' }}>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-            style={{ marginLeft: '.25rem' }}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      )}
 
       <div>
         {/* toggle the showAll state from true to false / vice versa on click */}
@@ -128,10 +148,7 @@ const App = () => {
           <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />
         ))}
       </ul>
-      <form onSubmit={addNote}>
-        <input type="text" placeholder="new note here..." onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
+
       <Footer />
     </div>
   );
