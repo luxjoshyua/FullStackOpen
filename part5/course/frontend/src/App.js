@@ -24,6 +24,18 @@ const App = () => {
     });
   }, []);
 
+  // handle first loading of the page
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+    if (loggedUserJSON) {
+      //  parse the JSON string back to a JavaScript object
+      const user = JSON.parse(loggedUserJSON);
+      // set the user stored in localStorage to the app state
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []); // call the effect function only once when the component is rendered for the first time
+
   // important! otherwise breaks as no notee on initial render
   if (!notes) {
     return null;
@@ -36,6 +48,13 @@ const App = () => {
       // if login is successful, the user object is saved to the state
       // and the username and password fields are cleared
       const user = await loginService.login({ username, password });
+      // save token to browser's local storage
+      // convert the object to a DOM string with JSON.stringify()
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+      // to clear localStorage
+      // by item: window.localStorage.removeItem('loggedNoteappUser');
+      // totally: window.localStorage.clear();
+
       noteService.setToken(user.token);
       // save successful user login to app state
       setUser(user);
