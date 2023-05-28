@@ -1,7 +1,7 @@
-const Blog = ({blog}) => (
-  <div>
+const Blog = ({ blog }) => (
+  <div style={{ marginBottom: '.5rem' }}>
     {blog.title} {blog.author}
-  </div>  
-)
+  </div>
+);
 
-export default Blog
+export default Blog;
