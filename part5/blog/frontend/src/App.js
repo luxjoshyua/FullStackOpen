@@ -6,7 +6,7 @@ import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState('');
+  // const [newBlog, setNewBlog] = useState('');
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
@@ -18,8 +18,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  const success = 'success';
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -65,8 +63,7 @@ const App = () => {
 
   const handleLogout = async () => {
     try {
-      window.localStorage.removeItem('loggedBlogAppUser');
-      // window.localStorage.clear();
+      window.localStorage.clear();
       setUser(null); // user still in state, may be a problem ?
     } catch (exception) {
       setErrorMessage('Logging user out broke');
@@ -185,7 +182,7 @@ const App = () => {
           <div
             className="wrapper"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-            <p style={{ marginRight: '.5rem' }}>{user.name} logged in</p>
+            <p style={{ marginRight: '.5rem' }}>user {user.name} logged in</p>
             <button onClick={handleLogout}>logout</button>
           </div>
           {blogForm()}

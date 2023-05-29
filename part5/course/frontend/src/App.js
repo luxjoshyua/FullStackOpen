@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Footer } from './components/Footer';
+import { LoginForm } from './components/LoginForm';
 import { Note } from './components/Note';
 import { Notification } from './components/Notification';
+
 import loginService from './services/login';
 import noteService from './services/notes';
 
 const App = () => {
-  // initialise with the initial notes array passed in the props
+  const [loginVisible, setLoginVisible] = useState(false);
   const [notes, setNotes] = useState(null);
-  const [newNote, setNewNote] = useState('');
+  // const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
+  const [noteTitle, setNoteTitle] = useState('');
+
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +32,7 @@ const App = () => {
   // handle first loading of the page
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+
     if (loggedUserJSON) {
       //  parse the JSON string back to a JavaScript object
       const user = JSON.parse(loggedUserJSON);
@@ -37,9 +43,7 @@ const App = () => {
   }, []); // call the effect function only once when the component is rendered for the first time
 
   // important! otherwise breaks as no notee on initial render
-  if (!notes) {
-    return null;
-  }
+  if (!notes) return null;
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -68,24 +72,51 @@ const App = () => {
     }
   };
 
-  const addNote = (event) => {
+  const handleLogout = async () => {
+    try {
+      window.localStorage.clear();
+      setUser(null); // user still in state, may be a problem ?
+    } catch (exception) {
+      setErrorMessage('Logging user out broke');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const addNote = async (event) => {
     event.preventDefault(); // prevent default action of submitting the form, reloading the page
-    const noteObject = {
-      content: newNote,
-      important: Math.random() > 0.5,
-      // don't include id property as it's better to let the server generate ids for our resources
-      // id: notes.length + 1,
-    };
 
-    noteService.create(noteObject).then((returnedNote) => {
-      setNotes(notes.concat(returnedNote));
-      setNewNote('');
-    });
+    try {
+      const noteObject = {
+        content: noteTitle,
+        important: Math.random() > 0.5,
+      };
+
+      noteService.create(noteObject).then((returnedNote) => {
+        console.log(`returned note`, returnedNote);
+
+        setNotes(notes.concat(returnedNote));
+        setNoteTitle('');
+        console.log(`notes in state now ===== `, notes);
+        // setNewNote('');
+      });
+
+      setSuccessMessage(`a new blog ${noteTitle} by ${user.name} added`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+    } catch (exception) {
+      setErrorMessage('Adding note broke');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
   };
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
-  };
+  // const handleNoteChange = (event) => {
+  //   setNewNote(event.target.value);
+  // };
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
@@ -107,35 +138,38 @@ const App = () => {
       });
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
+    const showWhenVisible = { display: loginVisible ? '' : 'none' };
+
+    return (
       <div style={{ marginBottom: '.5rem' }}>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        {errorMessage && <Notification message={errorMessage} />}
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div style={{ marginBottom: '.5rem' }}>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
+    );
+  };
 
   const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input type="text" placeholder="new note here..." onChange={handleNoteChange} />
+    <form onSubmit={addNote} style={{ marginBottom: '.5rem' }}>
+      {successMessage && <Notification message={successMessage} success={true} />}
+      <input
+        type="text"
+        placeholder="new note here..."
+        onChange={({ target }) => setNoteTitle(target.value)}
+      />
       <button type="submit">save</button>
     </form>
   );
@@ -143,30 +177,36 @@ const App = () => {
   return (
     <div>
       <h1 style={{ color: 'green' }}>Notes</h1>
-      <Notification message={errorMessage} />
+      {/* <Notification message={errorMessage} /> */}
 
       {!user && loginForm()}
 
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          <p>User {user.name} logged in</p>
+          <button onClick={handleLogout} style={{ marginBottom: '.5rem' }}>
+            logout
+          </button>
           {noteForm()}
+          <div>
+            {/* toggle the showAll state from true to false / vice versa on click */}
+            <button onClick={() => setShowAll(!showAll)}>
+              {/* text changes depending on the showAll state */}
+              show {showAll ? 'important' : 'all'}
+            </button>
+          </div>
+          <ul>
+            {notesToShow.map((note) => (
+              // each note receives its own event handler because the id of every note is unique
+              <Note
+                key={note.id}
+                note={note}
+                toggleImportance={() => toggleImportanceOf(note.id)}
+              />
+            ))}
+          </ul>
         </div>
       )}
-
-      <div>
-        {/* toggle the showAll state from true to false / vice versa on click */}
-        <button onClick={() => setShowAll(!showAll)}>
-          {/* text changes depending on the showAll state */}
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map((note) => (
-          // each note receives its own event handler because the id of every note is unique
-          <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />
-        ))}
-      </ul>
 
       <Footer />
     </div>

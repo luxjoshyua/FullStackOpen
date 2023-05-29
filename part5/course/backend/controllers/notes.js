@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
+const { SECRET } = require('../utils/config');
 require('dotenv').config();
 
 const notesRouter = require('express').Router();
 const Note = require('../models/note');
-const User = require('../models/user');
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 });
@@ -11,41 +11,22 @@ notesRouter.get('/', async (request, response) => {
   response.json(notes);
 });
 
-// helper function isolates the token from the authorization header
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization');
-
-  if (authorization && authorization.startsWith('bearer ')) {
-    return authorization.replace('bearer ', '');
-  }
-  return null;
-};
-
 notesRouter.post('/', async (request, response) => {
   const body = request.body;
 
-  // const user = await User.findById(body.userId);
+  const token = request.token;
+  const user = request.user;
 
-  const authorization = request.get('authorization');
-  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!(token || decodedToken.id)) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  if (decodedToken.id !== user._id.toString()) {
     return response
       .status(401)
-      .json({ error: 'bearer authorization token missing, please include in POST request' });
+      .json({ error: 'user id associated with the blog post does not match the sent user' });
   }
-
-  // the validity of the token is checked with jwt.verify
-  // method also decodes the token, or returns the Object which the token was based on
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
-
-  // if the object decoded from the token does not contain the user's identity
-  // (decodedToken.id is undefined), error status code 401 returned, reason
-  // is explained in the response body
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
-  // the identity of the maker of the request is resolved, execution continues as before
-  const user = await User.findById(decodedToken.id);
 
   const note = new Note({
     content: body.content,
@@ -72,8 +53,26 @@ notesRouter.get('/:id', async (request, response) => {
 });
 
 notesRouter.delete('/:id', async (request, response) => {
-  await Note.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+  const token = request.token;
+  const user = request.user;
+  const decodedToken = jwt.verify(token, SECRET);
+  const id = request.params.id;
+
+  if (!(token || decodedToken.id)) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const blogToDelete = await Note.findById(request.params.id);
+
+  if (blogToDelete.user.toString() === user.id.toString()) {
+    // await Blog.findByIdAndRemove(request.params.id);
+    await Note.deleteOne({ _id: id });
+    response.status(204).end();
+  } else {
+    return response.status(401).json({
+      error: 'user id associated with the blog post does not match the sent user',
+    });
+  }
 });
 
 notesRouter.put('/:id', async (request, response) => {
