@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Footer } from './components/Footer';
 import { LoginForm } from './components/LoginForm';
 import { Note } from './components/Note';
+import { NoteForm } from './components/NoteForm';
 import { Notification } from './components/Notification';
+import { Togglable } from './components/Togglable';
 
 import loginService from './services/login';
 import noteService from './services/notes';
@@ -10,7 +12,6 @@ import noteService from './services/notes';
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false);
   const [notes, setNotes] = useState(null);
-  // const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [noteTitle, setNoteTitle] = useState('');
 
@@ -94,15 +95,10 @@ const App = () => {
       };
 
       noteService.create(noteObject).then((returnedNote) => {
-        console.log(`returned note`, returnedNote);
-
         setNotes(notes.concat(returnedNote));
         setNoteTitle('');
-        console.log(`notes in state now ===== `, notes);
-        // setNewNote('');
       });
-
-      setSuccessMessage(`a new blog ${noteTitle} by ${user.name} added`);
+      setSuccessMessage(`a new blog titled: ${noteTitle} by user: ${user.name} successfully added`);
       setTimeout(() => {
         setSuccessMessage(null);
       }, 5000);
@@ -113,10 +109,6 @@ const App = () => {
       }, 5000);
     }
   };
-
-  // const handleNoteChange = (event) => {
-  //   setNewNote(event.target.value);
-  // };
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
@@ -162,24 +154,28 @@ const App = () => {
     );
   };
 
-  const noteForm = () => (
-    <form onSubmit={addNote} style={{ marginBottom: '.5rem' }}>
-      {successMessage && <Notification message={successMessage} success={true} />}
-      <input
-        type="text"
-        placeholder="new note here..."
-        onChange={({ target }) => setNoteTitle(target.value)}
-      />
-      <button type="submit">save</button>
-    </form>
-  );
+  // const noteForm = () => (
+  //   <form onSubmit={addNote} style={{ marginBottom: '.5rem' }}>
+  //     {successMessage && <Notification message={successMessage} success={true} />}
+  //     <input
+  //       type="text"
+  //       placeholder="new note here..."
+  //       onChange={({ target }) => setNoteTitle(target.value)}
+  //     />
+  //     <button type="submit">save</button>
+  //   </form>
+  // );
 
   return (
     <div>
       <h1 style={{ color: 'green' }}>Notes</h1>
-      {/* <Notification message={errorMessage} /> */}
 
-      {!user && loginForm()}
+      {!user && (
+        <>
+          <p>Please login to view note collection</p>
+          {loginForm()}
+        </>
+      )}
 
       {user && (
         <div>
@@ -187,7 +183,14 @@ const App = () => {
           <button onClick={handleLogout} style={{ marginBottom: '.5rem' }}>
             logout
           </button>
-          {noteForm()}
+          <Togglable buttonLabel="new note">
+            <NoteForm
+              createNote={addNote}
+              onSubmit={addNote}
+              successMessage={successMessage}
+              onChange={({ target }) => setNoteTitle(target.value)}
+            />
+          </Togglable>
           <div>
             {/* toggle the showAll state from true to false / vice versa on click */}
             <button onClick={() => setShowAll(!showAll)}>
