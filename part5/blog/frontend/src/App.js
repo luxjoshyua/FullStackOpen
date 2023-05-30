@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
 import { BlogForm } from './components/BlogForm';
-import { Notification } from './components/Notification';
+import { LoginForm } from './components/LoginForm';
 import { Togglable } from './components/Togglable';
+
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -11,12 +12,14 @@ const App = () => {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [error, setError] = useState(false);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
+  const loginFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -53,7 +56,7 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      setErrorMessage('Wrong credentials');
+      setErrorMessage(`exception: ${exception}`);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -84,37 +87,23 @@ const App = () => {
     });
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
-      <h2>log in to application</h2>
-      {errorMessage && <Notification message={errorMessage} />}
-      <div style={{ marginBottom: '.5rem' }}>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <div style={{ marginBottom: '.5rem' }}>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-
   const blogForm = () => (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} successMessage={successMessage} />
+      <BlogForm createBlog={addBlog} errorMessage={errorMessage} />
+    </Togglable>
+  );
+
+  const loginForm = () => (
+    <Togglable buttonLabel="login" ref={loginFormRef}>
+      <LoginForm
+        handleLogin={handleLogin}
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        errorMessage={errorMessage}
+        error={error}
+      />
     </Togglable>
   );
 
