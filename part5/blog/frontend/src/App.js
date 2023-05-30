@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
+import { BlogForm } from './components/BlogForm';
 import { Notification } from './components/Notification';
+import { Togglable } from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  // const [newBlog, setNewBlog] = useState('');
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogUrl, setBlogUrl] = useState('');
 
-  // const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -73,38 +72,17 @@ const App = () => {
     }
   };
 
-  const addBlog = async (event) => {
-    event.preventDefault();
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility();
 
-    try {
-      const blogObject = {
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl,
-      };
-
-      blogService.create(blogObject).then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
-        setBlogTitle('');
-        setBlogAuthor('');
-        setBlogUrl('');
-      });
-
-      setSuccessMessage(`a new blog ${blogTitle} by ${blogAuthor} added`);
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog));
+      setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
       setTimeout(() => {
         setSuccessMessage(null);
       }, 5000);
-    } catch (exception) {
-      setErrorMessage('Adding new blog broke');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
+    });
   };
-
-  // const handleBlogChange = (event) => {
-  //   setNewBlog(event.target.value);
-  // };
 
   const loginForm = () => (
     <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
@@ -135,50 +113,20 @@ const App = () => {
   );
 
   const blogForm = () => (
-    <form onSubmit={addBlog} style={{ marginBottom: '.5rem' }}>
-      {successMessage && <Notification message={successMessage} success={true} />}
-      <div style={{ marginBottom: '.5rem' }}>
-        title
-        <input
-          type="text"
-          value={blogTitle}
-          name="blog title"
-          onChange={({ target }) => setBlogTitle(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <div style={{ marginBottom: '.5rem' }}>
-        author
-        <input
-          type="text"
-          value={blogAuthor}
-          name="blog author"
-          onChange={({ target }) => setBlogAuthor(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <div style={{ marginBottom: '.5rem' }}>
-        url
-        <input
-          type="text"
-          value={blogUrl}
-          name="blog url"
-          onChange={({ target }) => setBlogUrl(target.value)}
-          style={{ marginLeft: '.25rem' }}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} successMessage={successMessage} />
+    </Togglable>
   );
 
   return (
     <div>
+      <h1>Blogs</h1>
+
       {!user && loginForm()}
 
       {/* only allow logged in user to add a new blog entry */}
       {user && (
         <div>
-          <h2>Blogs</h2>
           <div
             className="wrapper"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>

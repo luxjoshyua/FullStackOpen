@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { Notification } from './Notification';
 
 const NoteForm = ({ createNote, successMessage }) => {
