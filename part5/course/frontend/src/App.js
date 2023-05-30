@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { Footer } from './components/Footer';
 import { LoginForm } from './components/LoginForm';
 import { Note } from './components/Note';
@@ -13,7 +14,6 @@ const App = () => {
   const [loginVisible, setLoginVisible] = useState(false);
   const [notes, setNotes] = useState(null);
   const [showAll, setShowAll] = useState(true);
-  const [noteTitle, setNoteTitle] = useState('');
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -21,6 +21,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const noteFormRef = useRef();
 
   // perform side-effect
   // calls/executes immediately on render
@@ -48,7 +49,6 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
     try {
       // if login is successful, the user object is saved to the state
       // and the username and password fields are cleared
@@ -59,7 +59,6 @@ const App = () => {
       // to clear localStorage
       // by item: window.localStorage.removeItem('loggedNoteappUser');
       // totally: window.localStorage.clear();
-
       noteService.setToken(user.token);
       // save successful user login to app state
       setUser(user);
@@ -85,29 +84,18 @@ const App = () => {
     }
   };
 
-  const addNote = async (event) => {
-    event.preventDefault(); // prevent default action of submitting the form, reloading the page
+  const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility();
 
-    try {
-      const noteObject = {
-        content: noteTitle,
-        important: Math.random() > 0.5,
-      };
-
-      noteService.create(noteObject).then((returnedNote) => {
-        setNotes(notes.concat(returnedNote));
-        setNoteTitle('');
-      });
-      setSuccessMessage(`a new blog titled: ${noteTitle} by user: ${user.name} successfully added`);
+    noteService.create(noteObject).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote));
+      setSuccessMessage(
+        `a new blog titled "${returnedNote.content}" by user "${user.name}" successfully added`
+      );
       setTimeout(() => {
         setSuccessMessage(null);
       }, 5000);
-    } catch (exception) {
-      setErrorMessage('Adding note broke');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
+    });
   };
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
@@ -115,7 +103,6 @@ const App = () => {
   const toggleImportanceOf = (id) => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
-
     noteService
       .update(id, changedNote)
       .then((returnedNote) => {
@@ -154,17 +141,11 @@ const App = () => {
     );
   };
 
-  // const noteForm = () => (
-  //   <form onSubmit={addNote} style={{ marginBottom: '.5rem' }}>
-  //     {successMessage && <Notification message={successMessage} success={true} />}
-  //     <input
-  //       type="text"
-  //       placeholder="new note here..."
-  //       onChange={({ target }) => setNoteTitle(target.value)}
-  //     />
-  //     <button type="submit">save</button>
-  //   </form>
-  // );
+  const noteForm = () => (
+    <Togglable buttonLabel="new note" ref={noteFormRef}>
+      <NoteForm createNote={addNote} successMessage={successMessage} />
+    </Togglable>
+  );
 
   return (
     <div>
@@ -183,14 +164,7 @@ const App = () => {
           <button onClick={handleLogout} style={{ marginBottom: '.5rem' }}>
             logout
           </button>
-          <Togglable buttonLabel="new note">
-            <NoteForm
-              createNote={addNote}
-              onSubmit={addNote}
-              successMessage={successMessage}
-              onChange={({ target }) => setNoteTitle(target.value)}
-            />
-          </Togglable>
+          {noteForm()}
           <div>
             {/* toggle the showAll state from true to false / vice versa on click */}
             <button onClick={() => setShowAll(!showAll)}>
