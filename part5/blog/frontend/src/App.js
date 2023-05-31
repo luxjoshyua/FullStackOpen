@@ -11,8 +11,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [error, setError] = useState(false);
+  // const [successMessage, setSuccessMessage] = useState(null);
+  // const [error, setError] = useState(false);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +22,13 @@ const App = () => {
   const loginFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      // .then((blogs) => setBlogs(blogs));
+      .then((blogs) => {
+        let sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+        setBlogs(sortedBlogs);
+      });
   }, []);
 
   // handle first loading of the page
@@ -56,10 +62,7 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      setErrorMessage(`exception: ${exception}`);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      console.log(`error: ${exception}`);
     }
   };
 
@@ -78,12 +81,20 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
 
+    // blogService.create(blogObject).then((returnedBlog) => {
+    //   setBlogs(blogs.concat(returnedBlog));
+    // });
+
     blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
+      const allBlogs = blogs.concat(returnedBlog);
+      let sortedBlogs = allBlogs.sort((a, b) => b.likes - a.likes);
+      setBlogs(sortedBlogs);
+    });
+  };
+
+  const updateBlog = (blogObject) => {
+    blogService.update(blogObject.id, blogObject).then((returnedBlog) => {
+      setBlogs(blogs.map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog)));
     });
   };
 
@@ -102,7 +113,6 @@ const App = () => {
         password={password}
         setPassword={setPassword}
         errorMessage={errorMessage}
-        error={error}
       />
     </Togglable>
   );
@@ -124,7 +134,7 @@ const App = () => {
           </div>
           {blogForm()}
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
           ))}
         </div>
       )}

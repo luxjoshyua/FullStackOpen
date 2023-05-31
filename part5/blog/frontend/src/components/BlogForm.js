@@ -5,6 +5,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+  const [blogLikes, setBlogLikes] = useState(0);
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -13,11 +14,13 @@ const BlogForm = ({ createBlog, successMessage }) => {
       title: blogTitle,
       author: blogAuthor,
       url: blogUrl,
+      likes: blogLikes,
     });
 
     setBlogTitle('');
     setBlogAuthor('');
     setBlogUrl('');
+    setBlogLikes(0);
   };
 
   return (
@@ -50,6 +53,16 @@ const BlogForm = ({ createBlog, successMessage }) => {
           value={blogUrl}
           name="blog url"
           onChange={(event) => setBlogUrl(event.target.value)}
+          style={{ marginLeft: '.25rem' }}
+        />
+      </div>
+      <div style={{ marginBottom: '.5rem' }}>
+        likes
+        <input
+          type="number"
+          value={blogLikes}
+          name="blog likes"
+          onChange={(event) => setBlogLikes(event.target.value)}
           style={{ marginLeft: '.25rem' }}
         />
       </div>

@@ -81,10 +81,33 @@ blogRouter.delete('/:id', async (request, response) => {
 });
 
 // PUT a specific blog
+// blogRouter.put('/:id', async (request, response) => {
+//   const { title, author, url, likes } = request.body;
+//   const blog = { title, author, url, likes };
+//   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+//   response.json(updatedBlog);
+// });
+
 blogRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body;
+
+  // const token = request.token;
+  // const user = request.user;
+
+  // const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  // if (!(token || decodedToken.id)) {
+  //   return response.status(401).json({ error: 'token missing or invalid' });
+  // }
+
+  // if (!user) {
+  //   return response.status(401).json({ error: 'user not found' });
+  // }
+
   const blog = { title, author, url, likes };
+
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+
   response.json(updatedBlog);
 });
 
