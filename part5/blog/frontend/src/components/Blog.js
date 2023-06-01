@@ -24,8 +24,16 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     });
   };
 
+  // as soon as the blog component remounts, it loses the data about the user who created the blog
+
   const handleDelete = () => {
-    if (blog.user.id.toString() === user.id.toString()) {
+    // BLOG ID is undefined for a split second, breaks
+    // console.log('blog id', blog.user.id);
+    // console.log('user id', user.id);
+
+    if (blog.user.id === undefined || user.id === undefined) {
+      return null;
+    } else if (blog.user.id.toString() === user.id.toString()) {
       return (
         <div>
           <button onClick={() => removeBlog(blog)}>remove</button>
@@ -50,13 +58,10 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
           </button>
           <div style={{ marginBottom: '.5rem' }}>Blog title: {blog.title}</div>
           <div style={{ marginBottom: '.5rem' }}>Blog url: {blog.url}</div>
-
           <div style={{ marginBottom: '.5rem' }}>
             Blog likes: {blog.likes} <button onClick={handleUpdate}>like</button>
           </div>
-
           <div style={{ marginBottom: '.5rem' }}>Blog author: {blog.author}</div>
-
           {handleDelete()}
         </div>
       )}

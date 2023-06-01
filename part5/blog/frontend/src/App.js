@@ -70,6 +70,7 @@ const App = () => {
     }
   };
 
+  // turn these into async functions
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     // blogService.create(blogObject).then((returnedBlog) => {
@@ -138,17 +139,19 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </div>
           {blogForm()}
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateBlog={updateBlog}
-              removeBlog={removeBlog}
-              user={user}
-            />
-          ))}
         </div>
       )}
+
+      {/* when the blog component remounts, the blog data is lost  */}
+      {blogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateBlog={updateBlog}
+          removeBlog={removeBlog}
+          user={user}
+        />
+      ))}
     </div>
   );
 };

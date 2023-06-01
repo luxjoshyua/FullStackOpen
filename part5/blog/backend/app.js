@@ -41,8 +41,6 @@ const main = async () => {
 
 main();
 
-console.log(`blaaah`);
-
 app.use(cors());
 app.use(express.json());
 // log with morgan
