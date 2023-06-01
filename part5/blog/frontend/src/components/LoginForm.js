@@ -1,12 +1,4 @@
-const LoginForm = ({
-  handleLogin,
-  errorMessage,
-  error,
-  username,
-  setUsername,
-  password,
-  setPassword,
-}) => {
+const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
   return (
     <form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
       <h2>log in to application</h2>

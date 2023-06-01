@@ -9,11 +9,7 @@ import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-
   const [errorMessage, setErrorMessage] = useState(null);
-  // const [successMessage, setSuccessMessage] = useState(null);
-  // const [error, setError] = useState(false);
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -34,7 +30,6 @@ const App = () => {
   // handle first loading of the page
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
-
     if (loggedUserJSON) {
       //  parse the JSON string back to a JavaScript object
       const user = JSON.parse(loggedUserJSON);
@@ -48,7 +43,6 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
     try {
       // if login is successful, the user object is saved to the state
       // and the username and password fields are cleared
@@ -59,8 +53,6 @@ const App = () => {
       blogService.setToken(user.token);
       // save successful user login to app state
       setUser(user);
-      setUsername('');
-      setPassword('');
     } catch (exception) {
       console.log(`error: ${exception}`);
     }
@@ -80,11 +72,9 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
-
     // blogService.create(blogObject).then((returnedBlog) => {
     //   setBlogs(blogs.concat(returnedBlog));
     // });
-
     blogService.create(blogObject).then((returnedBlog) => {
       const allBlogs = blogs.concat(returnedBlog);
       let sortedBlogs = allBlogs.sort((a, b) => b.likes - a.likes);
@@ -96,6 +86,21 @@ const App = () => {
     blogService.update(blogObject.id, blogObject).then((returnedBlog) => {
       setBlogs(blogs.map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog)));
     });
+  };
+
+  const removeBlog = async (blog) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete title: ${blog.title} by author: ${blog.author}?`
+      )
+    ) {
+      try {
+        await blogService.remove(blog.id);
+        setBlogs(await blogService.getAll());
+      } catch (exception) {
+        console.log(`error in remove blog function: ${exception}`);
+      }
+    }
   };
 
   const blogForm = () => (
@@ -134,7 +139,13 @@ const App = () => {
           </div>
           {blogForm()}
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              removeBlog={removeBlog}
+              user={user}
+            />
           ))}
         </div>
       )}

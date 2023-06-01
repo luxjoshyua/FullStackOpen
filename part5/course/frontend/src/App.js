@@ -147,6 +147,8 @@ const App = () => {
     </Togglable>
   );
 
+  console.log(`USER IN STATE`, user);
+
   return (
     <div>
       <h1 style={{ color: 'green' }}>Notes</h1>

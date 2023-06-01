@@ -60,7 +60,9 @@ blogRouter.get('/:id', async (request, response) => {
 blogRouter.delete('/:id', async (request, response) => {
   const token = request.token;
   const user = request.user;
+
   const decodedToken = jwt.verify(token, SECRET);
+
   const id = request.params.id;
 
   if (!(token || decodedToken.id)) {

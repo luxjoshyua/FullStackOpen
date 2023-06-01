@@ -30,7 +30,8 @@ loginRouter.post('/', async (request, response) => {
   // token expires in 60*60 seconds, so 1 hour
   const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
 
-  response.status(200).send({ token, username: user.username, name: user.name });
+  // pass the user id - very very important!
+  response.status(200).send({ token, username: user.username, name: user.name, id: user.id });
 });
 
 module.exports = loginRouter;
