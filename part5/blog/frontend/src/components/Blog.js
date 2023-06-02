@@ -27,10 +27,6 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   // as soon as the blog component remounts, it loses the data about the user who created the blog
 
   const handleDelete = () => {
-    // BLOG ID is undefined for a split second, breaks
-    // console.log('blog id', blog.user.id);
-    // console.log('user id', user.id);
-
     if (blog.user.id === undefined || user.id === undefined) {
       return null;
     } else if (blog.user.id.toString() === user.id.toString()) {
@@ -69,4 +65,4 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   );
 };
 
-export default Blog;
+export { Blog };

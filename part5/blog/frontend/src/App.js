@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import Blog from './components/Blog';
-import { BlogForm } from './components/BlogForm';
+// import Blog from './components/Blog';
+import { Blogs } from './components/Blogs';
 import { LoginForm } from './components/LoginForm';
 import { Togglable } from './components/Togglable';
 
@@ -8,24 +8,13 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [blogs, setBlogs] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  const blogFormRef = useRef();
   const loginFormRef = useRef();
-
-  useEffect(() => {
-    blogService
-      .getAll()
-      // .then((blogs) => setBlogs(blogs));
-      .then((blogs) => {
-        let sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-        setBlogs(sortedBlogs);
-      });
-  }, []);
 
   // handle first loading of the page
   useEffect(() => {
@@ -39,7 +28,7 @@ const App = () => {
     }
   }, []); // call the effect function only once when the component is rendered for the first time
 
-  if (!blogs) return null;
+  // if (!blogs) return null;
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -54,7 +43,11 @@ const App = () => {
       // save successful user login to app state
       setUser(user);
     } catch (exception) {
-      console.log(`error: ${exception}`);
+      console.log(`login error: ${exception}`);
+      setErrorMessage('Wrong credentials');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     }
   };
 
@@ -63,52 +56,13 @@ const App = () => {
       window.localStorage.clear();
       setUser(null); // user still in state, may be a problem ?
     } catch (exception) {
-      setErrorMessage('Logging user out broke');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      console.log(`logout error: ${exception}`);
+      // setErrorMessage('Logging user out broke');
+      // setTimeout(() => {
+      //   setErrorMessage(null);
+      // }, 5000);
     }
   };
-
-  // turn these into async functions
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-    // blogService.create(blogObject).then((returnedBlog) => {
-    //   setBlogs(blogs.concat(returnedBlog));
-    // });
-    blogService.create(blogObject).then((returnedBlog) => {
-      const allBlogs = blogs.concat(returnedBlog);
-      let sortedBlogs = allBlogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    });
-  };
-
-  const updateBlog = (blogObject) => {
-    blogService.update(blogObject.id, blogObject).then((returnedBlog) => {
-      setBlogs(blogs.map((blog) => (blog.id !== blogObject.id ? blog : returnedBlog)));
-    });
-  };
-
-  const removeBlog = async (blog) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete title: ${blog.title} by author: ${blog.author}?`
-      )
-    ) {
-      try {
-        await blogService.remove(blog.id);
-        setBlogs(await blogService.getAll());
-      } catch (exception) {
-        console.log(`error in remove blog function: ${exception}`);
-      }
-    }
-  };
-
-  const blogForm = () => (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} errorMessage={errorMessage} />
-    </Togglable>
-  );
 
   const loginForm = () => (
     <Togglable buttonLabel="login" ref={loginFormRef}>
@@ -118,7 +72,7 @@ const App = () => {
         setUsername={setUsername}
         password={password}
         setPassword={setPassword}
-        errorMessage={errorMessage}
+        message={errorMessage}
       />
     </Togglable>
   );
@@ -138,20 +92,10 @@ const App = () => {
             <p style={{ marginRight: '.5rem' }}>user {user.name} logged in</p>
             <button onClick={handleLogout}>logout</button>
           </div>
-          {blogForm()}
         </div>
       )}
 
-      {/* when the blog component remounts, the blog data is lost  */}
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateBlog={updateBlog}
-          removeBlog={removeBlog}
-          user={user}
-        />
-      ))}
+      <Blogs user={user} />
     </div>
   );
 };
