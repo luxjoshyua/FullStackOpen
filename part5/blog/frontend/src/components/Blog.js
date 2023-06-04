@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, removeBlog, user }) => {
-  const [blogActive, setBlogActive] = useState(false);
+  const [blogActive, setBlogActive] = useState(false)
 
   const handleBlogClick = () => {
-    setBlogActive(!blogActive);
-  };
+    setBlogActive(!blogActive)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -13,30 +13,31 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
   const handleUpdate = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     updateBlog({
       ...blog,
       likes: blog.likes + 1,
-    });
-  };
+    })
+  }
 
   // as soon as the blog component remounts, it loses the data about the user who created the blog
-
   const handleDelete = () => {
     if (blog.user.id === undefined || user.id === undefined) {
-      return null;
+      return null
     } else if (blog.user.id.toString() === user.id.toString()) {
       return (
         <div>
           <button onClick={() => removeBlog(blog)}>remove</button>
         </div>
-      );
+      )
     }
-  };
+
+    return null
+  }
 
   return (
     <div style={blogStyle}>
@@ -62,7 +63,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export { Blog };
+export { Blog }

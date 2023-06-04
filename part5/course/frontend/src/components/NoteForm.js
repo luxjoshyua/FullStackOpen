@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { Notification } from './Notification';
+import { useState } from 'react'
+import { Notification } from './Notification'
 
 const NoteForm = ({ createNote, successMessage }) => {
-  const [newNote, setNewNote] = useState('');
+  const [newNote, setNewNote] = useState('')
 
   const addNote = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     createNote({
       content: newNote,
       important: true,
-    });
+    })
 
-    setNewNote('');
-  };
+    setNewNote('')
+  }
 
   return (
     <div>
@@ -29,7 +29,7 @@ const NoteForm = ({ createNote, successMessage }) => {
         <button type="submit">save</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export { NoteForm };
+export { NoteForm }

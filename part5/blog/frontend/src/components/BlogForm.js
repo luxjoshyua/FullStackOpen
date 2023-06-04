@@ -1,27 +1,27 @@
-import { useState } from 'react';
-import { Notification } from './Notification';
+import { useState } from 'react'
+import { Notification } from './Notification'
 
 const BlogForm = ({ createBlog, successMessage }) => {
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogUrl, setBlogUrl] = useState('');
-  const [blogLikes, setBlogLikes] = useState(0);
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
+  const [blogLikes, setBlogLikes] = useState(0)
 
   const addBlog = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     createBlog({
       title: blogTitle,
       author: blogAuthor,
       url: blogUrl,
       likes: blogLikes,
-    });
+    })
 
-    setBlogTitle('');
-    setBlogAuthor('');
-    setBlogUrl('');
-    setBlogLikes(0);
-  };
+    setBlogTitle('')
+    setBlogAuthor('')
+    setBlogUrl('')
+    setBlogLikes(0)
+  }
 
   return (
     <form onSubmit={addBlog} style={{ marginBottom: '.5rem' }}>
@@ -68,7 +68,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
       </div>
       <button type="submit">create</button>
     </form>
-  );
-};
+  )
+}
 
-export { BlogForm };
+export { BlogForm }
