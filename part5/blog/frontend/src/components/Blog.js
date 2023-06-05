@@ -26,9 +26,29 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
   // as soon as the blog component remounts, it loses the data about the user who created the blog
   const handleDelete = () => {
-    if (blog.user.id === undefined || user.id === undefined) {
+    // if (blog.user.id === undefined || user.id === undefined) {
+    //   return null
+    // } else if (blog.user.id.toString() === user.id.toString()) {
+    //   return (
+    //     <div>
+    //       <button onClick={() => removeBlog(blog)}>remove</button>
+    //     </div>
+    //   )
+    // }
+
+    // if (!(blog || user)) {
+    //   return null
+    // } else if (blog.user.id.toString() === user.id.toString()) {
+    //   return (
+    //     <div>
+    //       <button onClick={() => removeBlog(blog)}>remove</button>
+    //     </div>
+    //   )
+    // }
+
+    if (!(blog || user)) {
       return null
-    } else if (blog.user.id.toString() === user.id.toString()) {
+    } else {
       return (
         <div>
           <button onClick={() => removeBlog(blog)}>remove</button>
@@ -36,13 +56,18 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       )
     }
 
-    return null
+    // return null
   }
 
+  // console.log(blog)
+
   return (
-    <div style={blogStyle}>
-      <div style={{ marginBottom: '.5rem' }}>
-        {blog.title} {blog.author}
+    <div style={blogStyle} className="blog-container">
+      <div style={{ marginBottom: '.5rem', display: 'flex' }}>
+        <div className="title" style={{ marginRight: '.25rem' }}>
+          blog title: {blog.title}
+        </div>
+        <div className="author">blog author: {blog.author} </div>
       </div>
       {!blogActive ? (
         <div style={{ marginBottom: '.5rem' }}>
@@ -54,9 +79,14 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
             hide
           </button>
           <div style={{ marginBottom: '.5rem' }}>Blog title: {blog.title}</div>
-          <div style={{ marginBottom: '.5rem' }}>Blog url: {blog.url}</div>
-          <div style={{ marginBottom: '.5rem' }}>
-            Blog likes: {blog.likes} <button onClick={handleUpdate}>like</button>
+          <div style={{ marginBottom: '.5rem' }} className="url">
+            Blog url: {blog.url}
+          </div>
+          <div style={{ marginBottom: '.5rem' }} className="likes">
+            Blog likes: {blog.likes}{' '}
+            <button onClick={handleUpdate} id="like-btn">
+              like
+            </button>
           </div>
           <div style={{ marginBottom: '.5rem' }}>Blog author: {blog.author}</div>
           {handleDelete()}

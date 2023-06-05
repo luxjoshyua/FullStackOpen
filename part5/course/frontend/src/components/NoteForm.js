@@ -9,14 +9,15 @@ const NoteForm = ({ createNote, successMessage }) => {
 
     createNote({
       content: newNote,
-      important: true,
+      // important: true,
+      important: Math.random() > 0.5,
     })
 
     setNewNote('')
   }
 
   return (
-    <div>
+    <div className="formDiv">
       <p>Create a new note</p>
       <form onSubmit={addNote} style={{ marginBottom: '.5rem' }}>
         {successMessage && <Notification message={successMessage} success={true} />}
@@ -24,6 +25,7 @@ const NoteForm = ({ createNote, successMessage }) => {
           type="text"
           placeholder="new note here..."
           value={newNote}
+          id="note-input"
           onChange={(event) => setNewNote(event.target.value)}
         />
         <button type="submit">save</button>
