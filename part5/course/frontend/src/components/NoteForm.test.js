@@ -21,6 +21,7 @@ describe('<NoteForm /> component', () => {
     await user.click(sendButton)
 
     expect(createNote.mock.calls).toHaveLength(1)
+
     expect(createNote.mock.calls[0][0].content).toBe('testing a form...')
   })
 })

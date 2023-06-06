@@ -26,7 +26,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
   return (
     <form onSubmit={addBlog} style={{ marginBottom: '.5rem' }}>
       {successMessage && <Notification message={successMessage} success={true} />}
-      <div style={{ marginBottom: '.5rem' }}>
+      <div style={{ marginBottom: '.5rem' }} className="title">
         title
         <input
           type="text"
@@ -36,7 +36,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
           style={{ marginLeft: '.25rem' }}
         />
       </div>
-      <div style={{ marginBottom: '.5rem' }}>
+      <div style={{ marginBottom: '.5rem' }} className="author">
         author
         <input
           type="text"
@@ -46,7 +46,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
           style={{ marginLeft: '.25rem' }}
         />
       </div>
-      <div style={{ marginBottom: '.5rem' }}>
+      <div style={{ marginBottom: '.5rem' }} className="url">
         url
         <input
           type="text"
@@ -56,7 +56,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
           style={{ marginLeft: '.25rem' }}
         />
       </div>
-      <div style={{ marginBottom: '.5rem' }}>
+      <div style={{ marginBottom: '.5rem' }} className="likes">
         likes
         <input
           type="number"
