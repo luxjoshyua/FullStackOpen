@@ -9,8 +9,8 @@ const NoteForm = ({ createNote, successMessage }) => {
 
     createNote({
       content: newNote,
-      // important: true,
-      important: Math.random() > 0.5,
+      important: true,
+      // important: Math.random() > 0.5,
     })
 
     setNewNote('')

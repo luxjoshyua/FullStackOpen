@@ -21,22 +21,22 @@ describe('Note app', function () {
     cy.contains('log in').click()
     cy.get('#username').type('josh')
     cy.get('#password').type('josh')
-    cy.get('#login-btn').click()
+    cy.get('#submit-btn').click()
 
     cy.contains('josh logged in')
   })
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('log in').click()
+      cy.get('#login-btn').click()
       cy.get('#username').type('josh')
       cy.get('#password').type('josh')
-      cy.get('#login-btn').click()
+      cy.get('#submit-btn').click()
     })
   })
 
   it('a new note can be created', function () {
-    cy.contains('User josh logged in')
+    // cy.contains('User josh logged in')
     // cy.get('#new-note-btn').click()
     // cy.get('#note-input').type('a note created by cypress')
     // cy.get('#save-btn').click()

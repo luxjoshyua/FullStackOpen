@@ -31,7 +31,7 @@ const LoginForm = ({
           style={{ marginLeft: '.25rem' }}
         />
       </div>
-      <button type="submit" id="login-btn">
+      <button type="submit" id="submit-btn">
         login
       </button>
     </form>

@@ -126,7 +126,9 @@ const App = () => {
     return (
       <div style={{ marginBottom: '.5rem' }}>
         <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
+          <button onClick={() => setLoginVisible(true)} id="login-btn">
+            log in
+          </button>
         </div>
         {errorMessage && <Notification message={errorMessage} />}
         <div style={showWhenVisible}>
