@@ -1,7 +1,6 @@
-// recommended not to use arrow functions in Cypress tests because they are not able to access the Mocha context
-// https://mochajs.org/#arrow-functions
-describe('Note app', function () {
+describe('Note ', function () {
   beforeEach(function () {
+    cy.visit('http://localhost:3000')
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
     const user = {
       name: 'josh',
@@ -9,7 +8,6 @@ describe('Note app', function () {
       password: 'josh',
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
-    cy.visit('http://localhost:3000')
   })
 
   it('front page can be opened', function () {
@@ -17,7 +15,7 @@ describe('Note app', function () {
     cy.contains('Note app, Department of Computer Science, University of Helsinki 2022')
   })
 
-  it('user can log in', function () {
+  it('login form can be opened', function () {
     cy.contains('log in').click()
     cy.get('#username').type('josh')
     cy.get('#password').type('josh')
@@ -28,18 +26,34 @@ describe('Note app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.get('#login-btn').click()
+      cy.contains('log in').click()
       cy.get('#username').type('josh')
       cy.get('#password').type('josh')
       cy.get('#submit-btn').click()
     })
-  })
 
-  it('a new note can be created', function () {
-    // cy.contains('User josh logged in')
-    // cy.get('#new-note-btn').click()
-    // cy.get('#note-input').type('a note created by cypress')
-    // cy.get('#save-btn').click()
-    // cy.contains('a note created by cypress')
+    it('a new note can be created', function () {
+      cy.contains('new note').click()
+      cy.get('input').type('a note created by cypress')
+      cy.contains('save').click()
+      cy.contains('a note created by cypress')
+    })
+
+    // describe('and a note exists', function () {
+    //   beforeEach(function () {
+    //     cy.contains('new note').click()
+    //     cy.get('input').type('another note cypress')
+    //     cy.contains('save').click()
+    //   })
+
+    //   it('it can be made important', function () {
+    //     cy.contains('another note cypress')
+    //       .contains('make not important')
+    //       .click()
+
+    //     cy.contains('another note cypress')
+    //       .contains('make important')
+    //   })
+    // })
   })
 })
