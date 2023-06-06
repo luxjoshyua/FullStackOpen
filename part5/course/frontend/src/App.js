@@ -144,7 +144,7 @@ const App = () => {
   }
 
   const noteForm = () => (
-    <Togglable buttonLabel="new note" ref={noteFormRef}>
+    <Togglable buttonLabel="new note" ref={noteFormRef} id="new-note-btn">
       <NoteForm createNote={addNote} successMessage={successMessage} />
     </Togglable>
   )
