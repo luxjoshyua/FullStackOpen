@@ -5,7 +5,7 @@ import { BlogForm } from './BlogForm'
 import { Notification } from './Notification'
 import { Togglable } from './Togglable'
 
-const Blogs = ({ user }) => {
+const Blogs = ({ user, logout }) => {
   const [blogs, setBlogs] = useState([])
   const [successMessage, setSuccessMessage] = useState('')
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
@@ -60,10 +60,18 @@ const Blogs = ({ user }) => {
         {successMessage && (
           <Notification className="success" message={successMessage} success={true} />
         )}
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
-        <h2>Blogs</h2>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '.5rem',
+          }}>
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+          <button onClick={logout}>logout</button>
+        </div>
         {sortedBlogs.map((blog) => (
           <Blog
             key={blog.id}
@@ -78,15 +86,7 @@ const Blogs = ({ user }) => {
   } else {
     return (
       <div>
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-            removeBlog={removeBlog}
-            user={user}
-          />
-        ))}
+        <p>Please login to view relevant blog posts</p>
       </div>
     )
   }

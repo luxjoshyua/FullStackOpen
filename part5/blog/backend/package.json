@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "lint": "eslint"
+    "lint": "eslint",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "author": "",
   "license": "ISC",

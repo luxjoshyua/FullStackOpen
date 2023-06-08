@@ -79,7 +79,7 @@ const App = () => {
       {!user && loginForm()}
 
       {/* only allow logged in user to add a new blog entry */}
-      {user && (
+      {/* {user && (
         <div>
           <div
             className="wrapper"
@@ -88,9 +88,9 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </div>
         </div>
-      )}
+      )} */}
 
-      <Blogs user={user} />
+      <Blogs user={user} logout={handleLogout} />
     </div>
   )
 }
