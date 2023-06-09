@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog, removeBlog, user }) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const [blogActive, setBlogActive] = useState(false)
 
   const handleBlogClick = () => {
@@ -24,39 +24,20 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     })
   }
 
-  // as soon as the blog component remounts, it loses the data about the user who created the blog
-  const handleDelete = () => {
-    // if (blog.user.id === undefined || user.id === undefined) {
-    //   return null
-    // } else if (blog.user.id.toString() === user.id.toString()) {
-    //   return (
-    //     <div>
-    //       <button onClick={() => removeBlog(blog)}>remove</button>
-    //     </div>
-    //   )
-    // }
-    // if (!(blog || user)) {
-    //   return null
-    // } else if (blog.user.id.toString() === user.id.toString()) {
-    //   return (
-    //     <div>
-    //       <button onClick={() => removeBlog(blog)}>remove</button>
-    //     </div>
-    //   )
-    // }
-    // if (!(blog || user)) {
-    //   return null
-    // } else {
-    //   return (
-    //     <div>
-    //       <button onClick={() => removeBlog(blog)}>remove</button>
-    //     </div>
-    //   )
-    // }
-    // return null
-  }
+  const removeBlog = () => deleteBlog(blog)
 
-  console.log(removeBlog, user)
+  // as soon as the blog component remounts, it loses the data about the user who created the blog
+  // const handleDelete = () => {
+  //   if (!(blog.user || user.id)) {
+  //     return null
+  //   } else if (blog.user.id.toString() === user.id.toString()) {
+  //     return (
+  //       <div>
+  //         <button onClick={() => removeBlog(blog)}>remove</button>
+  //       </div>
+  //     )
+  //   }
+  // }
 
   return (
     <div style={blogStyle} className="blog-container">
@@ -88,7 +69,9 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
             </button>
           </div>
           <div style={{ marginBottom: '.5rem' }}>Blog author: {blog.author}</div>
-          {handleDelete()}
+          <button onClick={removeBlog} id="remove-btn">
+            remove
+          </button>
         </div>
       )}
     </div>

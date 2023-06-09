@@ -75,21 +75,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-
       {!user && loginForm()}
-
-      {/* only allow logged in user to add a new blog entry */}
-      {/* {user && (
-        <div>
-          <div
-            className="wrapper"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-            <p style={{ marginRight: '.5rem' }}>user {user.name} logged in</p>
-            <button onClick={handleLogout}>logout</button>
-          </div>
-        </div>
-      )} */}
-
       <Blogs user={user} logout={handleLogout} />
     </div>
   )

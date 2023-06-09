@@ -13,8 +13,6 @@ const Blogs = ({ user, logout }) => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      // let sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-      // setBlogs(sortedBlogs);
       setBlogs(blogs)
     })
   }, [])
@@ -33,18 +31,40 @@ const Blogs = ({ user, logout }) => {
     }
   }
 
-  const removeBlog = async (blog) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete title: ${blog.title} by author: ${blog.author}?`
-      )
-    ) {
-      try {
-        await blogService.remove(blog.id)
-        setBlogs(await blogService.getAll())
-      } catch (exception) {
-        console.log(`error in remove blog function: ${exception}`)
+  // const removeBlog = async (blog) => {
+  //   if (
+  //     window.confirm(
+  //       `Are you sure you want to delete title: ${blog.title} by author: ${blog.author}?`
+  //     )
+  //   ) {
+  //     try {
+  //       await blogService.remove(blog.id)
+  //       setBlogs(await blogService.getAll())
+  //     } catch (exception) {
+  //       console.log(`error in remove blog function: ${exception}`)
+  //     }
+  //   }
+  // }
+
+  const deleteBlog = async (BlogToDelete) => {
+    try {
+      if (window.confirm(`Delete ${BlogToDelete.title} ?`)) {
+        blogService.remove(BlogToDelete.id)
+        setSuccessMessage(`Blog ${BlogToDelete.title} was successfully deleted`)
+        setBlogs(blogs.filter((blog) => blog.id !== BlogToDelete.id))
+        // setErrorMessage(null)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
       }
+    } catch (exception) {
+      // setErrorMessage(
+      //   `Cannot delete blog ${BlogToDelete.title}`
+      // )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     }
   }
 
@@ -80,7 +100,7 @@ const Blogs = ({ user, logout }) => {
             key={blog.id}
             blog={blog}
             updateBlog={updateBlog}
-            removeBlog={removeBlog}
+            deleteBlog={deleteBlog}
             user={user}
           />
         ))}

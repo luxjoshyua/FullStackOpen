@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 const { SECRET } = require('../utils/config')
 require('dotenv').config()
+const { info } = require('../utils/logger')
 
 // create a new router object
 // https://expressjs.com/en/api.html#router
@@ -16,29 +18,35 @@ blogRouter.get('/', async (request, response) => {
 // POST a new blog
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body
-  // if (!title || !url) {
-  //   return response.status(400).json({ error: 'title or url missing' }).end();
-  // }
 
   const token = request.token
-  const user = request.user
 
   const decodedToken = jwt.verify(token, SECRET)
+
+  // const user = request.user
+  const user = await User.findById(decodedToken.id)
+
   if (!(token || decodedToken.id)) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
   // breaks here ====
-  const blog = new Blog({ title, author, url, likes, user: user._id })
+  const blog = new Blog({
+    title,
+    author,
+    url,
+    likes,
+    user: user._id,
+  })
 
   try {
     const blogToSave = await blog.save()
-
+    info(`blog saved to database: ${blogToSave.title} by ${blogToSave.author}`)
     // concat merges two or more arrays into new array
     // store the note id in the user document
     user.blogs = user.blogs.concat(blogToSave._id)
     await user.save()
-
+    info(`blog attached to user ${user.username}`)
     response.status(201).json(blogToSave)
   } catch (error) {
     response.status(400).json(error)
@@ -81,30 +89,8 @@ blogRouter.delete('/:id', async (request, response) => {
   }
 })
 
-// PUT a specific blog
-// blogRouter.put('/:id', async (request, response) => {
-//   const { title, author, url, likes } = request.body;
-//   const blog = { title, author, url, likes };
-//   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
-//   response.json(updatedBlog);
-// });
-
 blogRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body
-
-  // const token = request.token;
-  // const user = request.user;
-
-  // const decodedToken = jwt.verify(token, process.env.SECRET);
-
-  // if (!(token || decodedToken.id)) {
-  //   return response.status(401).json({ error: 'token missing or invalid' });
-  // }
-
-  // if (!user) {
-  //   return response.status(401).json({ error: 'user not found' });
-  // }
-
   const blog = { title, author, url, likes }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })

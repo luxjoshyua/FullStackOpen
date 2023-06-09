@@ -1,17 +1,4 @@
 describe('Blog app', () => {
-  // beforeEach(function () {
-  //   cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
-
-  //   const user = {
-  //     name: 'josh',
-  //     username: 'josh',
-  //     password: 'josh',
-  //   }
-
-  //   cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
-  //   cy.visit('')
-  // })
-
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user = {
@@ -89,6 +76,20 @@ describe('Blog app', () => {
       cy.get('#view-btn').click()
       cy.get('#like-btn').click()
       cy.get('.likes').should('contain', 10)
+    })
+
+    it('user who created a blog can delete it', function () {
+      cy.get('#new-blog-btn').click()
+      cy.get('#title').type('a blog created by cypress')
+      cy.get('#author').type('cypress')
+      cy.get('#url').type('cypress.com')
+      cy.get('#likes').type(10)
+      cy.get('#create-btn').click()
+
+      cy.get('#view-btn').click()
+      cy.get('#remove-btn').click()
+
+      cy.get('#view-btn').should('not.exist')
     })
   })
 })
