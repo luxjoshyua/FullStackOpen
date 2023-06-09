@@ -30,6 +30,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
         title
         <input
           type="text"
+          id="title"
           value={blogTitle}
           name="blog title"
           onChange={(event) => setBlogTitle(event.target.value)}
@@ -40,6 +41,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
         author
         <input
           type="text"
+          id="author"
           value={blogAuthor}
           name="blog author"
           onChange={(event) => setBlogAuthor(event.target.value)}
@@ -50,6 +52,7 @@ const BlogForm = ({ createBlog, successMessage }) => {
         url
         <input
           type="text"
+          id="url"
           value={blogUrl}
           name="blog url"
           onChange={(event) => setBlogUrl(event.target.value)}
@@ -60,13 +63,16 @@ const BlogForm = ({ createBlog, successMessage }) => {
         likes
         <input
           type="number"
+          id="likes"
           value={blogLikes}
           name="blog likes"
           onChange={(event) => setBlogLikes(event.target.value)}
           style={{ marginLeft: '.25rem' }}
         />
       </div>
-      <button type="submit">create</button>
+      <button type="submit" id="create-btn">
+        create
+      </button>
     </form>
   )
 }

@@ -12,7 +12,8 @@ const LoginForm = ({ handleLogin, username, setUsername, password, setPassword, 
           <input
             type="text"
             value={username}
-            name="Username"
+            name="username"
+            id="username"
             onChange={({ target }) => setUsername(target.value)}
             style={{ marginLeft: '.25rem' }}
           />
@@ -22,12 +23,15 @@ const LoginForm = ({ handleLogin, username, setUsername, password, setPassword, 
           <input
             type="password"
             value={password}
-            name="Password"
+            name="password"
+            id="password"
             onChange={({ target }) => setPassword(target.value)}
             style={{ marginLeft: '.25rem' }}
           />
         </div>
-        <button type="submit">login</button>
+        <button type="submit" id="submit-btn">
+          login
+        </button>
       </form>
     </div>
   )

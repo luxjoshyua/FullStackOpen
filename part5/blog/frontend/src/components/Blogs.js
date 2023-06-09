@@ -67,10 +67,13 @@ const Blogs = ({ user, logout }) => {
             alignItems: 'center',
             marginBottom: '.5rem',
           }}>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+          <Togglable buttonLabel="new blog" ref={blogFormRef} id="new-blog-btn">
             <BlogForm createBlog={addBlog} />
           </Togglable>
           <button onClick={logout}>logout</button>
+        </div>
+        <div style={{ marginBottom: '.5rem' }}>
+          <p>user {user.name} logged in</p>
         </div>
         {sortedBlogs.map((blog) => (
           <Blog

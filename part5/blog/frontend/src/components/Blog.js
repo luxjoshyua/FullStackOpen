@@ -35,7 +35,6 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     //     </div>
     //   )
     // }
-
     // if (!(blog || user)) {
     //   return null
     // } else if (blog.user.id.toString() === user.id.toString()) {
@@ -45,21 +44,19 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     //     </div>
     //   )
     // }
-
-    if (!(blog || user)) {
-      return null
-    } else {
-      return (
-        <div>
-          <button onClick={() => removeBlog(blog)}>remove</button>
-        </div>
-      )
-    }
-
+    // if (!(blog || user)) {
+    //   return null
+    // } else {
+    //   return (
+    //     <div>
+    //       <button onClick={() => removeBlog(blog)}>remove</button>
+    //     </div>
+    //   )
+    // }
     // return null
   }
 
-  // console.log(blog)
+  console.log(removeBlog, user)
 
   return (
     <div style={blogStyle} className="blog-container">
@@ -71,7 +68,9 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       </div>
       {!blogActive ? (
         <div style={{ marginBottom: '.5rem' }}>
-          <button onClick={handleBlogClick}>view</button>
+          <button onClick={handleBlogClick} id="view-btn">
+            view
+          </button>
         </div>
       ) : (
         <div>
@@ -82,7 +81,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
           <div style={{ marginBottom: '.5rem' }} className="url">
             Blog url: {blog.url}
           </div>
-          <div style={{ marginBottom: '.5rem' }} className="likes">
+          <div style={{ marginBottom: '.5rem' }} className="likes" id="likes">
             Blog likes: {blog.likes}{' '}
             <button onClick={handleUpdate} id="like-btn">
               like

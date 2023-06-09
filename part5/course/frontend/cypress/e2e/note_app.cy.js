@@ -62,18 +62,8 @@ describe('Note ', function () {
         })
       })
 
-      // it('can be made not important', function () {
-      //   cy.get('.note').contains('another note cypress')
-      //   cy.get('.note').contains('make not important').click()
-
-      //   cy.get('.note').contains('another note cypress').contains('make important')
-      // })
-
       it('one of those can be made not important', function () {
-        // cy.get('.note').contains('second note').contains('make important').click()
         cy.get('.note').contains('second note').parent().find('button').click()
-
-        // cy.get('.note').contains('second note').contains('make not important')
 
         cy.get('.note')
           .contains('second note')
