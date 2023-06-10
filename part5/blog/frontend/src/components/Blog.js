@@ -54,7 +54,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
           </button>
         </div>
       ) : (
-        <div>
+        <div className="blogs">
           <button onClick={handleBlogClick} style={{ marginBottom: '.5rem' }}>
             hide
           </button>

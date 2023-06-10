@@ -31,21 +31,6 @@ const Blogs = ({ user, logout }) => {
     }
   }
 
-  // const removeBlog = async (blog) => {
-  //   if (
-  //     window.confirm(
-  //       `Are you sure you want to delete title: ${blog.title} by author: ${blog.author}?`
-  //     )
-  //   ) {
-  //     try {
-  //       await blogService.remove(blog.id)
-  //       setBlogs(await blogService.getAll())
-  //     } catch (exception) {
-  //       console.log(`error in remove blog function: ${exception}`)
-  //     }
-  //   }
-  // }
-
   const deleteBlog = async (BlogToDelete) => {
     try {
       if (window.confirm(`Delete ${BlogToDelete.title} ?`)) {

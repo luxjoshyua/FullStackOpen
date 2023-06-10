@@ -23,21 +23,29 @@ blogRouter.post('/', async (request, response) => {
 
   const decodedToken = jwt.verify(token, SECRET)
 
-  // const user = request.user
-  const user = await User.findById(decodedToken.id)
-
   if (!(token || decodedToken.id)) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  // breaks here ====
+  // console.log(`first decodedToken`, decodedToken)
+
+  const user = await User.findById(decodedToken.id)
+
+  if (!user) {
+    return response.status(401).json({ error: 'authenticated user not found' })
+  }
+
+  // console.log(`USER`, user)
+
   const blog = new Blog({
     title,
     author,
     url,
     likes,
-    user: user._id,
+    user: user._id, // this breaks
   })
+
+  // console.log(`BLOG`, blog)
 
   try {
     const blogToSave = await blog.save()
@@ -64,29 +72,50 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 // DELETE a specific blog
+// blogRouter.delete('/:id', async (request, response) => {
+//   const token = request.token
+//   const decodedToken = jwt.verify(token, SECRET)
+
+//   const user = await User.findById(decodedToken.id)
+
+//   const blogToDelete = await Blog.findById(request.params.id) // THIS IS NULL
+
+//   console.log(`BLOG TO DELETE`, blogToDelete)
+
+//   if (blogToDelete.user._id.toString() === user._id.toString()) {
+//     try {
+//       await Blog.findByIdAndRemove(request.params.id)
+//       response.status(204).end()
+//     } catch (exception) {
+//       next(exception)
+//     }
+//   } else {
+//     return response.status(401).json({ error: `Unauthorized` })
+//   }
+// })
+
 blogRouter.delete('/:id', async (request, response) => {
-  const token = request.token
-  const user = request.user
-
-  const decodedToken = jwt.verify(token, SECRET)
-
   const id = request.params.id
 
-  if (!(token || decodedToken.id)) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  const blog = await Blog.findById(id)
+
+  console.log(`BLOG DELETE`, blog)
+
+  if (!blog.user) {
+    return response.status(401).json({ error: 'No such user exists' })
   }
 
-  const blogToDelete = await Blog.findById(request.params.id)
+  const tokenUserId = request.user.id
 
-  if (blogToDelete.user.toString() === user.id.toString()) {
-    // await Blog.findByIdAndRemove(request.params.id);
-    await Blog.deleteOne({ _id: id })
-    response.status(204).end()
-  } else {
-    return response.status(401).json({
-      error: 'user id associated with the blog post does not match the sent user',
-    })
+  if (blog.user.toString() !== tokenUserId.toString()) {
+    return response.status(401).json({ error: 'Deleting only possible by the creator' })
   }
+  console.log('deleting')
+  const deletedBlog = await Blog.findByIdAndRemove(id)
+  if (!deletedBlog) {
+    return response.status(400).end()
+  }
+  response.status(204).end()
 })
 
 blogRouter.put('/:id', async (request, response) => {
