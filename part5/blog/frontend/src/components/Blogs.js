@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from 'react'
 import blogService from '../services/blogs'
 import { Blog } from './Blog'
@@ -5,7 +6,7 @@ import { BlogForm } from './BlogForm'
 import { Notification } from './Notification'
 import { Togglable } from './Togglable'
 
-const Blogs = ({ user, logout }) => {
+const Blogs = ({ user, logout, userId }) => {
   const [blogs, setBlogs] = useState([])
   const [successMessage, setSuccessMessage] = useState('')
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
@@ -87,6 +88,7 @@ const Blogs = ({ user, logout }) => {
             updateBlog={updateBlog}
             deleteBlog={deleteBlog}
             user={user}
+            userId={userId}
           />
         ))}
       </div>

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-// import Blog from './components/Blog';
 import { Blogs } from './components/Blogs'
 import { LoginForm } from './components/LoginForm'
 import { Togglable } from './components/Togglable'
@@ -12,6 +11,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [userId, setUserId] = useState('')
 
   const loginFormRef = useRef()
 
@@ -39,6 +39,9 @@ const App = () => {
       blogService.setToken(user.token)
       // save successful user login to app state
       setUser(user)
+      setUserId(user.id)
+      setUsername('')
+      setPassword('')
     } catch (exception) {
       console.log(`login error: ${exception}`)
       setErrorMessage('Wrong credentials')
@@ -76,7 +79,7 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       {!user && loginForm()}
-      <Blogs user={user} logout={handleLogout} />
+      <Blogs user={user} logout={handleLogout} userId={userId} />
     </div>
   )
 }
