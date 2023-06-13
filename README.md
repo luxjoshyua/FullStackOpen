@@ -18,6 +18,10 @@ Specific subjects are:
 
 The repo is a WIP that contains my solutions to the various exercises.
 
+### Certificate of Completion - Units 1 to 5
+
+<img src="./certificate-fullstack-josh-fielding.png" alt="Course Certificate" title="Course Certificate" style="width: 100%;">
+
 ### [Part 0 - Fundamentals of Web apps](https://fullstackopen.com/en/part0)
 
 - General Info
@@ -116,7 +120,3 @@ The repo is a WIP that contains my solutions to the various exercises.
 - Using relational databases with Sequelize
 - Join tables and queries
 - Migrations, many-to-many relationships
-
-### Certificate of Completion - Units 1 to 5
-
-<img src="./certificate-fullstack-josh-fielding.png" alt="Course Certificate" title="Course Certificate" style="width: 100%;">
