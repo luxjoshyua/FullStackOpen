@@ -96,51 +96,51 @@ describe('Blog app', () => {
     })
 
     // test only works if ran in isolation
-    it.only('blogs are sorted by likes', function () {
-      const blogs = [
-        {
-          title: 'Blog 1',
-          author: 'Author 1',
-          likes: 100,
-          url: 'https://example.com/blog-1',
-        },
-        {
-          title: 'Blog 2',
-          author: 'Author 2',
-          likes: 50,
-          url: 'https://example.com/blog-2',
-        },
-        {
-          title: 'Blog 3',
-          author: 'Author 3',
-          likes: 25,
-          url: 'https://example.com/blog-3',
-        },
-        {
-          title: 'Blog 4',
-          author: 'Author 4',
-          likes: 10,
-          url: 'https://example.com/blog-4',
-        },
-        {
-          title: 'Blog 5',
-          author: 'Author 5',
-          likes: 5,
-          url: 'https://example.com/blog-5',
-        },
-      ]
+    // it.only('blogs are sorted by likes', function () {
+    //   const blogs = [
+    //     {
+    //       title: 'Blog 1',
+    //       author: 'Author 1',
+    //       likes: 100,
+    //       url: 'https://example.com/blog-1',
+    //     },
+    //     {
+    //       title: 'Blog 2',
+    //       author: 'Author 2',
+    //       likes: 50,
+    //       url: 'https://example.com/blog-2',
+    //     },
+    //     {
+    //       title: 'Blog 3',
+    //       author: 'Author 3',
+    //       likes: 25,
+    //       url: 'https://example.com/blog-3',
+    //     },
+    //     {
+    //       title: 'Blog 4',
+    //       author: 'Author 4',
+    //       likes: 10,
+    //       url: 'https://example.com/blog-4',
+    //     },
+    //     {
+    //       title: 'Blog 5',
+    //       author: 'Author 5',
+    //       likes: 5,
+    //       url: 'https://example.com/blog-5',
+    //     },
+    //   ]
 
-      cy.createBlog(blogs[0].title, blogs[0].author, blogs[0].likes, blogs[0].url)
-      cy.createBlog(blogs[1].title, blogs[1].author, blogs[1].likes, blogs[1].url)
-      cy.createBlog(blogs[2].title, blogs[2].author, blogs[2].likes, blogs[2].url)
-      cy.createBlog(blogs[3].title, blogs[3].author, blogs[3].likes, blogs[3].url)
-      cy.createBlog(blogs[4].title, blogs[4].author, blogs[4].likes, blogs[4].url)
+    //   cy.createBlog(blogs[0].title, blogs[0].author, blogs[0].likes, blogs[0].url)
+    //   cy.createBlog(blogs[1].title, blogs[1].author, blogs[1].likes, blogs[1].url)
+    //   cy.createBlog(blogs[2].title, blogs[2].author, blogs[2].likes, blogs[2].url)
+    //   cy.createBlog(blogs[3].title, blogs[3].author, blogs[3].likes, blogs[3].url)
+    //   cy.createBlog(blogs[4].title, blogs[4].author, blogs[4].likes, blogs[4].url)
 
-      cy.get('.blog-container').eq(0).should('contain', 'Blog 1')
-      cy.get('.blog-container').eq(1).should('contain', 'Blog 2')
-      cy.get('.blog-container').eq(2).should('contain', 'Blog 3')
-      cy.get('.blog-container').eq(3).should('contain', 'Blog 4')
-      cy.get('.blog-container').eq(4).should('contain', 'Blog 5')
-    })
+    //   cy.get('.blog-container').eq(0).should('contain', 'Blog 1')
+    //   cy.get('.blog-container').eq(1).should('contain', 'Blog 2')
+    //   cy.get('.blog-container').eq(2).should('contain', 'Blog 3')
+    //   cy.get('.blog-container').eq(3).should('contain', 'Blog 4')
+    //   cy.get('.blog-container').eq(4).should('contain', 'Blog 5')
+    // })
   })
 })

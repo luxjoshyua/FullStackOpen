@@ -62,6 +62,8 @@ const App = () => {
     }
   }
 
+  console.log(`user in app.js: ${user}`)
+
   const loginForm = () => (
     <Togglable buttonLabel="login" ref={loginFormRef}>
       <LoginForm

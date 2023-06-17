@@ -7,11 +7,11 @@ const noteReducer = (state = [], action) => {
       // state.concat creates a new array, which contains all the elements of the old array and the new element
       // state.push(action.payload)
       // return state
-      return state.concat(action.payload)
+      // return state.concat(action.payload)
+      return [...state, action.payload]
     case 'TOGGLE_IMPORTANCE': {
       const id = action.payload.id
       // search for a specific note object, the importance of which we want to change
-
       const noteToChange = state.find((n) => n.id === id)
       // create a new object, which is a copy of the original note,
       // only the value of the important field has been change to the
@@ -27,6 +27,28 @@ const noteReducer = (state = [], action) => {
     }
     default:
       return state
+  }
+}
+
+const generateId = () => Number((Math.random() * 1000000).toFixed(0))
+
+// functions that create actions are called action creators
+export const createNote = (content) => {
+  // dispatches the action for adding new notes
+  return {
+    type: 'NEW_NOTE',
+    payload: {
+      content,
+      important: false,
+      id: generateId(),
+    },
+  }
+}
+
+export const toggleImportanceOf = (id) => {
+  return {
+    type: 'TOGGLE_IMPORTANCE',
+    payload: { id },
   }
 }
 
