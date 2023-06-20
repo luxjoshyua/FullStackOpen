@@ -1,15 +1,14 @@
-import AnectodeForm from './components/AnectodeForm'
-import AnectodeList from './components/AnectodeList'
+import AnecdoteForm from './components/AnecdoteForm'
+import AnecdoteList from './components/AnecdoteList'
+import Filter from './components/Filter'
 
 const App = () => {
-  // const anecdotes = useSelector((state) => state)
-  // const anecdotes = useSelector((state) => state.sort((a, b) => b.votes - a.votes))
-
   return (
     <div>
       <h2>Anecdotes</h2>
-      <AnectodeList />
-      <AnectodeForm />
+      <Filter />
+      <AnecdoteList />
+      <AnecdoteForm />
     </div>
   )
 }
