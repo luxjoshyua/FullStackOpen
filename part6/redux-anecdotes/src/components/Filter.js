@@ -6,8 +6,7 @@ const Filter = () => {
 
   const handleChange = (event) => {
     // input-field value is in variable event.target.value
-    const value = event.target.value
-    // console.log(value)
+    const value = event.target.value.toLowerCase()
     dispatch(filterChange(value))
   }
 

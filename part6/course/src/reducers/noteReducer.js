@@ -72,8 +72,6 @@ const noteSlice = createSlice({
         important: !noteToChange.important,
       }
 
-      // console.log(`state = `, state)
-
       // convert to a string and back to a JavaScript object to make it readable
       console.log(JSON.parse(JSON.stringify(state)))
 

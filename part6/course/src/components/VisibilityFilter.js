@@ -3,8 +3,8 @@ import { filterChange } from '../reducers/filterReducer'
 
 const VisibilityFilter = (props) => {
   const dispatch = useDispatch()
-  // name attribute is the same, so they form a button group where only one option can be selected
 
+  // name attribute is the same, so they form a button group where only one option can be selected
   return (
     <div>
       <div style={{ marginRight: '1rem' }}>
