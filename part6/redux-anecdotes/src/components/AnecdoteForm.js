@@ -8,9 +8,10 @@ const AnecdoteForm = () => {
   const addAnectode = (event) => {
     event.preventDefault()
     const anectode = event.target.anectode.value
+    if (!anectode) return null
     event.target.anectode.value = ''
     dispatch(createAnecdote(anectode))
-    dispatch(createNotification(`You created ${anectode}`))
+    dispatch(createNotification(`You created '${anectode}'`, 5))
   }
 
   return (
