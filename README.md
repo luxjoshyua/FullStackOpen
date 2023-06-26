@@ -18,6 +18,8 @@ Specific subjects are:
 
 The repo is a WIP that contains my solutions to the various exercises.
 
+Completed up to 6.15
+
 ### Certificate of Completion - Units 1 to 5
 
 <img src="./certificate-fullstack-josh-fielding.png" alt="Course Certificate" title="Course Certificate" style="width: 100%;">
