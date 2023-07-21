@@ -18,7 +18,7 @@ Specific subjects are:
 
 The repo is a WIP that contains my solutions to the various exercises.
 
-Completed up to 6.15
+Up to 6.2
 
 ### Certificate of Completion - Units 1 to 5
 
