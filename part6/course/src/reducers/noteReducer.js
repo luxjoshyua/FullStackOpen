@@ -1,60 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
+import noteService from '../services/notes'
 
-// const initialState = [
-//   {
-//     content: 'reducer defines how redux store works',
-//     important: true,
-//     id: 1,
-//   },
-//   {
-//     content: 'state of store can contain any data',
-//     important: false,
-//     id: 2,
-//   },
-// ]
-
-const generateId = () => Number((Math.random() * 1000000).toFixed(0))
-
-// reducer state must be composed of immutable objects
-// const noteReducer = (state = initialState, action) => {
-//   // console.log('ACTION: ', action)
-//   switch (action.type) {
-//     case 'NEW_NOTE':
-//       // using state.push breaks redux convention that reducers must always be pure functions
-//       // state.push changes the state of the state-object
-//       // state.concat creates a new array, which contains all the elements of the old array and the new element
-//       // state.push(action.payload)
-//       // return state
-//       // return state.concat(action.payload)
-//       return [...state, action.payload]
-//     case 'TOGGLE_IMPORTANCE': {
-//       const id = action.payload.id
-//       // search for a specific note object, the importance of which we want to change
-//       const noteToChange = state.find((n) => n.id === id)
-//       // create a new object, which is a copy of the original note,
-//       // only the value of the important field has been change to the
-//       // opposite of what it was
-//       const changedNote = {
-//         ...noteToChange,
-//         important: !noteToChange.important,
-//       }
-//       // new state is then returned
-//       // is created by taking all of the notes from the old state except
-//       // for the desired note, which is replaced with its slightly altered copy
-//       return state.map((note) => (note.id !== id ? note : changedNote))
-//     }
-//     default:
-//       return state
-//   }
-// }
+// const generateId = () => Number((Math.random() * 1000000).toFixed(0))
 
 const noteSlice = createSlice({
   name: 'notes',
   initialState: [],
   reducers: {
-    createNote(state, action) {
-      state.push(action.payload)
-    },
     toggleImportanceOf(state, action) {
       const id = action.payload
       const noteToChange = state.find((n) => n.id === id)
@@ -76,5 +28,25 @@ const noteSlice = createSlice({
   },
 })
 
-export const { createNote, toggleImportanceOf, appendNote, setNotes } = noteSlice.actions
+// initialisation logic for the notes has been completely separated from the React component,
+// much more elegant solution
+// this function replaces the noteService getAll we were using in index.js
+export const initializeNotes = () => {
+  return async (dispatch) => {
+    // fetch all notes from the server
+    const notes = await noteService.getAll()
+    // dispatch the setNotes action with the notes we received from the server, adding them to the Redux store
+    dispatch(setNotes(notes))
+  }
+}
+
+export const createNote = (content) => {
+  return async (dispatch) => {
+    const newNote = await noteService.createNew(content)
+    dispatch(appendNote(newNote))
+  }
+}
+
+export const { toggleImportanceOf, appendNote, setNotes } = noteSlice.actions
+
 export default noteSlice.reducer
