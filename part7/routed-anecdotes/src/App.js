@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMatch, Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { useField } from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -47,6 +48,14 @@ const AnecdoteList = ({ anecdotes }) => {
 }
 
 const Anecdote = ({ anecdote }) => {
+  if (!anecdote) {
+    return (
+      <div>
+        <p>anecdote not saved in state</p>
+      </div>
+    )
+  }
+
   const { content, author, info, votes } = anecdote
 
   return (
@@ -103,11 +112,16 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const contentField = useField('content')
+  const authorField = useField('author')
+  const infoField = useField('info')
+
   const [notification, setNotification] = useState('')
   const navigate = useNavigate()
+
+  const content = contentField.value
+  const author = authorField.value
+  const info = authorField.value
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -117,13 +131,20 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     })
-    setNotification(`Sucessfully created anecdote: ${content}`)
+
+    setNotification(`Sucessfully created anecdote = ${content}`)
     setTimeout(() => {
       setNotification('')
     }, 5000)
     setTimeout(() => {
       navigate('/anecdotes')
     }, 6000)
+  }
+
+  const handleReset = () => {
+    contentField.reset()
+    authorField.reset()
+    infoField.reset()
   }
 
   return (
@@ -134,17 +155,25 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name="content" value={content} onChange={(e) => setContent(e.target.value)} />
+          {/* <input name="content" value={content} onChange={(e) => setContent(e.target.value)} /> */}
+          <input {...contentField} reset={undefined} />
         </div>
         <div>
           author
-          <input name="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          {/* <input name="author" value={author} onChange={(e) => setAuthor(e.target.value)} /> */}
+          <input {...authorField} reset={undefined} />
         </div>
         <div>
           url for more info
-          <input name="info" value={info} onChange={(e) => setInfo(e.target.value)} />
+          {/* <input name="info" value={info} onChange={(e) => setInfo(e.target.value)} /> */}
+          <input {...infoField} reset={undefined} />
         </div>
-        <button>create</button>
+        <div style={{ display: 'flex' }}>
+          <button>create</button>
+          <button type="button" onClick={handleReset}>
+            reset
+          </button>
+        </div>
       </form>
     </div>
   )
@@ -197,8 +226,6 @@ const App = () => {
       <Routes>
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
         <Route path="anecdotes" element={<AnecdoteList anecdotes={anecdotes} />} />
-
-        {/* <Route path="/create" element={<CreateNew addNew={addNew} />} /> */}
 
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
 
