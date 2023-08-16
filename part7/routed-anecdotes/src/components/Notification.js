@@ -9,11 +9,7 @@ const Notification = ({ notification }) => {
   //   marginBottom: '1rem',
   // }
 
-  return (
-    <div className="container">
-      {notification && <Alert severity="success">{notification}</Alert>}
-    </div>
-  )
+  return <Container>{notification && <Alert severity="success">{notification}</Alert>}</Container>
 
   // return notification && <div style={style}>{notification}</div>
 }

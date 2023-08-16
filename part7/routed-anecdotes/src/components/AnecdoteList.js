@@ -16,7 +16,7 @@ const AnecdoteList = ({ anecdotes }) => {
   // )
 
   return (
-    <div>
+    <div style={{ paddingBottom: '2rem' }}>
       <h2>Anecdotes</h2>
       <TableContainer component={Paper}>
         <Table>
@@ -24,7 +24,9 @@ const AnecdoteList = ({ anecdotes }) => {
             {anecdotes.map((anecdote) => (
               <TableRow key={anecdote.id}>
                 <TableCell>
-                  <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+                  <Link to={`/anecdotes/${anecdote.id}`}>
+                    <span style={{ display: 'block', color: 'initial' }}>{anecdote.content}</span>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
