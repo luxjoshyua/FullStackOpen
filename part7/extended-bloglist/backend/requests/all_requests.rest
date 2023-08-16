@@ -1,0 +1,35 @@
+GET http://localhost:3003/api/blogs/
+###
+
+GET http://localhost:3003/api/blogs
+###
+
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2giLCJpZCI6IjY0Njk5YmJmNzViNWY4YTFhYzExOTc1NyIsImlhdCI6MTY4NDY0MzY2OSwiZXhwIjoxNjg0NjQ3MjY5fQ.H79sEz0P8i_42YTHM-5pdFE-xA0eTTcNeaCsNCDqLLw
+
+{
+  "title": "This is a test post that also belongs to Josh.",
+  "author": "Josh",
+  "url": "https://trotksy.com",
+  "likes": 1
+}
+###
+
+
+GET http://localhost:3003/api/blogs/:id
+###
+
+DELETE http://localhost:3003/api/blogs/:id
+###
+
+PUT http://localhost:3003/api/blogs/:id
+Content-Type: application/json
+
+{
+  "title": "My third awesome blog post.",
+  "author": "Rosa Luxemburg",
+  "url": "http://rosa-luxemburg.com",
+  "likes": 10
+}
+
