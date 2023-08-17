@@ -1,52 +1,56 @@
-import { useState } from 'react';
-import { Notification } from './Notification';
+import { useState } from "react";
 
-const BlogForm = ({ createBlog, successMessage }) => {
-	const [blogTitle, setBlogTitle] = useState('');
-	const [blogAuthor, setBlogAuthor] = useState('');
-	const [blogUrl, setBlogUrl] = useState('');
-	const [blogLikes, setBlogLikes] = useState(0);
+const BlogForm = ({ createBlog }) => {
+  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
 
-	const addBlog = (event) => {
-		event.preventDefault();
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setNewBlog({ ...newBlog, [name]: value });
+  };
 
-		createBlog({
-			title: blogTitle,
-			author: blogAuthor,
-			url: blogUrl,
-			likes: blogLikes
-		});
+  const handleCreateBlog = (event) => {
+    event.preventDefault();
+    createBlog(newBlog.title, newBlog.author, newBlog.url);
+    setNewBlog({ title: "", author: "", url: "" });
+  };
 
-		setBlogTitle('');
-		setBlogAuthor('');
-		setBlogUrl('');
-		setBlogLikes(0);
-	};
-
-	return (
-		<form onSubmit={addBlog} style={{ marginBottom: '.5rem' }}>
-			{successMessage && <Notification message={successMessage} success={true} />}
-			<div style={{ marginBottom: '.5rem' }} className="title">
-				title
-				<input type="text" id="title" value={blogTitle} name="blog title" onChange={(event) => setBlogTitle(event.target.value)} style={{ marginLeft: '.25rem' }} />
-			</div>
-			<div style={{ marginBottom: '.5rem' }} className="author">
-				author
-				<input type="text" id="author" value={blogAuthor} name="blog author" onChange={(event) => setBlogAuthor(event.target.value)} style={{ marginLeft: '.25rem' }} />
-			</div>
-			<div style={{ marginBottom: '.5rem' }} className="url">
-				url
-				<input type="text" id="url" value={blogUrl} name="blog url" onChange={(event) => setBlogUrl(event.target.value)} style={{ marginLeft: '.25rem' }} />
-			</div>
-			<div style={{ marginBottom: '.5rem' }} className="likes">
-				likes
-				<input type="number" id="likes" value={blogLikes} name="blog likes" onChange={(event) => setBlogLikes(event.target.value)} style={{ marginLeft: '.25rem' }} />
-			</div>
-			<button type="submit" id="create-btn">
-				create
-			</button>
-		</form>
-	);
+  return (
+    <div>
+      <h2>Create new blog</h2>
+      <form onSubmit={handleCreateBlog}>
+        <div>
+          title
+          <input
+            name="title"
+            type="text"
+            value={newBlog.title}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          author
+          <input
+            name="author"
+            type="text"
+            value={newBlog.author}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          url
+          <input
+            name="url"
+            type="text"
+            value={newBlog.url}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button id="create-blog-btn" type="submit">
+          create
+        </button>
+      </form>
+    </div>
+  );
 };
 
-export { BlogForm };
+export default BlogForm;

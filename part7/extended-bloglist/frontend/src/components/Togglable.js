@@ -1,44 +1,43 @@
-import PropTypes from 'prop-types';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from "react";
+import PropTypes from "prop-types";
 
-const Togglable = forwardRef((props, refs) => {
-	const [visible, setVisible] = useState(false);
+const Togglable = forwardRef((props, ref) => {
+  const [visible, setVisible] = useState(false);
 
-	const hideWhenVisible = { display: visible ? 'none' : '' };
-	const showWhenVisible = { display: visible ? '' : 'none' };
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
 
-	const toggleVisibility = () => {
-		setVisible(!visible);
-	};
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
 
-	// The useImperativeHandle hook is used to expose the toggleVisibility method to the parent component
-	useImperativeHandle(refs, () => {
-		return {
-			toggleVisibility
-		};
-	});
+  useImperativeHandle(ref, () => {
+    return {
+      toggleVisibility,
+    };
+  });
 
-	return (
-		<div style={{ marginBottom: '.5rem' }}>
-			<div style={hideWhenVisible}>
-				<button onClick={toggleVisibility} id={props.id}>
-					{props.buttonLabel}
-				</button>
-			</div>
-			<div style={showWhenVisible}>
-				{props.children}
-				<button onClick={toggleVisibility} style={{ marginBottom: '.5rem' }}>
-					cancel
-				</button>
-			</div>
-		</div>
-	);
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button id="new-blog-btn" onClick={toggleVisibility}>
+          {props.buttonLabel}
+        </button>
+      </div>
+      <div style={showWhenVisible}>
+        {props.children}
+        <button id="cancel-btn" onClick={toggleVisibility}>
+          cancel
+        </button>
+      </div>
+    </div>
+  );
 });
 
-Togglable.displayName = 'Togglable';
-
 Togglable.propTypes = {
-	buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
 };
 
-export { Togglable };
+Togglable.displayName = "Togglable";
+
+export default Togglable;

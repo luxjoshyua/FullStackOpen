@@ -1,14 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const PORT = process.env.PORT;
-
-const MONGO_URL =
-  process.env.NODE_ENV === 'test' ? process.env.MONGO_URL_TEST : process.env.MONGO_URL;
-
+const MONGODB_URI = process.env.MONGODB_URI;
 const SECRET = process.env.SECRET;
 
 module.exports = {
-  MONGO_URL,
+  MONGODB_URI,
   PORT,
   SECRET,
 };

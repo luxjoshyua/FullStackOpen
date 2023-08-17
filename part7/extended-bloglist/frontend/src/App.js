@@ -1,82 +1,134 @@
-import { useEffect, useRef, useState } from 'react';
-import { Blogs } from './components/Blogs';
-import { LoginForm } from './components/LoginForm';
-import { Togglable } from './components/Togglable';
+import { useState, useEffect, useRef } from "react";
 
-import blogService from './services/blogs';
-import loginService from './services/login';
+import Blog from "./components/Blog";
+import LoginForm from "./components/LoginForm";
+import Notification from "./components/Notification";
+import BlogForm from "./components/BlogForm";
+import Togglable from "./components/Togglable";
+
+import blogService from "./services/blogs";
+import loginService from "./services/login";
 
 const App = () => {
-	const [errorMessage, setErrorMessage] = useState('');
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const [user, setUser] = useState(null);
-	const [userId, setUserId] = useState('');
+  const [blogs, setBlogs] = useState([]);
+  const [message, setMessage] = useState(null);
+  const [user, setUser] = useState(null);
 
-	const loginFormRef = useRef();
+  useEffect(() => {
+    blogService.getAll().then((blogs) => setBlogs(blogs));
+  }, []);
 
-	// handle first loading of the page
-	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
-		if (loggedUserJSON) {
-			//  parse the JSON string back to a JavaScript object
-			const user = JSON.parse(loggedUserJSON);
-			// set the user stored in localStorage to the app state
-			setUser(user);
-			blogService.setToken(user.token);
-		}
-	}, []); // call the effect function only once when the component is rendered for the first time
+  // Clear notification after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [message]);
 
-	const handleLogin = async (event) => {
-		event.preventDefault();
-		try {
-			// if login is successful, the user object is saved to the state
-			// and the username and password fields are cleared
-			const user = await loginService.login({ username, password });
-			// save token to browser's local storage
-			// convert the object to a DOM string with JSON.stringify()
-			window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
-			blogService.setToken(user.token);
-			// save successful user login to app state
-			setUser(user);
-			setUserId(user.id);
-			setUsername('');
-			setPassword('');
-		} catch (exception) {
-			console.log(`login error: ${exception}`);
-			setErrorMessage('Wrong credentials');
-			setTimeout(() => {
-				setErrorMessage(null);
-			}, 5000);
-			setUsername('');
-			setPassword('');
-		}
-	};
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
 
-	const handleLogout = async () => {
-		try {
-			window.localStorage.clear();
-			setUser(null); // user still in state, may be a problem ?
-		} catch (exception) {
-			console.log(`logout error: ${exception}`);
-		}
-	};
+  const handleLogin = async (username, password) => {
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      setUser(user);
+    } catch (exception) {
+      setMessage("error" + exception.response.data.error);
+    }
+  };
 
-	console.log(`user in app.js: ${user}`);
+  const handleLogout = () => {
+    window.localStorage.clear();
+    setUser(null);
+  };
 
-	const loginForm = () => (
-		<Togglable buttonLabel="login" ref={loginFormRef}>
-			<LoginForm handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} message={errorMessage} />
-		</Togglable>
-	);
+  const createBlog = async (title, author, url) => {
+    try {
+      blogFormRef.current.toggleVisibility();
+      const blog = await blogService.create({
+        title,
+        author,
+        url,
+      });
+      setBlogs(blogs.concat(blog));
+      setMessage(`A new blog ${title} by ${author} added`);
+    } catch (exception) {
+      setMessage("error" + exception.response.data.error);
+    }
+  };
 
-	return (
-		<div>
-			<h1>Blogs</h1>
-			{!user && loginForm()}
-			<Blogs user={user} logout={handleLogout} userId={userId} />
-		</div>
-	);
+  const updateLikes = async (id, blogToUpdate) => {
+    try {
+      const updatedBlog = await blogService.update(id, blogToUpdate);
+      const newBlogs = blogs.map((blog) =>
+        blog.id === id ? updatedBlog : blog
+      );
+      setBlogs(newBlogs);
+    } catch (exception) {
+      setMessage("error" + exception.response.data.error);
+    }
+  };
+
+  const deleteBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId);
+
+      const updatedBlogs = blogs.filter((blog) => blog.id !== blogId);
+      setBlogs(updatedBlogs);
+      setMessage("Blog removed");
+    } catch (exception) {
+      setMessage("error" + exception.response.data.error);
+    }
+  };
+
+  const blogFormRef = useRef();
+
+  return (
+    <div>
+      <h1 className="header-title">Blogs</h1>
+      <Notification message={message} />
+      {user === null ? (
+        <LoginForm handleLogin={handleLogin} />
+      ) : (
+        <div>
+          <p>
+            <span className="active-user">{user.name}</span> logged in{" "}
+            <button id="logout-btn" onClick={handleLogout}>
+              logout
+            </button>
+          </p>
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={createBlog} />
+          </Togglable>
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateLikes={updateLikes}
+                deleteBlog={deleteBlog}
+                username={user.username}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default App;

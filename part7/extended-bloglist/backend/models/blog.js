@@ -1,24 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// establish the blogSchema
 const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
+  title: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
   likes: {
     type: Number,
     default: 0,
   },
-  // references are stored in both note and user documents (very different to relational databases);
-  // the note references the user who created it, and the user has an array of references
-  // to all of the notes created by them
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
 });
 
-blogSchema.set('toJSON', {
+blogSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -26,5 +31,4 @@ blogSchema.set('toJSON', {
   },
 });
 
-const Blog = mongoose.model('Blog', blogSchema);
-module.exports = Blog;
+module.exports = mongoose.model("Blog", blogSchema);

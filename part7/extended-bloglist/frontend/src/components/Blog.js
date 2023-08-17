@@ -1,70 +1,57 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-const Blog = ({ blog, updateBlog, deleteBlog, userId }) => {
-	const [blogActive, setBlogActive] = useState(false);
+const Blog = ({ blog, updateLikes, deleteBlog, username }) => {
+  const [visible, setVisible] = useState(false);
 
-	const handleBlogClick = () => {
-		setBlogActive(!blogActive);
-	};
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
 
-	const blogStyle = {
-		paddingTop: 10,
-		paddingLeft: 2,
-		border: 'solid',
-		borderWidth: 1,
-		marginBottom: 5
-	};
+  const handleLike = () => {
+    const blogToUpdate = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    };
+    updateLikes(blog.id, blogToUpdate);
+  };
 
-	const handleUpdate = (event) => {
-		event.preventDefault();
+  const handleDelete = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      deleteBlog(blog.id);
+    }
+  };
 
-		updateBlog({
-			...blog,
-			likes: blog.likes + 1
-		});
-	};
-
-	const removeBlog = () => deleteBlog(blog);
-
-	return (
-		<div style={blogStyle} className="blog-container">
-			<div style={{ marginBottom: '.5rem', display: 'flex' }}>
-				<div className="title" style={{ marginRight: '.25rem' }}>
-					blog title: {blog.title}
-				</div>
-				<div className="author">blog author: {blog.author} </div>
-			</div>
-			{!blogActive ? (
-				<div style={{ marginBottom: '.5rem' }}>
-					<button onClick={handleBlogClick} id="view-btn">
-						view
-					</button>
-				</div>
-			) : (
-				<div className="blogs">
-					<button onClick={handleBlogClick} style={{ marginBottom: '.5rem' }}>
-						hide
-					</button>
-					<div style={{ marginBottom: '.5rem' }}>Blog title: {blog.title}</div>
-					<div style={{ marginBottom: '.5rem' }} className="url">
-						Blog url: {blog.url}
-					</div>
-					<div style={{ marginBottom: '.5rem' }} className="likes" id="likes">
-						Blog likes: {blog.likes}{' '}
-						<button onClick={handleUpdate} id="like-btn">
-							like
-						</button>
-					</div>
-					<div style={{ marginBottom: '.5rem' }}>Blog author: {blog.author}</div>
-					{userId === blog.user.id ? (
-						<button onClick={removeBlog} id="remove-btn">
-							remove
-						</button>
-					) : null}
-				</div>
-			)}
-		</div>
-	);
+  return (
+    <div className="blog">
+      <div>
+        <span className="title">{blog.title} - </span>
+        <span className="author">{blog.author}</span>{" "}
+        <button id="view-btn" onClick={toggleVisibility}>
+          {visible ? "hide" : "show"}
+        </button>
+      </div>
+      {visible && (
+        <div className="blog-details">
+          <div>{blog.url}</div>
+          <div>
+            Likes: {blog.likes}{" "}
+            <button id="like-btn" onClick={handleLike}>
+              like
+            </button>{" "}
+          </div>
+          <div>{blog.user.name}</div>
+          {blog.user.username === username && (
+            <button id="delete-btn" onClick={handleDelete}>
+              delete
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
-export { Blog };
+export default Blog;

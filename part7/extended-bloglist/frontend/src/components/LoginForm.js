@@ -1,35 +1,51 @@
-import PropTypes from 'prop-types';
-import { Notification } from './Notification';
+import { useState } from "react";
+import PropTypes from "prop-types";
 
-const LoginForm = ({ handleLogin, username, setUsername, password, setPassword, message }) => {
-	return (
-		<div>
-			{message && <Notification className="error" message={message} />}
-			<form onSubmit={handleLogin} style={{ paddingBottom: '2rem' }}>
-				<h2>log in to application</h2>
-				<div style={{ marginBottom: '.5rem' }}>
-					username
-					<input type="text" value={username} name="username" id="username" onChange={({ target }) => setUsername(target.value)} style={{ marginLeft: '.25rem' }} />
-				</div>
-				<div style={{ marginBottom: '.5rem' }}>
-					password
-					<input type="password" value={password} name="password" id="password" onChange={({ target }) => setPassword(target.value)} style={{ marginLeft: '.25rem' }} />
-				</div>
-				<button type="submit" id="submit-btn">
-					login
-				</button>
-			</form>
-		</div>
-	);
+const LoginForm = ({ handleLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    handleLogin(username, password);
+    setUsername("");
+    setPassword("");
+  };
+
+  return (
+    <div>
+      <h2>Log in to application</h2>
+      <form onSubmit={onSubmit}>
+        <div>
+          username
+          <input
+            id="username"
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            id="password"
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button id="login-btn" type="submit">
+          login
+        </button>
+      </form>
+    </div>
+  );
 };
 
 LoginForm.propTypes = {
-	handleLogin: PropTypes.func.isRequired,
-	setUsername: PropTypes.func.isRequired,
-	setPassword: PropTypes.func.isRequired,
-	username: PropTypes.string.isRequired,
-	password: PropTypes.string.isRequired,
-	message: PropTypes.string
+  handleLogin: PropTypes.func.isRequired,
 };
 
-export { LoginForm };
+export default LoginForm;

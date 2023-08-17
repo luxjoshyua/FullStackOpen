@@ -1,9 +1,11 @@
-const Notification = ({ message, success }) => {
-	// if no value in message prop, return
-	if (message === null) {
-		return null;
-	}
-	return <div className={success === true ? 'success' : 'error'}>{message}</div>;
+const Notification = ({ message }) => {
+  if (message === null) return null;
+
+  if (message.includes("error")) {
+    return <div className="error">{message.substring(5)}</div>;
+  }
+
+  return <div className="success">{message}</div>;
 };
 
-export { Notification };
+export default Notification;

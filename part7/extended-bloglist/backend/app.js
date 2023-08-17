@@ -1,69 +1,41 @@
-const config = require('./utils/config')
-const express = require('express')
-const app = express()
-const cors = require('cors')
+const config = require("./utils/config");
+const express = require("express");
+require("express-async-errors");
+const app = express();
+const cors = require("cors");
+const usersRouter = require("./controllers/users");
+const blogsRouter = require("./controllers/blogs");
+const loginRouter = require("./controllers/login");
+const middleware = require("./utils/middleware");
+const logger = require("./utils/logger");
+const mongoose = require("mongoose");
 
-const blogRouter = require('./controllers/blog')
-const usersRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
-const homeRouter = require('./controllers/home')
+logger.info("connecting to MongoDB");
 
-const {
-  requestLogger,
-  unknownEndpoint,
-  errorHandler,
-  tokenExtractor,
-  userExtractor,
-} = require('./utils/middleware')
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info("connected to MongoDB");
+  })
+  .catch((error) => {
+    logger.error("error connecting to MongoDB:", error.message);
+  });
 
-const { info } = require('./utils/logger')
+app.use(cors());
+app.use(express.json());
+app.use(middleware.requestLogger);
+app.use(middleware.tokenExtractor);
 
-const mongoose = require('mongoose')
-const morgan = require('morgan')
-require('dotenv').config()
-require('express-async-errors')
+app.use("/api/users", usersRouter);
+app.use("/api/blogs", middleware.userExtractor, blogsRouter);
+app.use("/api/login", loginRouter);
 
-mongoose.set('strictQuery', false)
-
-const url = config.MONGO_URL
-info(`URL in use: ${url}`)
-
-// establish database connection
-const connect = async () => {
-  info(`Connecting to database...`)
-  await mongoose.connect(url)
-  info(`Connected to database!`)
+if (process.env.NODE_ENV === "test") {
+  const testingRouter = require("./controllers/testing");
+  app.use("/api/testing", testingRouter);
 }
 
-const main = async () => {
-  await connect()
-}
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
-main()
-
-app.use(cors())
-app.use(express.json())
-// log with morgan
-app.use(morgan('tiny'))
-
-app.use(requestLogger)
-app.use(tokenExtractor)
-
-app.use('/api/users', usersRouter)
-app.use('/api/login', loginRouter)
-// register the userExtractor middleware so it only executes when a request is made to /api/blogs route
-app.use('/api/blogs', userExtractor, blogRouter)
-app.use('/', homeRouter)
-
-// only run if application is in testing mode
-if (process.env.NODE_ENV === 'test') {
-  const testingRouter = require('./controllers/testing')
-  app.use('/api/testing', testingRouter)
-}
-
-app.use(unknownEndpoint)
-// handler of requests with results to errors
-// has to be the last loaded middleware!
-app.use(errorHandler)
-
-module.exports = app
+module.exports = app;

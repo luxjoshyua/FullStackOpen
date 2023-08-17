@@ -1,79 +1,58 @@
+const lodash = require("lodash");
+
 const dummy = (blogs) => {
-  if (!blogs) return;
-  // receives an array of blog posts as a parameter, and always returns the value 1
   return 1;
 };
 
 const totalLikes = (blogs) => {
-  if (!blogs) return;
-  // blogs is an array of objects
-  let total = 0;
-  blogs.map((blog) => {
-    total += Number(blog.likes);
-  });
-  return total;
-
-  // OR using accumulator
-  // const totalLikes = blogs.reduce((acc, blog) => acc + Number(blog.likes), 0)
-  // return totalLikes
+  return blogs.length === 0
+    ? 0
+    : blogs.reduce((sum, post) => sum + post.likes, 0);
 };
 
-const favouriteBlog = (blogs) => {
-  if (!blogs) return;
-  // max is the blog that has the most likes so far. If blog has mores votes than max, then it becomes max
-  // on the next iteration, and so on until the end of the array is reached
-  const mostLikes = blogs.reduce((max, blog) => (max.likes > blog.likes ? max : blog));
-  return mostLikes;
+const favoriteBlog = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const mostLiked = blogs.reduce((prev, curr) => {
+    return prev.likes > curr.likes ? prev : curr;
+  });
+
+  return {
+    title: mostLiked.title,
+    author: mostLiked.author,
+    likes: mostLiked.likes,
+  };
 };
 
 const mostBlogs = (blogs) => {
-  if (!blogs) return;
-  // function returns the author who has the largest amount of blogs
-  // function also returns the number of blogs the top author has all in one object
-  let highestAuthor = blogs.reduce((max, blog) => (max.author > blog.author ? max : blog.author));
+  if (blogs.length === 0) return null;
 
-  let result = blogs.reduce((acc, o) => ((acc[o.author] = (acc[o.author] || 0) + 1), acc), {});
-  const max = Math.max.apply(null, Object.values(result));
+  const authorCount = lodash.countBy(blogs, "author");
 
-  const total = {
-    author: highestAuthor,
-    blogs: max,
+  const topAuthor = Object.keys(authorCount).reduce((a, b) => {
+    return authorCount[a] > authorCount[b] ? a : b;
+  });
+
+  return {
+    author: topAuthor,
+    blogs: authorCount[topAuthor],
   };
-
-  return total;
 };
 
 const mostLikes = (blogs) => {
-  if (!blogs) return;
-  // function returns the author whose blog posts have the largest amount of likes
-  // function also returns the total number of likes the author has received
-  // e.g. {
-  //   author: "Edsger W. Dijkstra",
-  //   likes: 17
-  // }
+  if (blogs.length === 0) return null;
 
-  // get the object with just the values we need: author, likes
-  let authorLikes = blogs.reduce((op, { author, likes }) => {
-    op[author] = op[author] || 0;
-    op[author] += likes;
-    return op;
-  }, {});
+  const likesCount = lodash(blogs)
+    .groupBy("author")
+    .map((objs, key) => ({
+      author: key,
+      likes: lodash.sumBy(objs, "likes"),
+    }))
+    .value();
 
-  let highestLikes = Math.max(...Object.values(authorLikes));
-  let highestAuthor = Object.keys(authorLikes).find((key) => authorLikes[key] === highestLikes);
-
-  const total = {
-    author: highestAuthor,
-    likes: highestLikes,
-  };
-
-  return total;
+  return likesCount.reduce((a, b) => {
+    return a.likes > b.likes ? a : b;
+  });
 };
 
-module.exports = {
-  dummy,
-  totalLikes,
-  favouriteBlog,
-  mostBlogs,
-  mostLikes,
-};
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };

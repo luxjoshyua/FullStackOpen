@@ -1,81 +1,62 @@
-import '@testing-library/jest-dom/extend-expect';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import React from 'react';
-import { Blog } from './Blog';
+import React from "react";
+import "@testing-library/jest-dom/extend-expect";
+import { render, fireEvent } from "@testing-library/react";
+import Blog from "./Blog";
 
-describe('<Blog /> component', () => {
-	test('renders the blogs title and author, but not url or likes, by default', () => {
-		const blog = {
-			title: 'test blog title',
-			author: 'josh',
-			url: 'www.google.com',
-			likes: 5
-		};
+describe("<Blog />", () => {
+  const blog = {
+    title: "Title",
+    author: "Author",
+    url: "https://www.test.com/",
+    likes: 0,
+    user: {
+      username: "username",
+      name: "name",
+    },
+  };
 
-		const { container } = render(<Blog blog={blog} />);
+  let component;
+  const likeMockHandler = jest.fn();
 
-		const title = container.querySelector('.title');
-		const author = container.querySelector('.author');
+  beforeEach(() => {
+    component = render(
+      <Blog key={blog.id} blog={blog} updateLikes={likeMockHandler} />
+    );
+  });
 
-		expect(title).toBeDefined();
-		expect(author).toBeDefined();
+  test("renders title and author but not url or likes by default", () => {
+    expect(component.container.querySelector(".title")).toHaveTextContent(
+      blog.title
+    );
+    expect(component.container.querySelector(".author")).toHaveTextContent(
+      blog.author
+    );
+    expect(component.queryByText(blog.url)).not.toBeInTheDocument();
+    expect(component.queryByText("like")).not.toBeInTheDocument();
+  });
 
-		const url = container.querySelector('.url');
-		const likes = container.querySelector('.likes');
+  test("at start the children are not displayed", () => {
+    const details = component.container.querySelector(".blog-details");
 
-		expect(url).toBeNull();
-		expect(likes).toBeNull();
-	});
+    expect(details).toEqual(null);
+  });
 
-	test('blogs url and number of likes are shown when button showing details has been clicked', async () => {
-		const blog = {
-			title: 'test blog title',
-			author: 'josh',
-			url: 'www.google.com',
-			likes: 5
-		};
+  test("renders blog details when view button is clicked", () => {
+    const button = component.container.querySelector("button");
+    fireEvent.click(button);
 
-		const { container } = render(<Blog blog={blog} />);
+    const blogDetails = component.container.querySelector(".blog-details");
+    expect(blogDetails).toBeInTheDocument();
+  });
 
-		const user = userEvent.setup();
+  test("if the Like button is clicked twice, the event handler is also called twice", () => {
+    const viewButton = component.getByText("show");
+    fireEvent.click(viewButton);
 
-		const button = screen.getByText('view');
+    const likeButton = component.getByText("like");
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
 
-		await user.click(button);
-
-		const url = container.querySelector('.url');
-		const likes = container.querySelector('.likes');
-
-		expect(url).toBeDefined();
-		expect(likes).toBeDefined();
-	});
-
-	test('if the like button is clicked twice, the event handler the component received as props is called twice', async () => {
-		const blog = {
-			title: 'test blog title',
-			author: 'josh',
-			url: 'www.google.com',
-			likes: 5
-		};
-
-		const mockHandler = jest.fn();
-
-		const { container } = render(<Blog blog={blog} updateBlog={mockHandler} />);
-
-		const user = userEvent.setup();
-		const viewButton = screen.getByText('view');
-		await user.click(viewButton);
-
-		const likeButton = container.querySelector('#like-btn');
-		await user.click(likeButton);
-
-		expect(mockHandler.mock.calls).toHaveLength(1);
-
-		await user.click(likeButton);
-
-		expect(mockHandler.mock.calls).toHaveLength(2);
-	});
-
-	test('form calls the event handler it received as props with the right details when a new blog is created', async () => {});
+    expect(likeMockHandler.mock.calls).toHaveLength(2);
+  });
 });

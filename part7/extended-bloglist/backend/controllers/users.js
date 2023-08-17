@@ -1,49 +1,54 @@
-const bcrypt = require('bcrypt');
-const usersRouter = require('express').Router();
-const User = require('../models/user');
+const bcrypt = require("bcrypt");
+const usersRouter = require("express").Router();
+const User = require("../models/user");
 
-usersRouter.get('/', async (request, response) => {
-  // http://mongoosejs.com/docs/populate.html
-  // populate() lets us reference documents in other collections
-  const users = await User.find({}).populate('blogs', { title: 1, author: 1, url: 1, likes: 1 });
+usersRouter.get("/", async (request, response) => {
+  const users = await User.find({}).populate("blogs", {
+    title: 1,
+    author: 1,
+    url: 1,
+  });
   response.json(users);
-  // response.json(users.map((u) => u.toJSON()));
 });
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.get("/:id", async (request, response) => {
+  const user = await User.findById(request.params.id);
+
+  if (user) {
+    response.json(user.toJSON());
+  } else {
+    response.status(404).end();
+  }
+});
+
+usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
 
-  // check both username and password are provided
-  if (username === undefined || password === undefined) {
-    return response.status(401).json({
-      error: 'both username and password must be given',
+  if (!(username && password)) {
+    return response.status(400).json({
+      error: "username and password are required",
     });
   }
 
-  // check both username and password are >= 3 characters long
   if (username.length < 3 || password.length < 3) {
-    return response.status(401).json({
-      error: 'username and password must be both 3 characters or more in length',
+    return response.status(400).json({
+      error: "username and password must be at least 3 characters long",
     });
   }
 
-  // check the username is unique
-  const foundUser = await User.findOne({ username });
-  if (foundUser) {
-    return response.status(401).json({
-      error: 'username must be unique',
+  const existingUser = await User.findOne({ username });
+  if (existingUser) {
+    return response.status(400).json({
+      error: "username must be unique",
     });
   }
 
-  // salt is a random string, hash the password 10 rounds
-  // 10 is the default value
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
   const user = new User({
     username,
     name,
-    // store the hashed password in the db, not the original!
     passwordHash,
   });
 
