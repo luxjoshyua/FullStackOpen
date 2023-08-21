@@ -1,11 +1,29 @@
-const Notification = ({ message }) => {
-  if (message === null) return null;
+import { useSelector } from 'react-redux'
 
-  if (message.includes("error")) {
-    return <div className="error">{message.substring(5)}</div>;
-  }
+const Notification = () => {
+	const notification = useSelector((state) => state.notification)
 
-  return <div className="success">{message}</div>;
-};
+	console.log(`notification`, notification)
 
-export default Notification;
+	const styleSuccess = {
+		border: '2px solid green',
+		background: 'turquoise',
+		padding: 10,
+		borderWidth: 1,
+		marginBottom: '1rem'
+	}
+
+	const styleError = { ...styleSuccess, border: '2px solid red', background: 'orange' }
+
+	if (notification.message === '') {
+		return null
+	}
+
+	return (
+		<div className="notification" style={notification.error ? styleError : styleSuccess}>
+			<span style={{ display: 'block' }}>{notification.message}</span>
+		</div>
+	)
+}
+
+export default Notification

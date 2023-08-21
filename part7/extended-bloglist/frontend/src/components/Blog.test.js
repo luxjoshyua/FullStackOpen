@@ -20,16 +20,16 @@ describe("<Blog />", () => {
 
   beforeEach(() => {
     component = render(
-      <Blog key={blog.id} blog={blog} updateLikes={likeMockHandler} />
+      <Blog key={blog.id} blog={blog} updateLikes={likeMockHandler} />,
     );
   });
 
   test("renders title and author but not url or likes by default", () => {
     expect(component.container.querySelector(".title")).toHaveTextContent(
-      blog.title
+      blog.title,
     );
     expect(component.container.querySelector(".author")).toHaveTextContent(
-      blog.author
+      blog.author,
     );
     expect(component.queryByText(blog.url)).not.toBeInTheDocument();
     expect(component.queryByText("like")).not.toBeInTheDocument();
