@@ -52,8 +52,8 @@ const App = () => {
 			blogService.setToken(user.token)
 			setUser(user)
 		} catch (exception) {
-			// setMessage('error' + exception.response.data.error)
-			console.log('exception in handleLogin' + exception.response.data.error)
+			dispatch(setNotification(`exception in handleLogin ${exception.response.data.error}`, true))
+			// console.log('exception in handleLogin' + exception.response.data.error)
 		}
 	}
 
@@ -71,11 +71,10 @@ const App = () => {
 				url
 			})
 			setBlogs(blogs.concat(blog))
-			// setMessage(`A new blog ${title} by ${author} added`)
-			dispatch(setNotification(`A new blog ${title} by ${author} added`))
+			dispatch(setNotification(`A new blog tile: ${title} by author: ${author} added`))
 		} catch (exception) {
-			// setMessage('error' + exception.response.data.error)
-			console.log('exception in createBlog' + exception.response.data.error)
+			dispatch(setNotification(`exception in createBlog ${exception.response.data.error}`, true))
+			// console.log('exception in createBlog' + exception.response.data.error)
 		}
 	}
 
@@ -85,21 +84,19 @@ const App = () => {
 			const newBlogs = blogs.map((blog) => (blog.id === id ? updatedBlog : blog))
 			setBlogs(newBlogs)
 		} catch (exception) {
-			console.log('exception in updateLikes' + exception.response.data.error)
-			// setMessage('error' + exception.response.data.error)
+			dispatch(`exception in updateLikes ${exception.response.data.error}`, true)
+			// console.log('exception in updateLikes' + exception.response.data.error)
 		}
 	}
 
 	const deleteBlog = async (blogId) => {
 		try {
 			await blogService.remove(blogId)
-
 			const updatedBlogs = blogs.filter((blog) => blog.id !== blogId)
 			setBlogs(updatedBlogs)
-			// setMessage('Blog removed')
 		} catch (exception) {
-			console.log('exception in deleteBlog' + exception.response.data.error)
-			// setMessage('error' + exception.response.data.error)
+			dispatch(`exception in deleteBlog' ${exception.response.data.error}`, true)
+			// console.log('exception in deleteBlog' + exception.response.data.error)
 		}
 	}
 
@@ -108,7 +105,6 @@ const App = () => {
 	return (
 		<div>
 			<h1 className="header-title">Blogs</h1>
-			{/* <Notification message={message} /> */}
 			<Notification className="notification" />
 			{user === null ? (
 				<LoginForm handleLogin={handleLogin} />
