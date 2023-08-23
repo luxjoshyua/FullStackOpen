@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -11,17 +11,25 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
+import { initialiseBlogs } from './reducers/blogReducer'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([])
+	// const [blogs, setBlogs] = useState([])
 	// const [message, setMessage] = useState(null)
+	const blogs = useSelector((state) => [...state.blogs]) // spread the state to get object into a new array
+
 	const [user, setUser] = useState(null)
 
 	const dispatch = useDispatch()
 
+	// useEffect(() => {
+	// 	blogService.getAll().then((blogs) => setBlogs(blogs))
+	// }, [])
+
 	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs))
-	}, [])
+		// initialiseUser here too
+		dispatch(initialiseBlogs())
+	}, [dispatch])
 
 	// Clear notification after 5 seconds
 	// useEffect(() => {
@@ -53,7 +61,6 @@ const App = () => {
 			setUser(user)
 		} catch (exception) {
 			dispatch(setNotification(`exception in handleLogin ${exception.response.data.error}`, true))
-			// console.log('exception in handleLogin' + exception.response.data.error)
 		}
 	}
 
@@ -70,11 +77,10 @@ const App = () => {
 				author,
 				url
 			})
-			setBlogs(blogs.concat(blog))
+			// setBlogs(blogs.concat(blog))
 			dispatch(setNotification(`A new blog tile: ${title} by author: ${author} added`))
 		} catch (exception) {
 			dispatch(setNotification(`exception in createBlog ${exception.response.data.error}`, true))
-			// console.log('exception in createBlog' + exception.response.data.error)
 		}
 	}
 
@@ -82,10 +88,9 @@ const App = () => {
 		try {
 			const updatedBlog = await blogService.update(id, blogToUpdate)
 			const newBlogs = blogs.map((blog) => (blog.id === id ? updatedBlog : blog))
-			setBlogs(newBlogs)
+			// setBlogs(newBlogs)
 		} catch (exception) {
 			dispatch(`exception in updateLikes ${exception.response.data.error}`, true)
-			// console.log('exception in updateLikes' + exception.response.data.error)
 		}
 	}
 
@@ -93,10 +98,9 @@ const App = () => {
 		try {
 			await blogService.remove(blogId)
 			const updatedBlogs = blogs.filter((blog) => blog.id !== blogId)
-			setBlogs(updatedBlogs)
+			// setBlogs(updatedBlogs)
 		} catch (exception) {
 			dispatch(`exception in deleteBlog' ${exception.response.data.error}`, true)
-			// console.log('exception in deleteBlog' + exception.response.data.error)
 		}
 	}
 
@@ -124,6 +128,9 @@ const App = () => {
 						.map((blog) => (
 							<Blog key={blog.id} blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} username={user.username} />
 						))}
+					{/* {blogs.map((blog) => (
+						<div>{blog}</div>
+					))} */}
 				</div>
 			)}
 		</div>

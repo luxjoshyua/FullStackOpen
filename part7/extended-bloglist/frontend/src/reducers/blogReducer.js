@@ -15,7 +15,6 @@ const blogSlice = createSlice({
 			const blog = action.payload
 			state.push(blog)
 		},
-
 		// like
 		like(state, action) {
 			const id = action.payload
@@ -37,6 +36,18 @@ const blogSlice = createSlice({
 
 // initialiseBlogs
 // use the set in here
+// do the blogs sort here
+export const initialiseBlogs = (content) => {
+	return async (dispatch) => {
+		// fetch all blogs from the server
+		const blogs = await blogService.getAll()
+		// sort the blogs here so doesn't crash app
+		const sortedBlogs = blogs.sort((a, b) => (b.likes = a.likes))
+		// console.log(blogs)
+		// dispatch the set action with the blogs we received from the server, adding them to the redux store
+		dispatch(set(sortedBlogs))
+	}
+}
 
 // createBlogs
 // use the add in here
@@ -48,3 +59,5 @@ const blogSlice = createSlice({
 // use the remove in here
 
 export const { set, add, like, remove } = blogSlice.actions
+
+export default blogSlice.reducer
