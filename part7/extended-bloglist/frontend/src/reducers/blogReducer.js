@@ -37,26 +37,49 @@ const blogSlice = createSlice({
 // initialiseBlogs
 // use the set in here
 // do the blogs sort here
-export const initialiseBlogs = (content) => {
+export const initialiseBlogs = () => {
 	return async (dispatch) => {
 		// fetch all blogs from the server
 		const blogs = await blogService.getAll()
 		// sort the blogs here so doesn't crash app
-		const sortedBlogs = blogs.sort((a, b) => (b.likes = a.likes))
+		// const sortedBlogs = blogs.sort((a, b) => (b.likes = a.likes))
 		// console.log(blogs)
 		// dispatch the set action with the blogs we received from the server, adding them to the redux store
-		dispatch(set(sortedBlogs))
+		// dispatch(set(sortedBlogs))
+		dispatch(set(blogs))
 	}
 }
 
-// createBlogs
+// createBlog
 // use the add in here
+export const createBlog = (content) => {
+	return async (dispatch) => {
+		const newBlog = await blogService.create(content)
+		dispatch(add(newBlog))
+	}
+}
 
 // likeBlog
 // use the like in here
+export const likeBlog = (blog) => {
+	return async (dispatch) => {
+		await blogService.update(blog.id, {
+			...blog,
+			user: blog.user.id,
+			likes: blog.likes + 1
+		})
+		dispatch(like(blog.id))
+	}
+}
 
 // removeBlog
 // use the remove in here
+export const removeBlog = (blog) => {
+	return async (dispatch) => {
+		await blogService.remove(blog.id)
+		dispatch(remove(blog.id))
+	}
+}
 
 export const { set, add, like, remove } = blogSlice.actions
 

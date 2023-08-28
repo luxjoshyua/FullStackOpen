@@ -11,20 +11,13 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initialiseBlogs } from './reducers/blogReducer'
+import { initialiseBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-	// const [blogs, setBlogs] = useState([])
-	// const [message, setMessage] = useState(null)
 	const blogs = useSelector((state) => [...state.blogs]) // spread the state to get object into a new array
-
 	const [user, setUser] = useState(null)
 
 	const dispatch = useDispatch()
-
-	// useEffect(() => {
-	// 	blogService.getAll().then((blogs) => setBlogs(blogs))
-	// }, [])
 
 	useEffect(() => {
 		// initialiseUser here too
@@ -69,15 +62,10 @@ const App = () => {
 		setUser(null)
 	}
 
-	const createBlog = async (title, author, url) => {
+	const addBlog = async (title, author, url) => {
 		try {
 			blogFormRef.current.toggleVisibility()
-			const blog = await blogService.create({
-				title,
-				author,
-				url
-			})
-			// setBlogs(blogs.concat(blog))
+			dispatch(createBlog({ title, author, url, user }))
 			dispatch(setNotification(`A new blog tile: ${title} by author: ${author} added`))
 		} catch (exception) {
 			dispatch(setNotification(`exception in createBlog ${exception.response.data.error}`, true))
@@ -121,16 +109,13 @@ const App = () => {
 						</button>
 					</p>
 					<Togglable buttonLabel="new blog" ref={blogFormRef}>
-						<BlogForm createBlog={createBlog} />
+						<BlogForm createBlog={addBlog} />
 					</Togglable>
 					{blogs
 						.sort((a, b) => b.likes - a.likes)
 						.map((blog) => (
 							<Blog key={blog.id} blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} username={user.username} />
 						))}
-					{/* {blogs.map((blog) => (
-						<div>{blog}</div>
-					))} */}
 				</div>
 			)}
 		</div>
