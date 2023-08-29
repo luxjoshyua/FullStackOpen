@@ -24,34 +24,26 @@ const blogSlice = createSlice({
 				likes: blogToChange.votes + 1
 			}
 			// console.log(JSON.parse(JSON.stringify(state)))
-			return state.map((blog) => (blog.id !== id ? changedBlog : blog))
+			return state.map((blog) => (blog.id === id ? changedBlog : blog))
 		},
 		// remove
 		remove(state, action) {
-			const blogToRemove = action.payload
-			return state.filter((blog) => blog.id !== blogToRemove)
+			const id = action.payload
+			return state.filter((blog) => blog.id !== id)
 		}
 	}
 })
 
 // initialiseBlogs
-// use the set in here
-// do the blogs sort here
 export const initialiseBlogs = () => {
 	return async (dispatch) => {
 		// fetch all blogs from the server
 		const blogs = await blogService.getAll()
-		// sort the blogs here so doesn't crash app
-		// const sortedBlogs = blogs.sort((a, b) => (b.likes = a.likes))
-		// console.log(blogs)
-		// dispatch the set action with the blogs we received from the server, adding them to the redux store
-		// dispatch(set(sortedBlogs))
 		dispatch(set(blogs))
 	}
 }
 
 // createBlog
-// use the add in here
 export const createBlog = (content) => {
 	return async (dispatch) => {
 		const newBlog = await blogService.create(content)
@@ -60,7 +52,6 @@ export const createBlog = (content) => {
 }
 
 // likeBlog
-// use the like in here
 export const likeBlog = (blog) => {
 	return async (dispatch) => {
 		await blogService.update(blog.id, {
@@ -73,7 +64,6 @@ export const likeBlog = (blog) => {
 }
 
 // removeBlog
-// use the remove in here
 export const removeBlog = (blog) => {
 	return async (dispatch) => {
 		await blogService.remove(blog.id)
