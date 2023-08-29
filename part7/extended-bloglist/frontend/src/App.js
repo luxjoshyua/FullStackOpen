@@ -27,7 +27,7 @@ const App = () => {
 		try {
 			blogFormRef.current.toggleVisibility()
 			dispatch(createBlog({ title, author, url, user }))
-			dispatch(setNotification(`A new blog tile: ${title} by author: ${author} added`))
+			dispatch(setNotification(`A new blog title - ${title} - by author - ${author} - added`))
 		} catch (exception) {
 			dispatch(setNotification(`exception in createBlog ${exception.response.data.error}`, true))
 		}
@@ -53,7 +53,7 @@ const App = () => {
 						<BlogForm createBlog={addBlog} />
 					</Togglable>
 					{blogs
-						.sort((a, b) => b.likes - a.likes)
+						// .sort((a, b) => b.likes - a.likes)
 						.map((blog) => (
 							<Blog key={blog.id} blog={blog} username={user.username} />
 						))}

@@ -18,13 +18,9 @@ const blogSlice = createSlice({
 		// like
 		like(state, action) {
 			const id = action.payload
-			const blogToChange = state.find((blog) => blog.id === id)
-			const changedBlog = {
-				...blogToChange,
-				likes: blogToChange.votes + 1
-			}
-			// console.log(JSON.parse(JSON.stringify(state)))
-			return state.map((blog) => (blog.id === id ? changedBlog : blog))
+			const blog = state.find((b) => b.id === id)
+			const updatedBlog = { ...blog, likes: blog.likes + 1 }
+			return state.map((b) => (b.id === id ? updatedBlog : b))
 		},
 		// remove
 		remove(state, action) {
