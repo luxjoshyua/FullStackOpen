@@ -1,20 +1,25 @@
 import { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { BrowserRouter as Router, Routes, Route, Link, useMatch } from 'react-router-dom'
+import { Container } from '@mui/material'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
+import User from './components/User'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initialiseBlogs, createBlog } from './reducers/blogReducer'
 import { initializeUser, logOutUser } from './reducers/userReducer'
 
 const App = () => {
-	// need to sort the blogs here
-	const blogs = useSelector((state) => [...state.blogs]) // spread the state to get object into a new array
+	// const blogs = useSelector((state) => [...state.blogs])
+	const blogs = useSelector((state) => [...state.blogs].sort((a, b) => b.likes - a.likes)) // spread the state to get object into a new array
 	const user = useSelector((state) => state.user)
+	const users = useSelector((state) => state.users)
 
 	const dispatch = useDispatch()
 
@@ -35,31 +40,74 @@ const App = () => {
 
 	const blogFormRef = useRef()
 
+	// return (
+	// 	<div>
+	// 		<h1 className="header-title">Blogs</h1>
+	// 		<Notification className="notification" />
+	// 		{user === null ? (
+	// 			<LoginForm />
+	// 		) : (
+	// 			<Routes>
+	// 				<Route
+	// 					path="/"
+	// 					element={
+	// 						<div>
+	// 							<p>
+	// 								<span className="active-user">{user.name}</span> logged in{' '}
+	// 								<button id="logout-btn" onClick={() => dispatch(logOutUser())}>
+	// 									logout
+	// 								</button>
+	// 							</p>
+	// 							<Togglable buttonLabel="new blog" ref={blogFormRef}>
+	// 								<BlogForm createBlog={addBlog} />
+	// 							</Togglable>
+	// 							{blogs.map((blog) => (
+	// 								<Blog key={blog.id} blog={blog} username={user.username} />
+	// 							))}
+	// 						</div>
+	// 					}
+	// 				/>
+	// 			</Routes>
+	// 		)}
+	// 	</div>
+	// )
+
 	return (
-		<div>
-			<h1 className="header-title">Blogs</h1>
-			<Notification className="notification" />
+		<Container>
 			{user === null ? (
 				<LoginForm />
 			) : (
 				<div>
-					<p>
-						<span className="active-user">{user.name}</span> logged in{' '}
-						<button id="logout-btn" onClick={() => dispatch(logOutUser())}>
-							logout
-						</button>
-					</p>
-					<Togglable buttonLabel="new blog" ref={blogFormRef}>
-						<BlogForm createBlog={addBlog} />
-					</Togglable>
-					{blogs
-						// .sort((a, b) => b.likes - a.likes)
-						.map((blog) => (
-							<Blog key={blog.id} blog={blog} username={user.username} />
-						))}
+					<h1 className="header-title">Blogs</h1>
+					<Notification className="notification" />
+					<div>
+						<p>
+							<span className="active-user">User {user.name}</span> logged in{' '}
+							<button id="logout-btn" onClick={() => dispatch(logOutUser())}>
+								logout
+							</button>
+						</p>
+					</div>
+					<Routes>
+						<Route
+							path="/"
+							element={
+								<div>
+									<Togglable buttonLabel="new blog" ref={blogFormRef}>
+										<BlogForm createBlog={addBlog} />
+									</Togglable>
+									{blogs.map((blog) => (
+										<Blog key={blog.id} blog={blog} username={user.username} />
+									))}
+								</div>
+							}
+						/>
+						<Route path="/users/:id" element={<User />} />
+						<Route path="/users" element={<Users />} />
+					</Routes>
 				</div>
 			)}
-		</div>
+		</Container>
 	)
 }
 

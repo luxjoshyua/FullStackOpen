@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import blogService from '../services/users'
+import userService from '../services/users'
 
 const usersSlice = createSlice({
 	name: 'users',
@@ -13,7 +13,7 @@ const usersSlice = createSlice({
 
 export const initializeUsers = () => {
 	return async (dispatch) => {
-		const users = await blogService.getAll()
+		const users = await userService.getAll()
 		dispatch(set(users))
 	}
 }

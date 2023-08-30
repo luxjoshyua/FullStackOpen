@@ -18,8 +18,6 @@ const Blog = ({ blog, username }) => {
 		}
 	}
 
-	console.log(`blog`, blog)
-
 	return (
 		<div className="blog">
 			<div>
