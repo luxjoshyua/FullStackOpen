@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead } from '@mui/material'
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material'
 
 import { initializeUsers } from '../reducers/usersReducer'
 
@@ -14,17 +14,11 @@ const Users = () => {
 		dispatch(initializeUsers())
 	}, [dispatch])
 
-	// console.log(users)
-
 	return (
 		<div>
 			<h2>Users</h2>
 			<TableContainer component={Paper}>
 				<Table>
-					{/* <TableHead>
-						<TableRow></TableRow>
-						<TableRow>Blogs created</TableRow>
-					</TableHead> */}
 					<TableBody>
 						{users.map((user) => (
 							<TableRow key={user.id}>

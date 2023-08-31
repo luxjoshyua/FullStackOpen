@@ -8,12 +8,12 @@ import Users from './components/Users'
 import User from './components/User'
 import BlogList from './components/BlogList'
 import HeadingBlock from './components/HeadingBlock'
+import Blog from './components/Blog'
 
 import { initialiseBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 
 const App = () => {
-	// const blogs = useSelector((state) => [...state.blogs])
 	const blogs = useSelector((state) => [...state.blogs].sort((a, b) => b.likes - a.likes)) // spread the state to get object into a new array
 	const user = useSelector((state) => state.user)
 
@@ -32,7 +32,9 @@ const App = () => {
 				<div>
 					<HeadingBlock heading="Blogs" user={user} />
 					<Routes>
+						{/* ======= add a 404 check ======= */}
 						<Route path="/" element={<BlogList user={user} blogs={blogs} />} />
+						<Route path="/blogs/:id" element={<Blog />} />
 						<Route path="/users/:id" element={<User />} />
 						<Route path="/users" element={<Users />} />
 					</Routes>
