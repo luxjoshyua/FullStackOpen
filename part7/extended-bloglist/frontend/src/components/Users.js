@@ -14,7 +14,7 @@ const Users = () => {
 		dispatch(initializeUsers())
 	}, [dispatch])
 
-	console.log(users)
+	// console.log(users)
 
 	return (
 		<div>

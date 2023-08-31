@@ -6,7 +6,7 @@ import App from './App'
 import store from './store'
 import './index.css'
 
-console.log(store.getState())
+// console.log(store.getState())
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<Router>

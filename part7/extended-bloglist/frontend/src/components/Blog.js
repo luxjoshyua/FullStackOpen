@@ -13,7 +13,6 @@ const Blog = ({ blog, username }) => {
 
 	const handleDelete = () => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-			// deleteBlog(blog.id);
 			dispatch(removeBlog(blog))
 		}
 	}

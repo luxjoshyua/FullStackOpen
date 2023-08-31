@@ -1,5 +1,4 @@
 import { useState } from 'react'
-// import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { logInUser } from '../reducers/userReducer'
 
@@ -34,9 +33,5 @@ const LoginForm = () => {
 		</div>
 	)
 }
-
-// LoginForm.propTypes = {
-// 	handleLogin: PropTypes.func.isRequired
-// }
 
 export default LoginForm
