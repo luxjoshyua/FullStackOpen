@@ -9,6 +9,8 @@ import User from './components/User'
 import BlogList from './components/BlogList'
 import HeadingBlock from './components/HeadingBlock'
 import Blog from './components/Blog'
+import NotFound from './components/NotFound'
+import Menu from './components/Menu'
 
 import { initialiseBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
@@ -30,13 +32,16 @@ const App = () => {
 				<LoginForm />
 			) : (
 				<div>
+					<Menu user={user} />
 					<HeadingBlock heading="Blogs" user={user} />
+
 					<Routes>
-						{/* ======= add a 404 check ======= */}
 						<Route path="/" element={<BlogList user={user} blogs={blogs} />} />
 						<Route path="/blogs/:id" element={<Blog />} />
+						<Route path="/blogs" element={<BlogList user={user} blogs={blogs} />} />
 						<Route path="/users/:id" element={<User />} />
 						<Route path="/users" element={<Users />} />
+						<Route path="*" element={<NotFound />} />
 					</Routes>
 				</div>
 			)}

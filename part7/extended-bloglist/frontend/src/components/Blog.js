@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useMatch } from 'react-router-dom'
+import { useMatch, useNavigate } from 'react-router-dom'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const Blog = () => {
 	// const [visible, setVisible] = useState(false)
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 
 	// const toggleVisibility = () => {
 	// 	setVisible(!visible)
@@ -15,25 +16,29 @@ const Blog = () => {
 
 	const match = useMatch('/blogs/:id')
 	const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null
-
 	if (!blog) return null
 
 	const handleDelete = () => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
 			dispatch(removeBlog(blog))
+			navigate('/')
 		}
 	}
 
 	return (
 		<div className="blog">
 			<div>
-				<span className="title">{blog.title} - </span>
-				<span className="author">{blog.author}</span>{' '}
+				<span className="title" style={{ display: 'block' }}>
+					Blog title: {blog.title} -{' '}
+				</span>
+				<span className="author" style={{ display: 'block' }}>
+					Blog author: {blog.author}
+				</span>{' '}
 			</div>
 			<div className="blog-details">
-				<div>{blog.url}</div>
+				<div>Blog URL: {blog.url}</div>
 				<div>
-					Likes: {blog.likes}{' '}
+					Blog likes: {blog.likes}{' '}
 					<button
 						id="like-btn"
 						onClick={(event) => {

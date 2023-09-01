@@ -32,25 +32,19 @@ const CreateNew = (props) => {
   return (
     <div>
       <h2>create a new anecdote</h2>
-      {/* {notification && <Notification notification={notification} />} */}
 
       <form onSubmit={handleSubmit}>
         <div>
           content
           {/* <input name="content" value={content} onChange={(e) => setContent(e.target.value)} /> */}
-          {/* <input {...contentField} reset={undefined} /> */}
           <TextField {...contentField} reset={undefined} />
         </div>
         <div>
           author
-          {/* <input name="author" value={author} onChange={(e) => setAuthor(e.target.value)} /> */}
-          {/* <input {...authorField} reset={undefined} /> */}
           <TextField {...authorField} reset={undefined} />
         </div>
         <div>
           url for more info
-          {/* <input name="info" value={info} onChange={(e) => setInfo(e.target.value)} /> */}
-          {/* <input {...infoField} reset={undefined} /> */}
           <TextField {...infoField} reset={undefined} />
         </div>
         <div style={{ display: 'flex' }}>
