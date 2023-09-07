@@ -26,6 +26,11 @@ const blogSlice = createSlice({
 		remove(state, action) {
 			const id = action.payload
 			return state.filter((blog) => blog.id !== id)
+		},
+		update(state, action) {
+			const updatedBlog = action.payload
+			const { id } = updatedBlog
+			return state.map((blog) => (blog.id !== id ? blog : updatedBlog))
 		}
 	}
 })
@@ -66,6 +71,9 @@ export const removeBlog = (blog) => {
 		dispatch(remove(blog.id))
 	}
 }
+
+// commentBlog
+// update
 
 export const { set, add, like, remove } = blogSlice.actions
 
