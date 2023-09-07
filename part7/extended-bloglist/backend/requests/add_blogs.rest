@@ -9,3 +9,12 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFzZ
   "url": "www.example.com"
   
 }
+
+###
+POST http://localhost:3003/api/blogs/64fa275d74cc50af97521e5d/comments
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI2NGRkNmFjYWNjYTQ1OWJjYjJhNjZlOGMiLCJpYXQiOjE2OTQxMTczNzEsImV4cCI6MTY5NDEyMDk3MX0.hk4eFDGI70eK6AY8KZEQ2hy4UI_8vh6LUCgmP6MLNpU
+
+{
+  "comment": "comment two"
+}

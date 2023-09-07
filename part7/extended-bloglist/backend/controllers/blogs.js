@@ -1,33 +1,33 @@
-const config = require("../utils/config");
-const blogsRouter = require("express").Router();
-const Blog = require("../models/blog");
-const middleware = require("../utils/middleware");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
+const config = require('../utils/config')
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+const middleware = require('../utils/middleware')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
-blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
-  response.json(blogs);
-});
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  response.json(blogs)
+})
 
-blogsRouter.get("/:id", async (request, response) => {
-  const blog = await Blog.findById(request.params.id);
+blogsRouter.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
 
   if (blog) {
-    response.json(blog.toJSON());
+    response.json(blog.toJSON())
   } else {
-    response.status(404).end();
+    response.status(404).end()
   }
-});
+})
 
-blogsRouter.post("/", async (request, response) => {
-  const body = request.body;
-  const user = request.user;
-  const token = request.token;
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body
+  const user = request.user
+  const token = request.token
 
-  const decodedToken = jwt.verify(token, config.SECRET);
+  const decodedToken = jwt.verify(token, config.SECRET)
   if (!(token && decodedToken.id)) {
-    return response.status(401).json({ error: "token missing or invalid" });
+    return response.status(401).json({ error: 'token missing or invalid' })
   }
 
   const blog = await new Blog({
@@ -36,47 +36,64 @@ blogsRouter.post("/", async (request, response) => {
     url: body.url,
     likes: body.likes,
     user: user._id,
-  }).populate("user", { username: 1, name: 1 });
+  }).populate('user', { username: 1, name: 1 })
 
-  const savedBlog = await blog.save();
+  const savedBlog = await blog.save()
 
-  user.blogs = user.blogs.concat(savedBlog._id);
-  await user.save();
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
 
-  response.status(201).json(savedBlog.toJSON());
-});
+  response.status(201).json(savedBlog.toJSON())
+})
 
-blogsRouter.delete("/:id", async (request, response) => {
-  const token = request.token;
-  const user = request.user;
-  const decodedToken = jwt.verify(token, config.SECRET);
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const id = request.params.id
+
+  const blog = await Blog.findById(id).populate('user', { username: 1, name: 1 })
+  if (!blog) {
+    return response.status(401).json({ error: 'blog missing or invalid' })
+  }
+
+  const comment = request.body.comment
+  if (!comment) {
+    return response.status(401).json({ error: 'comment missing or invalid' })
+  }
+
+  blog.comments.push(comment)
+  await blog.save()
+
+  response.status(201).json(blog)
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+  const token = request.token
+  const user = request.user
+  const decodedToken = jwt.verify(token, config.SECRET)
 
   if (!(token && decodedToken.id)) {
-    return response.status(401).json({ error: "token missing or invalid" });
+    return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  const id = request.params.id;
-  const blog = await Blog.findById(id);
+  const id = request.params.id
+  const blog = await Blog.findById(id)
 
   if (blog.user.toString() === user.id.toString()) {
-    await Blog.deleteOne({ _id: id });
-    response.sendStatus(204).end();
+    await Blog.deleteOne({ _id: id })
+    response.sendStatus(204).end()
   } else {
-    response.status(401).json({ error: "unauthorized operation" });
+    response.status(401).json({ error: 'unauthorized operation' })
   }
-});
+})
 
-blogsRouter.put("/:id", async (request, response) => {
-  const blog = request.body;
-  const id = request.params.id;
+blogsRouter.put('/:id', async (request, response) => {
+  const blog = request.body
+  const id = request.params.id
 
   const updatedBlog = await Blog.findByIdAndUpdate(id, blog, {
     new: true,
-  }).populate("user", { username: 1, name: 1 });
+  }).populate('user', { username: 1, name: 1 })
 
-  updatedBlog
-    ? response.status(200).json(updatedBlog.toJSON())
-    : response.status(404).end();
-});
+  updatedBlog ? response.status(200).json(updatedBlog.toJSON()) : response.status(404).end()
+})
 
-module.exports = blogsRouter;
+module.exports = blogsRouter
