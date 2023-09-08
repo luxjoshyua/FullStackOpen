@@ -18,13 +18,13 @@ const LoginForm = () => {
 		<div>
 			<h2>Log in to application</h2>
 			<form onSubmit={onSubmit}>
-				<div>
+				<div style={{ marginBottom: '.5rem' }}>
 					username
-					<input id="username" type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
+					<input id="username" type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} style={{ marginLeft: '.5rem' }} />
 				</div>
-				<div>
+				<div style={{ marginBottom: '.5rem' }}>
 					password
-					<input id="password" type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
+					<input id="password" type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} style={{ marginLeft: '.5rem' }} />
 				</div>
 				<button id="login-btn" type="submit">
 					login

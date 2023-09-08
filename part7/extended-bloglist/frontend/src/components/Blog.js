@@ -20,8 +20,6 @@ const Blog = () => {
 	const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null
 	if (!blog) return null
 
-	console.log(`blog = `, blog)
-
 	const handleDelete = () => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
 			dispatch(removeBlog(blog))
@@ -31,8 +29,8 @@ const Blog = () => {
 
 	const handleComment = (event) => {
 		event.preventDefault()
-		console.log(blog.id, comment)
 		dispatch(commentBlog(blog.id, comment))
+		setComment('')
 	}
 
 	const Comment = () => {
