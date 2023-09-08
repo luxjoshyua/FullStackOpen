@@ -1,11 +1,13 @@
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMatch, useNavigate } from 'react-router-dom'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 
 const Blog = () => {
 	// const [visible, setVisible] = useState(false)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const [comment, setComment] = useState('')
 
 	// const toggleVisibility = () => {
 	// 	setVisible(!visible)
@@ -25,6 +27,12 @@ const Blog = () => {
 			dispatch(removeBlog(blog))
 			navigate('/')
 		}
+	}
+
+	const handleComment = (event) => {
+		event.preventDefault()
+		console.log(blog.id, comment)
+		dispatch(commentBlog(blog.id, comment))
 	}
 
 	const Comment = () => {
@@ -68,6 +76,12 @@ const Blog = () => {
 					<h4 className="comments" style={{ fontSize: '1.5rem', margin: '1rem 0 0 0' }}>
 						<strong>Comments</strong>
 					</h4>
+					<form onSubmit={handleComment}>
+						<input name="comment" type="text" style={{ marginRight: '.5rem' }} value={comment} onChange={({ target }) => setComment(target.value)} />
+						<button type="submit" id="add-comment-btn">
+							add comment
+						</button>
+					</form>
 					<Comment />
 				</div>
 
