@@ -16,7 +16,7 @@ import { initialiseBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 
 const App = () => {
-	const blogs = useSelector((state) => [...state.blogs].sort((a, b) => b.likes - a.likes)) // spread the state to get object into a new array
+	const blogs = useSelector((state) => state.blogs)
 	const user = useSelector((state) => state.user)
 
 	const dispatch = useDispatch()

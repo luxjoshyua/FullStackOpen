@@ -11,6 +11,8 @@ const BlogList = ({ user, blogs }) => {
 	const blogFormRef = useRef()
 	const dispatch = useDispatch()
 
+	const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+
 	const addBlog = async (title, author, url) => {
 		try {
 			blogFormRef.current.toggleVisibility()
@@ -26,7 +28,7 @@ const BlogList = ({ user, blogs }) => {
 			<Togglable buttonLabel="new blog" ref={blogFormRef}>
 				<BlogForm createBlog={addBlog} />
 			</Togglable>
-			{blogs.map((blog) => (
+			{sortedBlogs.map((blog) => (
 				<div key={blog.id} style={{ border: '1px solid black', marginBottom: '1rem', padding: '1rem' }}>
 					<Link to={`/blogs/${blog.id}`}>
 						<span>
