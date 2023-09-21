@@ -1,5 +1,7 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const { v1: uuid } = require('uuid')
+const { GraphQLError } = require('graphql')
 
 let persons = [
   {
@@ -43,9 +45,14 @@ type Person {
   id: ID!
 }
 
+enum YesNo {
+  YES
+  NO
+}
+
 type Query {
   personCount: Int!
-  allPersons: [Person!]!
+  allPersons(phone: YesNo): [Person!]!
   findPerson(name: String!): Person
 }
 
@@ -55,6 +62,10 @@ type Mutation {
     phone: String
     street: String!
     city: String!
+  ): Person
+  editNumber(
+    name: String!
+    phone: String!
   ): Person
 }
 `
@@ -89,7 +100,16 @@ type Mutation {
 const resolvers = {
   Query: {
     personCount: () => persons.length, // query returns the length of the persons array
-    allPersons: () => persons, // returbs all objects from the persons array
+
+    allPersons: (root, args) => {
+      if (!args.phone) {
+        // returbs all objects from the persons array
+        return persons
+      }
+      // if the enum is YES, return the persons with a phone number, otherwise return the persons without a phone number
+      const byPhone = (person) => (args.phone === 'YES' ? person.phone : !person.phone)
+      return persons.filter(byPhone)
+    },
     findPerson: (root, args) => persons.find((p) => p.name === args.name),
   },
   // for individual person, default resolvers are provided
@@ -110,6 +130,35 @@ const resolvers = {
         street,
         city,
       }
+    },
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+      // prevent adding same name to phonebook multiple times
+      if (persons.find((p) => p.name === args.name)) {
+        throw new GraphQLError('Name must be unique', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+          },
+        })
+      }
+
+      const person = { ...args, id: uuid() }
+      // concat returns new array, containing the joined arrays
+      persons = persons.concat(person)
+      return person
+    },
+    editNumber: (root, args) => {
+      const person = persons.find((p) => p.name === args.name)
+      if (!person) {
+        return null
+      }
+      // spread in the person, update phone field with new args
+      const updatedPerson = { ...person, phone: args.phone }
+      // mutation finds the person to be updated by the field name
+      persons = persons.map((p) => (p.name === args.name ? updatedPerson : p))
+      return updatedPerson
     },
   },
 }
