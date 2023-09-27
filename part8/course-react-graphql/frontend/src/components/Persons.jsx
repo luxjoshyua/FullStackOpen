@@ -1,19 +1,6 @@
 import { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
-
-const FIND_PERSON = gql`
-	query findPersonByName($nameToSearch: String!) {
-		findPerson(name: $nameToSearch) {
-			name
-			phone
-			id
-			address {
-				street
-				city
-			}
-		}
-	}
-`
+import { useQuery } from '@apollo/client'
+import { FIND_PERSON } from '../queries/queries'
 
 const Person = ({ person, onClose }) => {
 	return (
@@ -30,15 +17,15 @@ const Person = ({ person, onClose }) => {
 
 const Persons = ({ persons }) => {
 	const [nameToSearch, setNameToSearch] = useState(null)
-	const result = useQuery(FIND_PERSON, {
+	const { data } = useQuery(FIND_PERSON, {
 		variables: { nameToSearch },
 		skip: !nameToSearch
 	})
 
-	if (nameToSearch && result.data) {
+	if (nameToSearch && data) {
 		return (
 			<Person
-				person={result.data.findPerson}
+				person={data.findPerson}
 				onClose={() => setNameToSearch(null)}
 			/>
 		)
