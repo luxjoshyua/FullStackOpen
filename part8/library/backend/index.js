@@ -1,6 +1,5 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v1: uuid } = require('uuid')
 
 let authors = [
   {
@@ -86,7 +85,7 @@ let books = [
     genres: ['classic', 'crime'],
   },
   {
-    title: 'The Demon',
+    title: 'The Demon ',
     published: 1872,
     author: 'Fyodor Dostoevsky',
     id: 'afa5de04-344d-11e9-a414-719c6709cf3e',
@@ -95,65 +94,69 @@ let books = [
 ]
 
 /*
-  you can remove the placeholder query once your first one has been implemented 
+  you can remove the placeholder query once your first own has been implemented 
 */
 
 const typeDefs = `
-type Book {
-  title: String!
-  author: String!
-  published: Int!
-  genres: [String!]!
-}
-
-type Author {
-  name: String!
-  id: ID!
-  bookCount: Int
-  born: Int
-}
-
-type Query {    
-  bookCount: Int!
-  authorCount: Int!
-  allBooks(
-    author: String
-    genre: String
-  ): [Book!]!
-  allAuthors: [Author!]!
-}
-
-type Mutation {
-  addBook(
+  type Book {
     title: String!
+    published: Int!
     author: String!
-    published: Int
-    genres: [String]
-  ): Book
+    id: ID!
+    genres: [String!]!
+  }
 
-  editAuthor(
+  type Author {
     name: String!
-    setBornTo: Int!
-  ): Author
-}
+    id: ID!
+    born: Int
+    bookCount: Int!
+  }
+
+  type Query {
+    bookCount: Int!
+    authorCount: Int!
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
+
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ): Author
+  }
 `
+
+const { v1: uuid } = require('uuid')
 
 const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: (root, args) => {
-      if (!args) {
+      if (!args.author && !args.genre) {
         return books
       }
 
-      if (args.author) {
-        return books.filter((book) => book.author === args.author)
+      if (args.author && args.genre) {
+        return books.filter(
+          (book) => book.author === args.author && book.genres.includes(args.genre)
+        )
       }
 
       if (args.genre) {
         return books.filter((book) => book.genres.includes(args.genre))
       }
+
+      return books.filter((book) => book.author === args.author)
     },
     allAuthors: () => authors,
   },
@@ -168,6 +171,12 @@ const resolvers = {
     addBook: (root, args) => {
       const book = { ...args, id: uuid() }
       books = books.concat(book)
+
+      if (!authors.find((author) => author.name === args.author)) {
+        const author = { name: args.author, id: uuid() }
+        authors = authors.concat(author)
+      }
+
       return book
     },
 

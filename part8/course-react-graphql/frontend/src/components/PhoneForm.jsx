@@ -24,7 +24,7 @@ const PhoneForm = ({ setError }) => {
 		if (data && data.editNumber === null) {
 			setError('person not found')
 		}
-	}, [data])
+	}, [data, setError])
 
 	return (
 		<div>
