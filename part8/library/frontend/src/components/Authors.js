@@ -1,5 +1,17 @@
-const Authors = ({ authors }) => {
-  // console.log(authors)
+import { useQuery } from '@apollo/client'
+import { BirthYearForm } from './BirthYearForm'
+import { ALL_AUTHORS } from '../queries/queries'
+
+const Authors = ({ setError }) => {
+  const result = useQuery(ALL_AUTHORS)
+
+  // useEffect(() => {
+  //   if (data && data.editAuthor) {
+  //     setError('person not found')
+  //   }
+  // }, [data, setError])
+
+  const authors = result.data.allAuthors
 
   return (
     <div>
@@ -20,6 +32,7 @@ const Authors = ({ authors }) => {
           ))}
         </tbody>
       </table>
+      <BirthYearForm authors={authors} setError={setError} />
     </div>
   )
 }

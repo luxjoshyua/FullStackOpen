@@ -30,7 +30,7 @@ const App = () => {
       <Notify errorMessage={errorMessage} />
       <Menu />
       <Routes>
-        <Route path="/authors" element={<Authors authors={data.allAuthors} />} />
+        <Route path="/authors" element={<Authors setError={notify} />} />
         <Route path="/books" element={<Books />} />
         <Route path="/add" element={<NewBook setError={notify} />} />
         <Route path="/" element={<Home />} />
