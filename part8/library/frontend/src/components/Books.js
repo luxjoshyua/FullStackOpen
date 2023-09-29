@@ -2,7 +2,10 @@ import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries/queries'
 
 const Books = () => {
-  const { loading, error, data } = useQuery(ALL_BOOKS)
+  const { loading, error, data } = useQuery(ALL_BOOKS, {
+    // refetchQueries: [{ query: ALL_AUTHORS }],
+    pollInterval: 2000,
+  })
 
   if (loading) return <div>loading...</div>
   if (error) return <div>error...</div>
