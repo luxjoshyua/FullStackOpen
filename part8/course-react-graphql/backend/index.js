@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+
 const Person = require('./models/person')
 const User = require('./models/user')
 
@@ -108,6 +109,10 @@ const typeDefs = `
       username: String!
       password: String!
     ): Token
+
+    addAsFriend(
+      name: String!
+    ): User
   }
 `
 
@@ -127,12 +132,6 @@ const resolvers = {
       // so it is like this:
       // const result = await Person.find({})
       // return result
-
-      // if (!args.phone) {
-      //   return persons
-      // }
-      // const byPhone = (person) => (args.phone === 'YES' ? person.phone : !person.phone)
-      // return persons.filter(byPhone)
     },
     // findPerson: async (root, args) => persons.find((p) => p.name === args.name),
     findPerson: async (root, args) => Person.findOne({ name: args.name }),
@@ -149,14 +148,26 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: async (root, args) => {
+    addPerson: async (root, args, context) => {
       // spread the new object in
       const person = new Person({ ...args })
+      const currentUser = context.currentUser
+
+      // if no logged-in user can be found in context, throw error
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
 
       try {
         await person.save()
+        currentUser.friends = currentUser.friends.concat(person)
+        await currentUser.save()
       } catch (error) {
-        throw new GraphQLError('Saving person failed', {
+        throw new GraphQLError('Saving user failed', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.name,
@@ -167,6 +178,7 @@ const resolvers = {
 
       return person
     },
+
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name })
       person.phone = args.phone
@@ -227,6 +239,31 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    },
+
+    // destructure the currentUser from context
+    addAsFriend: async (root, args, { currentUser }) => {
+      // could also be written here
+      // const currentUser = context.currentUser
+      const isFriend = (person) =>
+        currentUser.friends.map((f) => f._id.toString()).includes(oerson._id.toString())
+
+      if (!currentUser) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
+
+      const person = await Person.findOne({ name: args.name })
+      if (!isFriend(person)) {
+        currentUser.friends = currentUser.friends.concat(person)
+      }
+
+      await currentUser.save()
+
+      return currentUser
     },
   },
 }
