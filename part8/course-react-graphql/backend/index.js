@@ -1,7 +1,5 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-// id is handled by mongoose
-// const { v1: uuid } = require('uuid')
 const { GraphQLError } = require('graphql')
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
@@ -124,7 +122,7 @@ const resolvers = {
         return Person.find({})
       }
 
-      // if parameter has YES value, will return all resutls containing phone
+      // if parameter has YES value, will return all results containing phone
       // if parameter has NO value, will return the objects in which the phone field has no value
       return Person.find({ phone: { $exists: args.phone === 'YES' } })
 
@@ -196,16 +194,6 @@ const resolvers = {
       }
 
       return person
-
-      // return person.save()
-      // const person = persons.find((p) => p.name === args.name)
-      // if (!person) {
-      //   return null
-      // }
-
-      // const updatedPerson = { ...person, phone: args.phone }
-      // persons = persons.map((p) => (p.name === args.name ? updatedPerson : p))
-      // return updatedPerson
     },
 
     createUser: async (root, args) => {
