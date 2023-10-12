@@ -24,7 +24,8 @@ const PersonForm = ({ setError }) => {
 	const submit = (event) => {
 		event.preventDefault()
 		// query variables receive values when the query is made
-		createPerson({ variables: { name, phone, street, city } })
+		// ternary to set phone number to undefined if phone isn't passed so doesn't crash
+		createPerson({ variables: { name, street, city, phone: phone.length > 0 ? phone : undefined } })
 
 		setName('')
 		setPhone('')

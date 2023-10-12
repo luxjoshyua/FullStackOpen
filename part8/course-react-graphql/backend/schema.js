@@ -1,14 +1,4 @@
 const typeDefs = `
-  type Address {
-    street: String!
-    city: String! 
-  }
-
-  enum YesNo {
-    YES
-    NO
-  }
-
   type User {
     username: String!
     friends: [Person!]!
@@ -18,12 +8,10 @@ const typeDefs = `
   type Token {
     value: String!
   }
-  
-  type Query {
-    personCount: Int!
-    allPersons(phone: YesNo): [Person!]!
-    findPerson(name: String!): Person
-    me: User
+
+  type Address {
+    street: String!
+    city: String!
   }
 
   type Person {
@@ -33,10 +21,16 @@ const typeDefs = `
     id: ID!
   }
 
+  enum YesNo {
+    YES
+    NO
+  }
+
   type Query {
     personCount: Int!
-    allPersons: [Person!]!
+    allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
+    me: User
   }
 
   type Mutation {
@@ -46,25 +40,10 @@ const typeDefs = `
       street: String!
       city: String!
     ): Person
-
-    editNumber(
-      name: String!
-      phone: String!
-    ): Person
-
-    createUser(
-      username: String!
-    ): User
-
-    login(
-      username: String!
-      password: String!
-    ): Token
-
-    addAsFriend(
-      name: String!
-    ): User
+    editNumber(name: String!, phone: String!): Person
+    createUser(username: String!): User
+    login(username: String!, password: String!): Token
+    addAsFriend(name: String!): User
   }
 `
-
 module.exports = typeDefs
