@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import { LOGIN } from '../queries/queries'
-// import { redirect } from 'react-router-dom'
-// import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ setError, setToken }) => {
+const LoginForm = ({ setError, setToken, show }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -24,10 +22,15 @@ const LoginForm = ({ setError, setToken }) => {
     }
   }, [result.data, setToken])
 
+  if (!show) {
+    return null
+  }
+
   const submit = async (event) => {
     event.preventDefault()
     login({ variables: { username, password } })
-    console.log('logged in')
+    setUsername('')
+    setPassword('')
   }
 
   return (

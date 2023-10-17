@@ -4,7 +4,7 @@ import { ALL_BOOKS, ALL_AUTHORS } from '../queries/queries'
 import Loading from './Loading'
 import ErrorComponent from './Error'
 
-const Books = () => {
+const Books = ({ show }) => {
   const result = useQuery(ALL_BOOKS)
   const [books, setBooks] = useState(null)
   // console.log(`ALLBOOKS result`, result)
@@ -15,6 +15,10 @@ const Books = () => {
       setBooks(result.data.allBooks)
     }
   }, [result.data])
+
+  if (!show) {
+    return null
+  }
 
   if (!books) {
     return null

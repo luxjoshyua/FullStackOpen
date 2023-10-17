@@ -8,19 +8,6 @@ import Notify from './components/Notify'
 import PhoneForm from './components/PhoneForm'
 import LoginForm from './components/LoginForm'
 
-// example query using GraphQL variables
-// https://graphql.org/learn/queries/#variables
-// query findPersonByName($nameToSearch: String!) {
-//   findPerson(name: $nameToSearch) {
-//     name
-//     phone
-//     address {
-//       street
-//       city
-//     }
-//   }
-// }
-
 const App = () => {
 	const [errorMessage, setErrorMessage] = useState(null)
 	// useQuery is the common way of querying and then accessing the data

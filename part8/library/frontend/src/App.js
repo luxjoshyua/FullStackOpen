@@ -1,28 +1,30 @@
-import React, { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
-import { Container } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-
-import { ALL_AUTHORS } from './queries/queries'
+import { ALL_AUTHORS, ALL_BOOKS } from './queries/queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import Menu from './components/Menu'
-import Home from './components/Home'
+
 import Notify from './components/Notify'
 import Loading from './components/Loading'
 import ErrorComponent from './components/Error'
 import LoginForm from './components/LoginForm'
 
 const App = () => {
+  const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
-  // const { loading, error, data } = useQuery(ALL_AUTHORS)
-  // console.log(`data from allAuthors call: ${JSON.stringify(data)}`)
   const result = useQuery(ALL_AUTHORS)
+  // const books = useQuery(ALL_BOOKS)
   const [token, setToken] = useState(null)
+
   const client = useApolloClient()
-  const navigate = useNavigate()
+
+  useEffect(() => {
+    const tokenFromStorage = localStorage.getItem('library-user-token')
+    if (tokenFromStorage) {
+      setToken(tokenFromStorage)
+    }
+  }, [])
 
   if (result.loading) return <Loading />
   if (result.error) return <ErrorComponent />
@@ -38,34 +40,33 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
-    navigate('/')
   }
 
-  // return (
-  //   <Container>
-  //     <Notify errorMessage={errorMessage} />
-  //     <Menu />
-  //     <Routes>
-  //       <Route path="/authors" element={<Authors setError={notify} />} />
-  //       <Route path="/books" element={<Books />} />
-  //       <Route path="/add" element={<NewBook setError={notify} />} />
-  //       <Route path="/" element={<Home />} />
-  //     </Routes>
-  //   </Container>
-  // )
-
   return (
-    <Container>
+    <div>
       <Notify errorMessage={errorMessage} />
-      <Menu setError={notify} token={token} setToken={setToken} logout={logout} />
-      <Routes>
-        <Route path="/authors" element={<Authors setError={notify} />} />
-        <Route path="/books" element={<Books />} />
-        <Route path="/add" element={<NewBook setError={notify} />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Container>
+      <div style={{ display: 'flex' }}>
+        <button onClick={() => setPage('authors')}>authors</button>
+        <button onClick={() => setPage('books')}>books</button>
+        {!token ? (
+          <button onClick={() => setPage('login')}>login</button>
+        ) : (
+          <div>
+            <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={logout}>logout</button>
+          </div>
+        )}
+        {/* <button onClick={() => setPage('recommend')}>recommend</button> */}
+      </div>
+
+      <Authors show={page === 'authors'} setError={notify} />
+
+      <Books show={page === 'books'} />
+
+      <NewBook show={page === 'add'} setError={notify} />
+
+      <LoginForm show={page === 'login'} setToken={setToken} setError={notify} />
+    </div>
   )
 }
 
