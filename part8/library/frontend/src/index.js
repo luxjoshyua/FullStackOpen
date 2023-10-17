@@ -1,19 +1,34 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
 import App from './App'
+
+// const authLink = setContext((_, { headers }) => {
+//   const token = localStorage.getItem('library-user-token')
+//   return {
+//     headers: {
+//       ...headers,
+//       authorization: token ? `Bearer ${token}` : null,
+//     },
+//   }
+// })
+
+// const httpLink = createHttpLink({
+//   uri: 'http://localhost:4000',
+// })
+
+// const client = new ApolloClient({
+//   cache: new InMemoryCache(),
+//   link: authLink.concat(httpLink),
+//   // uri: 'http://localhost:4000'
+// })
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
   cache: new InMemoryCache(),
 })
-
-// create a new client object, which is then used to send a query to the server
-// the client object is how to communicate with the GraphQL server
-// client.query({ query }).then((response) => {
-//   console.log(response.data)
-// })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // wrapping the app with apolloprovider makes the client accessible for all components

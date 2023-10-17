@@ -13,7 +13,6 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
 
     authorCount: async () => Author.collection.countDocuments(),
-
     allBooks: async (root, args) => {
       if (args.author && args.genre) {
         const author = await Author.findOne({ name: args.author })
@@ -21,22 +20,22 @@ const resolvers = {
           $and: [{ author: { $in: author.id } }, { genres: { $in: args.genre } }],
         }).populate('author')
       }
-
       if (args.author) {
         const author = await Author.findOne({ name: args.author })
         return Book.find({ author: { $in: author.id } }).populate('author')
       }
-
       if (args.genre) {
         return Book.find({ genres: { $in: args.genre } }).populate('genre')
       }
-
-      return Book.find({}).populate('author')
+      return await Book.find({}).populate('author')
     },
 
+    // Need to write this better, breaks too easily
     allAuthors: async (root, args) => {
-      books = await Book.find({})
-      return Author.find({})
+      // books = await Book.find({})
+      // return Author.find({})
+
+      return await Author.find({})
     },
 
     me: (root, args, context) => {

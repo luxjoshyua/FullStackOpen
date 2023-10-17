@@ -11,32 +11,32 @@ const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 
 const MONGODB_URI = process.env.MONGODB_URI
-// console.log('connecting to...', MONGODB_URI)
+console.log('connecting to...', MONGODB_URI)
 
-// mongoose
-//   .connect(MONGODB_URI)
-//   .then(() => {
-//     console.log('connected to MongoDB')
-//   })
-//   .catch(() => {
-//     console.log('error connecting to MongoDB', error.message)
-//   })
-
-const connect = async (uri) => {
-  try {
-    console.log(`connecting to ${MONGODB_URI}`)
-    await mongoose.connect(uri)
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
     console.log('connected to MongoDB')
-  } catch (error) {
+  })
+  .catch(() => {
     console.log('error connecting to MongoDB', error.message)
-  }
-}
+  })
 
-const main = async () => {
-  connect(MONGODB_URI)
-}
+// const connect = async (uri) => {
+//   try {
+//     console.log(`connecting to ${MONGODB_URI}`)
+//     await mongoose.connect(uri)
+//     console.log('connected to MongoDB')
+//   } catch (error) {
+//     console.log('error connecting to MongoDB', error.message)
+//   }
+// }
 
-main()
+// const main = async () => {
+//   connect(MONGODB_URI)
+// }
+
+// main()
 
 const server = new ApolloServer({
   typeDefs,
