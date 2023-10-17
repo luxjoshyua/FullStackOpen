@@ -14,10 +14,17 @@ const PersonForm = ({ setError }) => {
 	const [createPerson] = useMutation(CREATE_PERSON, {
 		// instead of setting the poll to query on a certain interval, use refetchQueries
 		// when a new person is created
-		refetchQueries: [{ query: ALL_PERSONS }],
+		// refetchQueries: [{ query: ALL_PERSONS }],
 		onError: (error) => {
 			const messages = error.graphQLErrors.map((e) => e.message).join('\n')
 			setError(messages)
+		},
+		update: (cache, response) => {
+			cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+				return {
+					allPersons: allPersons.concat(response.data.addPerson)
+				}
+			})
 		}
 	})
 
