@@ -10,17 +10,17 @@ import NewBook from './components/NewBook'
 import Menu from './components/Menu'
 import Home from './components/Home'
 import Notify from './components/Notify'
+import Loading from './components/Loading'
+import ErrorComponent from './components/Error'
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
-  const { loading, error, data } = useQuery(ALL_AUTHORS)
-
-  // const result = useQuery(ALL_AUTHORS)
-
-  if (loading) return <div>loading....</div>
-  if (error) return <div>error....</div>
-
+  // const { loading, error, data } = useQuery(ALL_AUTHORS)
   // console.log(`data from allAuthors call: ${JSON.stringify(data)}`)
+  const result = useQuery(ALL_AUTHORS)
+
+  if (result.loading) return <Loading />
+  if (result.error) return <ErrorComponent />
 
   const notify = (message) => {
     setErrorMessage(message)
