@@ -1,16 +1,40 @@
+import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS, ALL_AUTHORS } from '../queries/queries'
 
 const Books = () => {
-  const { loading, error, data } = useQuery(ALL_BOOKS, {
-    // refetchQueries: [{ query: ALL_AUTHORS }],
-    // pollInterval: 2000,
-  })
+  const result = useQuery(ALL_BOOKS)
+  const [books, setBooks] = useState(null)
+  console.log(`ALLBOOKS result`, result)
 
-  if (loading) return <div>loading...</div>
-  if (error) return <div>error...</div>
+  // const { loading, error, data } = useQuery(ALL_BOOKS, {
+  //   // refetchQueries: [{ query: ALL_AUTHORS }],
+  //   // pollInterval: 2000,
+  // })
 
-  const books = data.allBooks
+  // if (loading) return <div>loading...</div>
+  // if (error) return <div>error...</div>
+
+  // const books = data.allBooks
+
+  // need to check if there is data e.g. if no books have been added, will throw error
+  useEffect(() => {
+    if (result.data) {
+      setBooks(result.data.allBooks)
+    }
+  }, [result.data])
+
+  if (!books) {
+    return null
+  }
+
+  if (result.loading) {
+    return <div>Loading...</div>
+  }
+
+  if (result.error) {
+    return <div>Error...</div>
+  }
 
   return (
     <div>
