@@ -13,14 +13,14 @@ import Notify from './components/Notify'
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
-  // const { loading, error, data } = useQuery(ALL_AUTHORS)
+  const { loading, error, data } = useQuery(ALL_AUTHORS)
 
-  const result = useQuery(ALL_AUTHORS)
+  // const result = useQuery(ALL_AUTHORS)
 
-  console.log(result)
+  if (loading) return <div>loading....</div>
+  if (error) return <div>error....</div>
 
-  // if (loading) return <div>loading....</div>
-  // if (error) return <div>error....</div>
+  // console.log(`data from allAuthors call: ${JSON.stringify(data)}`)
 
   const notify = (message) => {
     setErrorMessage(message)
