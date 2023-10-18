@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries/queries'
+import { ALL_AUTHORS } from './queries/queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -14,7 +14,6 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
   const result = useQuery(ALL_AUTHORS)
-  // const books = useQuery(ALL_BOOKS)
   const [token, setToken] = useState(null)
 
   const client = useApolloClient()
@@ -65,7 +64,7 @@ const App = () => {
 
       <NewBook show={page === 'add'} setError={notify} />
 
-      <LoginForm show={page === 'login'} setToken={setToken} setError={notify} />
+      <LoginForm show={page === 'login'} setToken={setToken} setError={notify} setPage={setPage} />
     </div>
   )
 }

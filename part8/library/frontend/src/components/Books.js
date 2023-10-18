@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS, ALL_AUTHORS } from '../queries/queries'
+import { ALL_BOOKS } from '../queries/queries'
 import Loading from './Loading'
 import ErrorComponent from './Error'
 
 const Books = ({ show }) => {
+  // can destructure {data, loading, error} = useQuery(ALL_BOOKS)
   const result = useQuery(ALL_BOOKS)
   const [books, setBooks] = useState(null)
-  // console.log(`ALLBOOKS result`, result)
 
   // need to check if there is data e.g. if no books have been added, will throw error
   useEffect(() => {
@@ -17,10 +17,6 @@ const Books = ({ show }) => {
   }, [result.data])
 
   if (!show) {
-    return null
-  }
-
-  if (!books) {
     return null
   }
 
@@ -34,8 +30,10 @@ const Books = ({ show }) => {
 
   return (
     <div>
-      <h2>books</h2>
-
+      <h2>Books</h2>
+      {/* <p>
+        in genre <strong>{genre}</strong>
+      </p> */}
       <table>
         <tbody>
           <tr>
@@ -43,15 +41,22 @@ const Books = ({ show }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
+          {books.map((b) => (
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              {/* <td>{b.author.name}</td> */}
+              <td>{b.published}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {/* <div>
+        {genres.map((genre) => (
+          <button key={genre} onClick={() => handleGenreClick(genre)}>
+            {genre}
+          </button>
+        ))}
+      </div> */}
     </div>
   )
 }
