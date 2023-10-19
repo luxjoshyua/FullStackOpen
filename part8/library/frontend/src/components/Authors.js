@@ -14,8 +14,6 @@ const Authors = ({ show, setError }) => {
 
   const authors = result.data.allAuthors
 
-  // console.log(authors)
-
   if (!show) {
     return null
   }
