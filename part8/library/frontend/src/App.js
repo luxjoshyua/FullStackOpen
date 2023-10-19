@@ -43,7 +43,7 @@ const App = () => {
 
   return (
     <div>
-      <Notify errorMessage={errorMessage} />
+      <Notify errorMessage={errorMessage} style={{ paddingBottom: '.5rem' }} />
       <div style={{ display: 'flex' }}>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
