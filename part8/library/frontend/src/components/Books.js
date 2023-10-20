@@ -7,9 +7,8 @@ import ErrorComponent from './Error'
 const Books = ({ show }) => {
   // can destructure {data, loading, error} = useQuery(ALL_BOOKS)
   const result = useQuery(ALL_BOOKS)
-  const [getBooksByGenre, genreResult] = useLazyQuery(ALL_BOOKS, {
-    fetchPolicy: 'no-cache',
-  })
+  const [getBooksByGenre, genreResult] = useLazyQuery(ALL_BOOKS)
+
   const [genre, setGenre] = useState('all')
   const [books, setBooks] = useState(null)
 

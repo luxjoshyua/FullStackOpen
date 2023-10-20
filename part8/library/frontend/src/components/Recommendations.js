@@ -4,6 +4,7 @@ import { ALL_BOOKS } from '../queries/queries'
 
 const Recommendations = ({ show, favoriteGenre }) => {
   const booksResult = useQuery(ALL_BOOKS)
+
   const [books, setBooks] = useState(null)
 
   useEffect(() => {

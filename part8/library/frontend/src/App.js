@@ -15,8 +15,13 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
   const result = useQuery(ALL_AUTHORS)
-  // need to clear the cache here somehow
-  const user = useQuery(USER)
+  // const user = useQuery(USER, {
+  //   // this works but isn't great, do refetech query instead
+  //   pollInterval: 500,
+  // })
+
+  const { data: user, refetch } = useQuery(USER)
+
   const [token, setToken] = useState(null)
   const [favoriteGenre, setFavoriteGenre] = useState(null)
 
@@ -30,13 +35,18 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    if (user.data) {
-      setFavoriteGenre(user?.data?.me?.favoriteGenre)
+    if (user) {
+      setFavoriteGenre(user?.me?.favoriteGenre)
     }
-  }, [user.data])
+  }, [user])
 
   if (result.loading) return <Loading />
   if (result.error) return <ErrorComponent />
+
+  // force data refresh when user clicks recommendation button
+  const handleClick = () => {
+    refetch()
+  }
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -48,7 +58,12 @@ const App = () => {
   const logout = () => {
     setToken(null)
     localStorage.clear()
+    // resets the cache entirely
+    // to reset cache without refetching active queries, use client.clearStore()
+    // https://www.apollographql.com/docs/react/caching/advanced-topics/
     client.resetStore()
+
+    setPage('authors')
   }
 
   return (
@@ -63,7 +78,13 @@ const App = () => {
           <div>
             <button onClick={() => setPage('add')}>add book</button>
             <button onClick={logout}>logout</button>
-            <button onClick={() => setPage('recommend')}>recommend</button>
+            <button
+              onClick={() => {
+                setPage('recommend')
+                handleClick()
+              }}>
+              recommend
+            </button>
           </div>
         )}
       </div>

@@ -8,6 +8,7 @@ const LoginForm = ({ setError, setToken, show, setPage }) => {
   const [password, setPassword] = useState('')
 
   const [login, result] = useMutation(LOGIN, {
+    fetchPolicy: 'no-cache',
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
     },
