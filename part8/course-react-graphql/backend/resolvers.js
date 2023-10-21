@@ -1,7 +1,9 @@
-const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 const { GraphQLError } = require('graphql')
+
 const jwt = require('jsonwebtoken')
+
 const Person = require('./models/person')
 const User = require('./models/user')
 
@@ -28,6 +30,7 @@ const resolvers = {
       return context.currentUser
     },
   },
+
   Person: {
     address: (root) => {
       return {
@@ -36,6 +39,7 @@ const resolvers = {
       }
     },
   },
+
   Mutation: {
     addPerson: async (root, args, context) => {
       // spread the new object in
@@ -64,6 +68,8 @@ const resolvers = {
           },
         })
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
 
       return person
     },
@@ -143,6 +149,15 @@ const resolvers = {
       await currentUser.save()
 
       return currentUser
+    },
+  },
+
+  // https://www.apollographql.com/docs/apollo-server/data/subscriptions/
+  Subscription: {
+    personAdded: {
+      // the resolver of the personAdded subscription registers and saves info about all the clients that do the subscription
+      // the clients are saved to an "iterator object" called PERSON_ADDED using this Subcription{} code
+      subscribe: () => pubsub.asyncIterator('PERSON_ADDED'),
     },
   },
 }

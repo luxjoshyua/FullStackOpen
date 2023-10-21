@@ -1,4 +1,8 @@
 const typeDefs = `
+  type Subscription {
+    personAdded: Person!
+  }
+
   type User {
     username: String!
     friends: [Person!]!
@@ -46,4 +50,5 @@ const typeDefs = `
     addAsFriend(name: String!): User
   }
 `
+
 module.exports = typeDefs

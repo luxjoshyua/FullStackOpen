@@ -1,11 +1,16 @@
 const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
-const { GraphQLError } = require('graphql')
+const { expressMiddleware } = require('@apollo/server/express4')
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
+const express = require('express')
+const cors = require('cors')
+const http = require('http')
 const jwt = require('jsonwebtoken')
 
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
-const Person = require('./models/person')
 const User = require('./models/user')
 require('dotenv').config()
 
@@ -16,6 +21,24 @@ const MONGODB_URI = process.env.MONGODB_URI
 
 console.log('connecting to', MONGODB_URI)
 
+// different connection method
+// follow the course way to make debugging easier
+// const connect = async (uri) => {
+//   try {
+//     console.log(`connecting to ${MONGODB_URI}`)
+//     await mongoose.connect(uri)
+//     console.log('connected to MongoDB')
+//   } catch (error) {
+//     console.log('error connecting to MongoDB', error.message)
+//   }
+// }
+
+// const main = async () => {
+//   connect(MONGODB_URI)
+// }
+
+// main()
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
@@ -25,44 +48,65 @@ mongoose
     console.log('error connection to MongoDB:', error.message)
   })
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    phone: '040-123543',
-    street: 'Tapiolankatu 5 A',
-    city: 'Espoo',
-    id: '3d594650-3436-11e9-bc57-8b80ba54c431',
-  },
-  {
-    name: 'Matti Luukkainen',
-    phone: '040-432342',
-    street: 'Malminkaari 10 A',
-    city: 'Helsinki',
-    id: '3d599470-3436-11e9-bc57-8b80ba54c431',
-  },
-  {
-    name: 'Venla Ruuska',
-    street: 'Nallemäentie 22 C',
-    city: 'Helsinki',
-    id: '3d599471-3436-11e9-bc57-8b80ba54c431',
-  },
-]
+// setup is now within a function, as we need to be able to use Express middleware,
+// with the GraphQL server acting as middleware
+// function needs to be asynchronous, as it allows waiting for the GraphQL server to start
+// https://www.apollographql.com/docs/apollo-server/api/express-middleware/
+const start = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-})
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
+  })
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-      const currentUser = await User.findById(decodedToken.id).populate('friends')
-      return { currentUser }
-    }
-  },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({ schema }, wsServer)
+
+  // connected to listen to the root of the server i.e. to the / route, using the expressMiddleware object
+  const server = new ApolloServer({
+    schema,
+
+    // plugin helps ensure server shuts down gracefully
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
+    ],
+  })
+
+  await server.start()
+
+  app.use(
+    '/',
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      // information about logged-in user is set in the context
+      context: async ({ req, res }) => {
+        const auth = req ? req.headers.authorization : null
+        if (auth && auth.startsWith('Bearer ')) {
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+          const currentUser = await User.findById(decodedToken.id).populate('friends')
+          return { currentUser }
+        }
+      },
+    })
+  )
+
+  const PORT = 4000
+
+  httpServer.listen(PORT, () => {
+    console.log(`Server is now running on http:localhost:${PORT}`)
+  })
+}
+
+start()
