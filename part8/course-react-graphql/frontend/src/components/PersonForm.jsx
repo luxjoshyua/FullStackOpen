@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { CREATE_PERSON, ALL_PERSONS } from '../queries/queries'
+import { updateCache } from '../App'
 
 const PersonForm = ({ setError }) => {
 	const [name, setName] = useState('')
@@ -12,19 +13,12 @@ const PersonForm = ({ setError }) => {
 	// second element is information about the mutation e.g. loading, error, data
 	// https://www.apollographql.com/tutorials/lift-off-part4/08-the-usemutation-hook
 	const [createPerson] = useMutation(CREATE_PERSON, {
-		// instead of setting the poll to query on a certain interval, use refetchQueries
-		// when a new person is created
-		// refetchQueries: [{ query: ALL_PERSONS }],
 		onError: (error) => {
 			const messages = error.graphQLErrors.map((e) => e.message).join('\n')
 			setError(messages)
 		},
 		update: (cache, response) => {
-			cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-				return {
-					allPersons: allPersons.concat(response.data.addPerson)
-				}
-			})
+			updateCache(cache, { query: ALL_PERSONS }, response.data.adddPerson)
 		}
 	})
 

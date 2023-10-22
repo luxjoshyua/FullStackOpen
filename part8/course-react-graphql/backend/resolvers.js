@@ -11,13 +11,14 @@ const resolvers = {
   Query: {
     personCount: async () => Person.collection.countDocuments,
     allPersons: async (root, args) => {
+      console.log('Person.find')
       if (!args.phone) {
-        return Person.find({})
+        return Person.find({}).populate('friendOf')
       }
 
       // if parameter has YES value, will return all results containing phone
       // if parameter has NO value, will return the objects in which the phone field has no value
-      return Person.find({ phone: { $exists: args.phone === 'YES' } })
+      return Person.find({ phone: { $exists: args.phone === 'YES' } }).populate('friendOf')
 
       // apollo waits for the promise to resolve, then sends back the value which the Promise resolves to,
       // so it is like this:
@@ -37,6 +38,17 @@ const resolvers = {
         street: root.street,
         city: root.city,
       }
+    },
+    friendOf: async (root) => {
+      const friends = await User.find({
+        friends: {
+          $in: [root.id],
+        },
+      })
+      console.log('User.find')
+
+      // return list of users
+      return friends
     },
   },
 

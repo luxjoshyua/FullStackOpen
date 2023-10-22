@@ -48,6 +48,8 @@ mongoose
     console.log('error connection to MongoDB:', error.message)
   })
 
+mongoose.set('debug', true)
+
 // setup is now within a function, as we need to be able to use Express middleware,
 // with the GraphQL server acting as middleware
 // function needs to be asynchronous, as it allows waiting for the GraphQL server to start

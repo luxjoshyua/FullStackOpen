@@ -1,12 +1,30 @@
 import { useState } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client'
 
 import Persons from './components/Persons'
-import { ALL_PERSONS } from './queries/queries'
+import { ALL_PERSONS, PERSON_ADDED } from './queries/queries'
 import PersonForm from './components/PersonForm'
 import Notify from './components/Notify'
 import PhoneForm from './components/PhoneForm'
 import LoginForm from './components/LoginForm'
+
+// function that takes care of manipulating cache
+export const updateCache = (cache, query, addedPerson) => {
+	// helper that is used to eliminate saving some person twice
+	const uniqueByName = (a) => {
+		let seen = new Set()
+		return a.filter((item) => {
+			let k = item.name
+			return seen.has(k) ? false : seen.add(k)
+		})
+	}
+
+	cache.updateQuery(query, ({ allPersons }) => {
+		return {
+			allPersons: uniqueByName(allPersons.concat(addedPerson))
+		}
+	})
+}
 
 const App = () => {
 	const [errorMessage, setErrorMessage] = useState(null)
@@ -23,6 +41,18 @@ const App = () => {
 	const client = useApolloClient()
 
 	// console.log(`RESULT = `, result)
+
+	// when a new person is added, the server sends a notification to the client, and the callback function defined in the onData attribute is called
+	// and given the details of the new person as parameters
+	useSubscription(PERSON_ADDED, {
+		onData: ({ data }) => {
+			// console.log(data)
+			const addedPerson = data.data.personAdded
+			// const addedPerson = {data: {personAdded}}
+			notify(`${addedPerson.name} added`)
+			updateCache(client.cache, { query: ALL_PERSONS }, addedPerson)
+		}
+	})
 
 	if (loading) return <div>loading....</div>
 	if (error) return <div>error....</div>
