@@ -11,6 +11,7 @@ const Notify = ({ errorMessage }) => {
         backgroundColor: 'lawngreen',
         width: '100%',
         padding: '.5rem',
+        marginBottom: '1rem',
       }}>
       {errorMessage}
     </div>
