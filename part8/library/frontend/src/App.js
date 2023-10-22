@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
-import { ALL_AUTHORS, USER } from './queries/queries'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, USER } from './queries/queries'
+import { updateCache } from './utilities'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-
 import Notify from './components/Notify'
 import Loading from './components/Loading'
 import ErrorComponent from './components/Error'
@@ -15,13 +15,7 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
   const result = useQuery(ALL_AUTHORS)
-  // const user = useQuery(USER, {
-  //   // this works but isn't great, do refetech query instead
-  //   pollInterval: 500,
-  // })
-
   const { data: user, refetch } = useQuery(USER)
-
   const [token, setToken] = useState(null)
   const [favoriteGenre, setFavoriteGenre] = useState(null)
 
@@ -39,6 +33,21 @@ const App = () => {
       setFavoriteGenre(user?.me?.favoriteGenre)
     }
   }, [user])
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data)
+      const addedBook = data.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+
+      // client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+      //   return {
+      //     allBooks: allBooks.concat(addedBook),
+      //   }
+      // })
+    },
+  })
 
   if (result.loading) return <Loading />
   if (result.error) return <ErrorComponent />
@@ -62,7 +71,6 @@ const App = () => {
     // to reset cache without refetching active queries, use client.clearStore()
     // https://www.apollographql.com/docs/react/caching/advanced-topics/
     client.resetStore()
-
     setPage('authors')
   }
 

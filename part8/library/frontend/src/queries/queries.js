@@ -72,6 +72,5 @@ export const BOOK_ADDED = gql`
       ...BookDetails
     }
   }
-
   ${BOOK_DETAILS}
 `
