@@ -21,6 +21,7 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
 
     allAuthors: async () => {
+      console.log('Author.find')
       books = await Book.find()
       return Author.find({})
     },

@@ -29,6 +29,9 @@ mongoose
     console.log('error connecting to MongoDB', error.message)
   })
 
+// use for debugging
+// mongoose.set('debug', true)
+
 // const connect = async (uri) => {
 //   try {
 //     console.log(`connecting to ${MONGODB_URI}`)
@@ -85,9 +88,7 @@ const start = async () => {
         const auth = req ? req.headers.authorization : null
         if (auth && auth.startsWith('Bearer ')) {
           const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-          // console.log(`token`, decodedToken)
           const currentUser = await User.findById(decodedToken.id)
-          // console.log(`currentUser`, currentUser)
           return { currentUser }
         }
       },
