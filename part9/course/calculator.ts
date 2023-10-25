@@ -28,9 +28,15 @@ try {
   console.log(calculator(1, 5, "divide"));
 } catch (error: unknown) {
   let errorMessage = "Something went wrong: ";
+  // have to narrow the type to access the field as the default type of the error object in TypeScript is unknown
+  // can not use error.message like in regular js
+  // instanceof is one typeguard, another is typeof
+  // https://www.typescriptlang.org/docs/handbook/2/narrowing.html
   if (error instanceof Error) {
+    // the type is narrowed and we can refer to error.message
     errorMessage += error.message;
   }
+  // here we can not use error.message
   console.log(errorMessage);
 }
 
