@@ -16,6 +16,8 @@ const age = 22;
 console.log(birthdayGreeter(birthdayHero, age));
 ```
 
+[A useful list of everyday types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)
+
 #### Structural typing
 
 - typescript is a structurally typed language. Two elements are considered to be compatible with one another if, for each feature within the type of the first element, a corresponding and identical feature exists within the type of the second element. Two types are considered to be identical if they are compatible with each other.
@@ -59,3 +61,16 @@ This means that no type information remains at runtime; nothing says that some v
 1. It offers type checking and static code analysis
 2. The type annotations in the code can function as a kind of code-level documentation; easy to check from a function signature what kind of arguments the function can consume and what type of data it will return
 3. IDEs can provide more specific and smarter IntelliSense when they know exactly what types of data you are processing
+
+#### Tooling
+
+1. First install TS in a project, run `npm install --save-dev ts-node typescript`
+2. Once installed, add to `package.json`
+
+```
+ "scripts": {
+    "ts-node": "ts-node"
+  },
+```
+
+3. To run on a file, `npm run ts-node -- multiplier.ts`
