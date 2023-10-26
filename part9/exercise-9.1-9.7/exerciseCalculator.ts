@@ -10,20 +10,11 @@ interface Result {
 
 const compareNumberDifference = (number1: number, number2: number): number => {
   if (number1 < number2) {
-    const difference = parseFloat((number2 - number1).toFixed(1));
     return 1;
-    // console.log(
-    //   `${number1} is ${difference} less than ${number2}, rate it as 1`
-    // );
   } else if (number1 > number2) {
-    const difference = parseFloat((number1 - number2).toFixed(1));
     return 3;
-    // console.log(
-    //   `${number1} is ${difference} greater than ${number2}, rate it as 3`
-    // );
   } else {
     return 2;
-    // console.log(`${number1} and ${number2} are equal, rate it as 2`);
   }
 };
 
