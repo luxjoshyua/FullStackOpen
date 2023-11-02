@@ -3,6 +3,26 @@ interface calculate {
   time: number[];
 }
 
+// param args is an array of strings
+const parseArguments = (args: string[]): calculate => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const time: number[] = [];
+
+  for (let i = 3; i < args.length; i++) {
+    if (!isNaN(Number(args[2])) && isNaN(Number(args[3]))) {
+      throw new Error("Values provided weren/t numbers");
+    } else {
+      time.push(Number(args[i]));
+    }
+  }
+
+  return {
+    target: Number(args[2]),
+    time: time,
+  };
+};
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -75,6 +95,18 @@ const calculateExercises = (
   };
   return result;
 };
+
+try {
+  const { target, time } = parseArguments(process.argv);
+  const result = calculateExercises(time, target);
+  console.log(`result: ${JSON.stringify(result)}`);
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
 
 // write in the terminal $ npm run calculateExercise "3,0,2,4,5,0,3,1" 2
 const array: number[] = [parseFloat(process.argv[2])];
