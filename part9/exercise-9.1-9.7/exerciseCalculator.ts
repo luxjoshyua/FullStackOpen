@@ -1,3 +1,8 @@
+interface calculate {
+  target: number;
+  time: number[];
+}
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -70,5 +75,9 @@ const calculateExercises = (
   };
   return result;
 };
+
+// write in the terminal $ npm run calculateExercise "3,0,2,4,5,0,3,1" 2
+const array: number[] = [parseFloat(process.argv[2])];
+const targetDailyHours: number = Number(process.argv[3]);
 
 console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
