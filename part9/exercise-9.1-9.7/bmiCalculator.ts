@@ -1,9 +1,9 @@
-interface CalculateBMI {
+interface calc {
   value1: number;
   value2: number;
 }
 
-const parseArgument = (args: string[]): CalculateBMI => {
+const parseArgs = (args: string[]): calc => {
   if (args.length < 4) throw new Error("Not enough arguments");
   if (args.length > 4) throw new Error("Too many arguments");
 
@@ -17,7 +17,7 @@ const parseArgument = (args: string[]): CalculateBMI => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): String => {
+const calculateBmi = (height: number, weight: number) => {
   // convert height from cm to m
   const heightInMeters = height / 100;
   // ** means to the power of, in this case 2
@@ -30,23 +30,22 @@ const calculateBmi = (height: number, weight: number): String => {
 
   if (isNaN(result)) {
     console.log("Please enter numbers");
-    return;
   } else if (result < 18.5) {
-    return "Underweight";
+    console.log("Underweight");
   } else if (result >= 18.5 && result <= 24.9) {
-    return "Normal (healthy weight)";
+    console.log("Normal (healthy weight)");
   } else if (result >= 25 && result <= 29.9) {
-    return "Overweight";
+    console.log("Overweight");
   } else if (result >= 30) {
-    return "Obese";
+    console.log("Obese");
   }
 };
 
 try {
-  const { value1, value2 } = parseArguments(process.argv);
+  const { value1, value2 } = parseArgs(process.argv);
   calculateBmi(value1, value2);
 } catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
+  let errorMessage = "Something bad happend.";
   if (error instanceof Error) {
     errorMessage += " Error: " + error.message;
   }
