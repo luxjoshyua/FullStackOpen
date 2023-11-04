@@ -71,29 +71,6 @@ blogRouter.get('/:id', async (request, response) => {
   }
 })
 
-// DELETE a specific blog
-// blogRouter.delete('/:id', async (request, response) => {
-//   const token = request.token
-//   const decodedToken = jwt.verify(token, SECRET)
-
-//   const user = await User.findById(decodedToken.id)
-
-//   const blogToDelete = await Blog.findById(request.params.id) // THIS IS NULL
-
-//   console.log(`BLOG TO DELETE`, blogToDelete)
-
-//   if (blogToDelete.user._id.toString() === user._id.toString()) {
-//     try {
-//       await Blog.findByIdAndRemove(request.params.id)
-//       response.status(204).end()
-//     } catch (exception) {
-//       next(exception)
-//     }
-//   } else {
-//     return response.status(401).json({ error: `Unauthorized` })
-//   }
-// })
-
 blogRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
 

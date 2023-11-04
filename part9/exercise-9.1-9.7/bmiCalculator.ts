@@ -22,7 +22,7 @@ export const calculateBmi = (height: number, weight: number) => {
   const heightInMeters = height / 100;
   // ** means to the power of, in this case 2
   const heightSquared = heightInMeters ** 2;
-  let result = weight / heightSquared;
+  const result = weight / heightSquared;
 
   let bmi = "";
 

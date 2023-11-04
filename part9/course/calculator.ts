@@ -4,13 +4,13 @@
 // type keyword defines a new name for a type: a type alias
 // as the type is a union of three possible values, it is handy to give it an alias that has a representative name
 // https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-aliases
-type Operation = "multiply" | "add" | "divide";
+export type Operation = "multiply" | "add" | "divide";
 
 // defines the expected return value from the function of string or number
 // type Result = string | number;
 
 // defines the expected return value from the function of number
-const calculator = (a: number, b: number, op: Operation): number => {
+export const calculator = (a: number, b: number, op: Operation): number => {
   switch (op) {
     case "multiply":
       return a * b;
