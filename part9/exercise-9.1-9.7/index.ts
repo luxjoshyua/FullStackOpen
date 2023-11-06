@@ -8,11 +8,6 @@ app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
 });
 
-// interface RequestBody {
-//   daily_exercises: number[];
-//   target: number;
-// }
-
 // height and weight are the two queries to include
 app.get("/bmi", (req, res) => {
   const height = Number(req.query.height);
