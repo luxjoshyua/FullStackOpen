@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import diagnosisRouter from "./routes/diagnosis";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,8 @@ app.get("/api/patients", (_req, res) => {
   console.log("someone pinged here");
   res.send("patients pong");
 });
+
+app.use("/api/diagnoses", diagnosisRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
