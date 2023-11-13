@@ -6,7 +6,7 @@ export interface Diagnosis {
 
 export type Gender = "male" | "female" | "other";
 
-export interface Patient {
+export interface PatientEntry {
   id: string;
   name: string;
   dateOfBirth: string;
@@ -15,4 +15,6 @@ export interface Patient {
   occupation: string;
 }
 
-export type NonSSNPatientEntry = Omit<Patient, "ssn">;
+export type NonSSNPatientEntry = Omit<PatientEntry, "ssn">;
+
+export type NewPatientEntry = Omit<PatientEntry, "id">;
