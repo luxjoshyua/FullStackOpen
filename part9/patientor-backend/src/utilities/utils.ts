@@ -1,12 +1,5 @@
 import { Gender, NewPatientEntry } from "../types";
 
-// fields we need to type check
-// name: "Martin Riggs",
-// dateOfBirth: "1979-01-30",
-// ssn: "300179-77A",
-// gender: "male",
-// occupation: "Cop",
-
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
@@ -69,7 +62,6 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
     throw new Error("Incorrect or missing data");
   }
 
-  // console.log(object);
   // fake entry
   // const newEntry: NewPatientEntry = {
   //   name: "Sam Smith",

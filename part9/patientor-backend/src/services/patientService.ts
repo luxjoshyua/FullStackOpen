@@ -18,11 +18,20 @@ const getNonSSNPatientEntries = (): NonSSNPatientEntry[] => {
 };
 
 const addPatient = (entry: NewPatientEntry): PatientEntry => {
+  // could write it like this, id is key value pair same, so don't need to write id: id
+  // const id = uuid();
+  // const newPatientEntry = {
+  //   id,
+  //   ...entry,
+  // };
+
   const newPatientEntry = {
     id: uuid(),
     ...entry,
   };
-  // console.log(`new patient entry`, newPatientEntry);
+
+  console.log(`new patient entry`, newPatientEntry);
+
   data.push(newPatientEntry);
   return newPatientEntry;
 };
