@@ -56,9 +56,11 @@ const Part = ({ part }: { part: CoursePart }) => {
             <i>{part.description}</i>
           </span>
           <div>
-            {part.requirements.map((r) => (
-              <span key={r}>{r} </span>
-            ))}
+            <ul>
+              {part.requirements.map((r) => (
+                <li key={r}>{r} </li>
+              ))}
+            </ul>
           </div>
         </div>
       )
