@@ -8,15 +8,19 @@ const styleBlock = {
   display: 'block',
 }
 
+const styleBold = {
+  fontWeight: 'bold',
+}
+
 const Part = ({ part }: { part: CoursePart }) => {
   switch (part.kind) {
     case 'basic':
       return (
         <div style={styleGroup}>
-          <span style={styleBlock}>
+          <span style={{ ...styleBlock, ...styleBold }}>
             {part.name} {part.exerciseCount}
           </span>
-          <span>
+          <span style={styleBlock}>
             <i>{part.description}</i>
           </span>
         </div>
@@ -24,7 +28,7 @@ const Part = ({ part }: { part: CoursePart }) => {
     case 'group':
       return (
         <div style={styleGroup}>
-          <span style={styleBlock}>
+          <span style={{ ...styleBlock, ...styleBold }}>
             {part.name} <span>{part.exerciseCount}</span>
           </span>
           <span>project exercise {part.groupProjectCount}</span>
@@ -33,13 +37,29 @@ const Part = ({ part }: { part: CoursePart }) => {
     case 'background':
       return (
         <div style={styleGroup}>
-          <span style={styleBlock}>
+          <span style={{ ...styleBlock, ...styleBold }}>
             {part.name} <span>{part.exerciseCount}</span>
           </span>
-          <span>
+          <span style={styleBlock}>
             <i>{part.description}</i>
           </span>
           <span>submit to {part.backgroundMaterial}</span>
+        </div>
+      )
+    case 'special':
+      return (
+        <div style={styleGroup}>
+          <span style={{ ...styleBlock, ...styleBold }}>
+            {part.name} <span>{part.exerciseCount}</span>
+          </span>
+          <span style={styleBlock}>
+            <i>{part.description}</i>
+          </span>
+          <div>
+            {part.requirements.map((r) => (
+              <span key={r}>{r} </span>
+            ))}
+          </div>
         </div>
       )
   }
