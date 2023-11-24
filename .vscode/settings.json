@@ -1,0 +1,8 @@
+{
+  "eslint.workingDirectories": [
+    "./flight/flight-backend",
+    "./flight/flight-frontend",
+    "./patientor/patientor-backend",
+    "./patientor/patientor-frontend"
+  ]
+}

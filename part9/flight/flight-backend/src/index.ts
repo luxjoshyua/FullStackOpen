@@ -11,6 +11,10 @@ app.get("/ping", (_req, res) => {
   res.send("pong");
 });
 
+app.get("/api", (_req, res) => {
+  res.send("root working");
+});
+
 // app.post("/api/diaries", (req, res) => {
 //   console.log(req.body);
 //   console.log("posting something");
