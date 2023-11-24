@@ -1,24 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Note } from './types/types'
+import { getAllNotes, createNote } from './services/noteService'
 import './App.css'
-
-interface Note {
-  id: number
-  content: string
-}
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([{ id: 1, content: 'testing' }])
   const [newNote, setNewNote] = useState('')
 
-  // avoid the dreaded any error
+  useEffect(() => {
+    getAllNotes().then((data) => {
+      setNotes(data)
+    })
+  }, [])
+
   const noteCreation = (event: React.SyntheticEvent) => {
     console.log('form submitting...')
     event.preventDefault()
-    const noteToAdd = {
-      content: newNote,
-      id: notes.length + 1,
-    }
-    setNotes(notes.concat(noteToAdd))
+
+    createNote({ content: newNote }).then((data) => {
+      setNotes(notes.concat(data))
+    })
+
     setNewNote('')
   }
 
