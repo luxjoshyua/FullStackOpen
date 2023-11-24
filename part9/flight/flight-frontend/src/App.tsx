@@ -1,34 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { Button, Divider, Container, Typography } from '@mui/material'
+
+import { Diary } from './types'
+import diaryService from './services/diaries'
+import DiaryListPage from './components/DiaryListPage'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [diaries, setDiaries] = useState<Diary[]>([])
+
+  useEffect(() => {
+    // void indicates that the expected response data is empty or undefined
+    // void axios.get<void>(`${apiBaseUrl}/ping`)
+
+    const fetchDiaryList = async () => {
+      const diaries = await diaryService.getAll()
+      setDiaries(diaries)
+    }
+    // indciates the function does not return any value
+    void fetchDiaryList()
+  }, [])
+
+  // console.log(diaries)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="App">
+      <Container>
+        <Typography variant="h3" style={{ margin: '0.5em 0' }}>
+          Flight Diaries
+        </Typography>
+        <DiaryListPage diaries={diaries} />
+      </Container>
+    </div>
   )
 }
 
