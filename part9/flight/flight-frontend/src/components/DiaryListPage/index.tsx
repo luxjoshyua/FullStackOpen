@@ -1,4 +1,5 @@
-// import { useState } from 'react'
+import { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Table,
@@ -8,8 +9,9 @@ import {
   TableRow,
   TableBody,
 } from "@mui/material";
-import { Diary } from "../../types";
+import { Diary, DiaryFormValues } from "../../types";
 import AddDiaryForm from "../DiaryFormPage";
+import diaryService from "../../services/diaries";
 
 interface Props {
   diaries: Diary[];
@@ -17,9 +19,30 @@ interface Props {
 }
 
 const DiaryListPage = ({ diaries, setDiaries }: Props) => {
-  const submitNewDiary = async () => {
-    console.log("submitting diary entry yeeew");
-    setDiaries({});
+  const [error, setError] = useState<string>();
+
+  const submitNewDiaryEntry = async (values: DiaryFormValues) => {
+    try {
+      const diary = await diaryService.create(values);
+      // console.log(`submitting diary = `, diary);
+      setDiaries(diaries.concat(diary));
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
   };
 
   return (
@@ -47,7 +70,7 @@ const DiaryListPage = ({ diaries, setDiaries }: Props) => {
           ))}
         </TableBody>
       </Table>
-      <AddDiaryForm onSubmit={submitNewDiary} />
+      <AddDiaryForm onSubmit={submitNewDiaryEntry} error={error} />
     </div>
   );
 };

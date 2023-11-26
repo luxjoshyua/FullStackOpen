@@ -7,11 +7,18 @@ import {
   Select,
   Button,
   SelectChangeEvent,
+  Alert,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
 } from "@mui/material";
 import { DiaryFormValues, Visibility, Weather } from "../../types";
 
 interface Props {
   onSubmit: (values: DiaryFormValues) => void;
+  error?: string;
 }
 
 interface VisibilityOption {
@@ -36,13 +43,7 @@ const weatherOptions: WeatherOption[] = Object.values(Weather).map((v) => ({
   label: v.toString(),
 }));
 
-// fields we need
-// date: string
-// weather: Weather
-// visibility: Visibility
-//  comment?: string
-
-const AddDiaryForm = ({ onSubmit }: Props) => {
+const AddDiaryForm = ({ onSubmit, error }: Props) => {
   const [date, setDate] = useState("");
   const [visibility, setVisibility] = useState(Visibility.Great);
   const [weather, setWeather] = useState(Weather.Sunny);
@@ -84,20 +85,26 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
     });
   };
 
+  // console.log(visibilityOptions);
+
   return (
     <div>
+      {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={addDiaryEntry}>
         <Typography variant="h6" sx={{ marginBottom: "20px" }}>
           Diary Entry Form
         </Typography>
         <TextField
-          label="Date"
-          placeholder="YYYY-MM-DD"
           fullWidth
           value={date}
+          type="date"
           onChange={({ target }) => setDate(target.value)}
           sx={{
             color: "white",
+            marginBottom: "20px",
+            "& input": {
+              color: "white",
+            },
             "& .MuiFormLabel-root": {
               color: "white",
             },
@@ -107,7 +114,7 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
           }}
         />
 
-        <InputLabel style={{ marginTop: 20, color: "white" }}>
+        {/* <InputLabel style={{ marginTop: 20, color: "white" }}>
           Visibility
         </InputLabel>
         <Select
@@ -123,20 +130,56 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: "white",
             },
+            "& .MuiSvgIcon-root": {
+              color: "white",
+            },
           }}
         >
           {visibilityOptions.map((option) => (
-            <MenuItem
-              key={option.label}
-              value={option.value}
-              sx={{ color: "white" }}
-            >
+            <MenuItem key={option.label} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
-        </Select>
+        </Select> */}
 
-        <InputLabel style={{ marginTop: 20, color: "white" }}>
+        {/* <InputLabel style={{ marginTop: 20, color: "white" }}>
+          Visibility
+        </InputLabel> */}
+        <div style={{ marginBottom: "20px" }}>
+          <FormControl>
+            <FormLabel sx={{ color: "white" }}>Visibility</FormLabel>
+            <RadioGroup
+              aria-label="Visibility"
+              name="visibility"
+              value={visibility}
+              onChange={onVisibilityChange}
+              row
+              sx={{
+                color: "white",
+                "& .MuiFormLabel-root": {
+                  color: "white",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "white",
+                },
+              }}
+            >
+              {visibilityOptions.map((option) => (
+                <FormControlLabel
+                  control={<Radio />}
+                  key={option.label}
+                  value={option.value}
+                  label={option.label}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </div>
+
+        {/* <InputLabel style={{ marginTop: 20, color: "white" }}>
           Weather
         </InputLabel>
         <Select
@@ -153,18 +196,50 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: "white",
             },
+            "& .MuiSvgIcon-root": {
+              color: "white",
+            },
           }}
         >
           {weatherOptions.map((option) => (
-            <MenuItem
-              key={option.label}
-              value={option.value}
-              sx={{ color: "white" }}
-            >
+            <MenuItem key={option.label} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
-        </Select>
+        </Select> */}
+        <div style={{ marginBottom: "20px" }}>
+          <FormControl>
+            <FormLabel sx={{ color: "white" }}>Weather</FormLabel>
+            <RadioGroup
+              aria-label="Weather"
+              name="weather"
+              value={weather}
+              onChange={onWeatherChange}
+              row
+              sx={{
+                color: "white",
+                "& .MuiFormLabel-root": {
+                  color: "white",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "white",
+                },
+              }}
+            >
+              {weatherOptions.map((option) => (
+                <FormControlLabel
+                  control={<Radio />}
+                  key={option.label}
+                  value={option.value}
+                  label={option.label}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </div>
 
         <TextField
           label="Comment"
@@ -175,6 +250,9 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
           sx={{
             color: "white",
             marginBottom: "20px",
+            "& input": {
+              color: "white",
+            },
             "& .MuiFormLabel-root": {
               color: "white",
             },
@@ -184,7 +262,7 @@ const AddDiaryForm = ({ onSubmit }: Props) => {
           }}
         />
 
-        <Button variant="contained" onClick={() => console.log("wassup")}>
+        <Button variant="contained" type="submit">
           Add New Diary Entry
         </Button>
       </form>
