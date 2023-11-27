@@ -14,9 +14,6 @@ import axios from 'axios'
 
 import { PatientFormValues, Patient } from '../../types'
 import AddPatientModal from '../AddPatientModal'
-import PatientPage from '../PatientPage'
-import PatientLink from '../PatientLinkPage'
-
 import HealthRatingBar from '../HealthRatingBar'
 import patientService from '../../services/patients'
 
@@ -28,14 +25,6 @@ interface Props {
 const PatientListPage = ({ patients, setPatients }: Props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [error, setError] = useState<string>()
-
-  const [showPatientPage, setShowPatientPage] = useState(false)
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
-
-  const handleClick = (patient: Patient) => {
-    setSelectedPatient(patient)
-    setShowPatientPage(true)
-  }
 
   const openModal = (): void => setModalOpen(true)
 
@@ -68,9 +57,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
   return (
     <div className="App">
       <Box>
-        <Typography align="center" variant="h6">
-          Patient list
-        </Typography>
+        <Typography variant="h5">Patient list</Typography>
       </Box>
       <Table style={{ marginBottom: '1em' }}>
         <TableHead>
@@ -106,8 +93,6 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
       <Button variant="contained" onClick={() => openModal()}>
         Add New Patient
       </Button>
-
-      {showPatientPage && <PatientPage patients={patients} />}
     </div>
   )
 }
