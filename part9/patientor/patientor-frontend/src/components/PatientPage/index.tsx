@@ -1,18 +1,14 @@
-import { useMatch } from 'react-router-dom'
-import { Box, Typography, Card, Stack, IconButton } from '@mui/material'
-import GenderIcon from '../Gender'
-
+import { Box, Typography, Card, Stack } from '@mui/material'
+import { Work, MedicalServices } from '@mui/icons-material'
+import { GenderIcon } from '../Miscellaneous'
 import { Patient } from '../../types'
+import EntryDetails from '../PatientEntryDetails'
 
 interface Props {
-  patients: Patient[]
+  patient: Patient | null | undefined
 }
 
-const PatientPage = ({ patients }: Props) => {
-  const match = useMatch('/patients/:id')
-  const patient = match ? patients.find((patient) => patient.id === match.params.id) : null
-  if (!patient) return null
-
+const PatientPage = ({ patient }: Props) => {
   return (
     <div className="single-patient-view">
       <Box sx={{ marginBottom: '1em' }}>
@@ -27,27 +23,72 @@ const PatientPage = ({ patients }: Props) => {
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: 'flex-start',
           gap: 2,
+          marginBottom: '.5em',
         }}>
         <Stack direction="column" spacing={2} alignItems="flex-start">
           <Stack direction="column" spacing={0.2} alignItems="flex-start">
             <Typography color="text.primary" fontWeight="medium" fontSize={25}>
-              {patient.name}
+              {patient?.name}
             </Typography>
             <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
-              <strong>ssn:</strong> {patient.ssn}
+              <strong>ssn:</strong> {patient?.ssn}
             </Typography>
             <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
-              <strong>occupation:</strong> {patient.occupation}
+              <strong>occupation:</strong> {patient?.occupation}
             </Typography>
             <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
-              <strong>gender:</strong> <GenderIcon gender={patient.gender} />
+              <strong>gender:</strong> <GenderIcon gender={patient?.gender} />
             </Typography>
-          </Stack>
-          <Stack direction="row" alignItems="center" spacing={1.5}>
-            <IconButton aria-label="fast forward" disabled size="small"></IconButton>
           </Stack>
         </Stack>
       </Card>
+      {patient?.entries?.length !== undefined && patient?.entries?.length > 0 && (
+        <Typography variant="h5" sx={{ marginBottom: '0.5em' }}>
+          Entries
+        </Typography>
+      )}
+      {patient?.entries.map((entry) => {
+        return (
+          <div key={entry.id}>
+            <Card
+              variant="outlined"
+              sx={{
+                p: 2,
+                width: { xs: '100%', sm: 'auto' },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 2,
+                marginBottom: '.5em',
+              }}>
+              <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+                <strong>date:</strong> {entry.date}
+                {entry.type === 'OccupationalHealthcare' ? (
+                  <>
+                    {entry.employerName ? <span>{entry.employerName}</span> : null}
+                    <Work />
+                  </>
+                ) : (
+                  <>
+                    <MedicalServices />
+                  </>
+                )}
+              </Typography>
+              <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+                <strong>
+                  <em>description:</em>{' '}
+                </strong>
+                {entry.description}
+              </Typography>
+              <EntryDetails entry={entry} />
+              <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+                <strong>diagnosis by: </strong>
+                {entry.specialist}
+              </Typography>
+            </Card>
+          </div>
+        )
+      })}
     </div>
   )
 }
