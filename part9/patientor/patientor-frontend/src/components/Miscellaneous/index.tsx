@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 import { Male, Female, Transgender, Favorite } from '@mui/icons-material'
-import { Gender, HealthCheckRating, Diagnosis } from '../../types'
+import { Gender, HealthCheckRating } from '../../types'
 
 export const GenderIcon = ({ gender }: { gender: Gender | undefined }) => {
   return (

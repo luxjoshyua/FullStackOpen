@@ -65,8 +65,7 @@ const PatientPage = ({ patient }: Props) => {
                 <strong>date:</strong> {entry.date}
                 {entry.type === 'OccupationalHealthcare' ? (
                   <>
-                    {entry.employerName ? <span>{entry.employerName}</span> : null}
-                    <Work />
+                    <Work sx={{ marginLeft: '.5em' }} />
                   </>
                 ) : (
                   <>
@@ -74,6 +73,7 @@ const PatientPage = ({ patient }: Props) => {
                   </>
                 )}
               </Typography>
+              {/* map through diagnosis codes here */}
               <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
                 <strong>
                   <em>description:</em>{' '}

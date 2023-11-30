@@ -1,33 +1,84 @@
+import { Typography } from '@mui/material'
 import { Entry } from '../../types'
 import { HealthIcon } from '../Miscellaneous'
 
-const HospitalEntry = () => {
+interface PropsHospitalEntry {
+  discharge: {
+    date: string
+    criteria: string
+  }
+}
+
+interface PropsOccupationalHealthcareEntry {
+  employerName: string
+  // check sickLeave exists in the data, then define if yes, skip if no
+  sickLeave?: {
+    startDate: string
+    endDate: string
+  }
+}
+
+const HospitalEntry = ({ discharge }: PropsHospitalEntry): JSX.Element => {
+  if (!discharge) return <></>
+
   return (
-    <div>
-      <p>wassup</p>
-    </div>
+    <>
+      <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+        <strong>discharge date: </strong>
+        {discharge.date}
+      </Typography>
+      <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+        <strong>discharge criteria: </strong>
+        {discharge.criteria}
+      </Typography>
+    </>
   )
 }
 
-const OccupationalHealthcare = () => {
+const OccupationalHealthcareEntry = ({
+  employerName,
+  sickLeave,
+}: PropsOccupationalHealthcareEntry): JSX.Element => {
+  if (!employerName && !sickLeave) return <></>
+
+  if (!sickLeave) {
+    return (
+      <>
+        <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+          <strong>employer name: </strong>
+          {employerName}
+        </Typography>
+      </>
+    )
+  }
+
   return (
-    <div>
-      <p>wassssup!????!</p>
-    </div>
+    <>
+      <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+        <strong>employer name: </strong>
+        {employerName}
+      </Typography>
+      <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
+        <strong>sick leave date: </strong>
+        start - {sickLeave.startDate} end - {sickLeave.endDate}
+      </Typography>
+    </>
   )
 }
 
 const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
-  // console.log(entry)
   switch (entry.type) {
     case 'HealthCheck':
       return <HealthIcon rating={entry.healthCheckRating} />
     case 'Hospital':
-      // discharge
-      return <HospitalEntry />
+      return <HospitalEntry discharge={entry.discharge} />
     case 'OccupationalHealthcare':
-      // sick leave
-      return <OccupationalHealthcare />
+      return (
+        <OccupationalHealthcareEntry
+          employerName={entry.employerName}
+          sickLeave={entry.sickLeave}
+        />
+      )
     default:
       // do the assert never bizness here
       break
