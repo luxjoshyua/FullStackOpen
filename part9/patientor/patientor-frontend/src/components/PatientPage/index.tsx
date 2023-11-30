@@ -1,14 +1,21 @@
+import { useContext } from 'react'
 import { Box, Typography, Card, Stack } from '@mui/material'
 import { Work, MedicalServices } from '@mui/icons-material'
+
 import { GenderIcon } from '../Miscellaneous'
 import { Patient } from '../../types'
 import EntryDetails from '../PatientEntryDetails'
+import { DiagnosisCodes } from '../Miscellaneous'
+import { DiagnosesContext } from '../../context'
 
 interface Props {
   patient: Patient | null | undefined
 }
 
 const PatientPage = ({ patient }: Props) => {
+  const diagnoses = useContext(DiagnosesContext)
+  // console.log(diagnoses)
+
   return (
     <div className="single-patient-view">
       <Box sx={{ marginBottom: '1em' }}>
@@ -73,7 +80,7 @@ const PatientPage = ({ patient }: Props) => {
                   </>
                 )}
               </Typography>
-              {/* map through diagnosis codes here */}
+              <DiagnosisCodes diagnoses={diagnoses} codes={entry.diagnosisCodes} />
               <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
                 <strong>
                   <em>description:</em>{' '}

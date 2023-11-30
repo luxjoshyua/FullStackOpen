@@ -1,24 +1,34 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom'
+import { Route, Link, Routes } from 'react-router-dom'
 import { Button, Divider, Container, Typography } from '@mui/material'
 import { useMatch } from 'react-router-dom'
 
-import { Patient } from './types'
+import { Patient, Diagnosis } from './types'
 import patientService from './services/patients'
+import diagnosisService from './services/diagnoses'
 import PatientListPage from './components/PatientListPage'
 import PatientPage from './components/PatientPage'
+import { DiagnosesContext } from './context'
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([])
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
 
   useEffect(() => {
     // void axios.get<void>(`${apiBaseUrl}/ping`)
-
     const fetchPatientList = async () => {
       const patients = await patientService.getAll()
       setPatients(patients)
     }
     void fetchPatientList()
+  }, [])
+
+  useEffect(() => {
+    const fetchDiagnosisList = async () => {
+      const diagnoses = await diagnosisService.getAll()
+      setDiagnoses(diagnoses)
+    }
+    void fetchDiagnosisList()
   }, [])
 
   const match = useMatch('/patients/:id')
@@ -39,13 +49,15 @@ const App = () => {
           Home
         </Button>
         <Divider hidden />
-        <Routes>
-          <Route
-            path="/"
-            element={<PatientListPage patients={patients} setPatients={setPatients} />}
-          />
-          <Route path="/patients/:id" element={<PatientPage patient={patient} />} />
-        </Routes>
+        <DiagnosesContext.Provider value={diagnoses}>
+          <Routes>
+            <Route
+              path="/"
+              element={<PatientListPage patients={patients} setPatients={setPatients} />}
+            />
+            <Route path="/patients/:id" element={<PatientPage patient={patient} />} />
+          </Routes>
+        </DiagnosesContext.Provider>
       </Container>
     </div>
   )

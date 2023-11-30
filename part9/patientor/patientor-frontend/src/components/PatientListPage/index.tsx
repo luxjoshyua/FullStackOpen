@@ -16,6 +16,7 @@ import { PatientFormValues, Patient } from '../../types'
 import AddPatientModal from '../AddPatientModal'
 import HealthRatingBar from '../HealthRatingBar'
 import patientService from '../../services/patients'
+// import { getDiagnosisDescription } from '../../utilities'
 
 interface Props {
   patients: Patient[]
@@ -79,6 +80,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
               <TableCell>
                 <HealthRatingBar showText={false} rating={1} />
               </TableCell>
+              <TableCell>{patient.occupation}</TableCell>
             </TableRow>
           ))}
         </TableBody>

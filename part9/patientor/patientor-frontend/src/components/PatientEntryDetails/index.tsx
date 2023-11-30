@@ -60,7 +60,10 @@ const OccupationalHealthcareEntry = ({
       </Typography>
       <Typography component="div" color="text.secondary" fontWeight="regular" fontSize={18}>
         <strong>sick leave date: </strong>
-        start - {sickLeave.startDate} end - {sickLeave.endDate}
+        <ul>
+          <li>start - {sickLeave.startDate}</li>
+          <li>end - {sickLeave.endDate}</li>
+        </ul>
       </Typography>
     </>
   )
