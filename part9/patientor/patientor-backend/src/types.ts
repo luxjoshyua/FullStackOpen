@@ -14,7 +14,7 @@ export interface Patient {
   id: string;
   name: string;
   dateOfBirth: string;
-  ssn: string;
+  ssn?: string;
   gender: Gender;
   occupation: string;
   entries: Entry[];
@@ -69,3 +69,10 @@ export type NonSSNPatientEntry = Omit<Patient, "ssn">;
 export type NewPatientEntry = Omit<Patient, "id">;
 
 export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
+
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+// Define Entry without the 'id' property
+export type EntryWithoutId = UnionOmit<Entry, "id">;

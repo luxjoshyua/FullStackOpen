@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material'
 import { Entry } from '../../types'
 import { HealthIcon } from '../Miscellaneous'
+import { assertNever } from '../../utilities'
 
 interface PropsHospitalEntry {
   discharge: {
@@ -83,7 +84,7 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
         />
       )
     default:
-      // do the assert never bizness here
+      assertNever(entry)
       break
   }
 }

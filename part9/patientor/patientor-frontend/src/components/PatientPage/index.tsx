@@ -14,7 +14,6 @@ interface Props {
 
 const PatientPage = ({ patient }: Props) => {
   const diagnoses = useContext(DiagnosesContext)
-  // console.log(diagnoses)
 
   return (
     <div className="single-patient-view">
