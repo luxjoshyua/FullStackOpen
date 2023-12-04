@@ -1,5 +1,14 @@
 import { Gender, NewPatientEntry } from "../types";
 
+// object is the body of a request, point of this function is to map fields
+// of unknown type to fields of the correct type and check whether
+// they are defined as expected
+export const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};
+
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
@@ -61,15 +70,6 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
   if (!object || typeof object !== "object") {
     throw new Error("Incorrect or missing data");
   }
-
-  // fake entry
-  // const newEntry: NewPatientEntry = {
-  //   name: "Sam Smith",
-  //   dateOfBirth: "1991-01-05",
-  //   ssn: "050174-432N",
-  //   gender: "male",
-  //   occupation: "Cool Cat",
-  // };
 
   if (
     "name" in object &&
