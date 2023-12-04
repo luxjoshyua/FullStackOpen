@@ -50,13 +50,15 @@ interface HospitalEntry extends BaseEntry {
   };
 }
 
+export interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
+  sickLeave?: SickLeave;
 }
 
 export type Entry =
@@ -76,3 +78,8 @@ type UnionOmit<T, K extends string | number | symbol> = T extends unknown
   : never;
 // Define Entry without the 'id' property
 export type EntryWithoutId = UnionOmit<Entry, "id">;
+
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
