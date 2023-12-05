@@ -10,8 +10,9 @@ import {
   Input,
   FormControl,
   OutlinedInput,
+  Typography,
 } from '@mui/material'
-import { EntryWithoutId, SickLeave, Discharge, Diagnosis } from '../../types'
+import { EntryWithoutId, Diagnosis, HealthCheckRating } from '../../types'
 import { DiagnosesContext } from '../../context'
 
 interface Props {
@@ -39,15 +40,14 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [employerName, setEmployerName] = useState('')
   const [specialist, setSpecialist] = useState('')
   const [diagnosisCodes, setDiagnosisCodes] = useState<Array<Diagnosis['code']>>([])
+  const [healthCheckRating, setHealthCheckRating] = useState(HealthCheckRating.Healthy)
   const [dischargeDate, setDischargeDate] = useState('')
   const [dischargeCriteria, setDischargeCriteria] = useState('')
+  const [entryOptions, setEntryOptions] = useState('')
+  const [sickLeaveStart, setSickLeaveStart] = useState('')
+  const [sickLeaveEnd, setSickLeaveEnd] = useState()
 
   const diagnoses = useContext(DiagnosesContext)
-
-  // healthCheckRating
-  // sickLeaveStart
-  // sickLeaveEnd
-  // entryOptions
 
   // const onGenderChange = (event: SelectChangeEvent<string>) => {
   //   event.preventDefault()
@@ -64,22 +64,73 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     event.preventDefault()
 
     const value = event.target.value
-    console.log(value)
+    // console.log(value)
 
     typeof value === 'string' ? setDiagnosisCodes(value.split(', ')) : setDiagnosisCodes(value)
   }
 
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault()
-    onSubmit({
+
+    const baseEntry = {
       description,
       date,
-      employerName,
-    })
+      specialist,
+      diagnosisCodes,
+    }
+
+    switch (entryOptions) {
+      case 'HealthCheck':
+        onSubmit({
+          ...baseEntry,
+          type: 'HealthCheck',
+          healthCheckRating,
+        })
+        break
+      case 'Hospital':
+        onSubmit({
+          ...baseEntry,
+          type: 'Hospital',
+          discharge: {
+            date: dischargeDate,
+            criteria: dischargeCriteria,
+          },
+        })
+        break
+      case 'OccupationalHealthcare':
+        onSubmit({
+          ...baseEntry,
+          type: 'OccupationalHealthcare',
+          employerName,
+          sickLeave:
+            sickLeaveStart && sickLeaveEnd
+              ? {
+                  startDate: dischargeDate,
+                  endDate: dischargeCriteria,
+                }
+              : undefined,
+        })
+        break
+      default:
+        break
+    }
   }
 
   return (
     <div>
+      <Typography variant="h5">New entry</Typography>
+      <InputLabel>Entry options</InputLabel>
+      <Select
+        label="Entry options"
+        fullWidth
+        value={entryOptions}
+        onChange={({ target }) => setEntryOptions(target.value)}
+        style={{ marginBottom: '1rem' }}>
+        <MenuItem value="HealthCheck">Health Check</MenuItem>
+        <MenuItem value="Hospital">Hospital</MenuItem>
+        <MenuItem value="OccupationalHealthcare">Occupational Healthcare</MenuItem>
+      </Select>
+
       <form onSubmit={addEntry}>
         <TextField
           label="Description"
@@ -129,24 +180,66 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             ))}
           </Select>
         </>
-        <>
-          <TextField
-            label="Discharge date"
-            placeholder="YYYY-MM-DD"
-            fullWidth
-            value={dischargeDate}
-            onChange={({ target }) => setDischargeDate(target.value)}
-            style={{ marginBottom: '1rem' }}
-          />
-          <TextField
-            label="Discharge criteria"
-            placeholder="Discharge criteria"
-            fullWidth
-            value={dischargeCriteria}
-            onChange={({ target }) => setDischargeCriteria(target.value)}
-            style={{ marginBottom: '1rem' }}
-          />
-        </>
+
+        {entryOptions == 'HealthCheck' && (
+          <>
+            <InputLabel>Health Check Rating</InputLabel>
+            <Select
+              label="Health Check Rating"
+              fullWidth
+              value={healthCheckRating}
+              onChange={({ target }) => setHealthCheckRating(Number(target.value))}
+              style={{ marginBottom: '1rem' }}
+              input={<OutlinedInput label="Health Check Rating" />}>
+              <MenuItem value={HealthCheckRating.Healthy}>Healthy</MenuItem>
+              <MenuItem value={HealthCheckRating.LowRisk}>Low Risk</MenuItem>
+              <MenuItem value={HealthCheckRating.HighRisk}>High Risk</MenuItem>
+              <MenuItem value={HealthCheckRating.CriticalRisk}>Critical Risk</MenuItem>
+            </Select>
+          </>
+        )}
+
+        {entryOptions == 'OccupationalHealthcare' && (
+          <>
+            <InputLabel>Sick Leave Start Date</InputLabel>
+            <Input
+              fullWidth
+              value={dischargeDate}
+              type="date"
+              onChange={({ target }) => setDischargeDate(target.value)}
+              style={{ marginBottom: '1rem' }}
+            />
+            <InputLabel>Sick Leave End Date</InputLabel>
+            <Input
+              fullWidth
+              value={dischargeCriteria}
+              type="date"
+              onChange={({ target }) => setDischargeCriteria(target.value)}
+              style={{ marginBottom: '1rem' }}
+            />
+          </>
+        )}
+
+        {entryOptions === 'Hospital' && (
+          <>
+            <InputLabel>Discharge Date</InputLabel>
+            <Input
+              fullWidth
+              value={dischargeDate}
+              type="date"
+              onChange={({ target }) => setDischargeDate(target.value)}
+              style={{ marginBottom: '1rem' }}
+            />
+            <InputLabel>Discharge Criteria</InputLabel>
+            <Input
+              fullWidth
+              value={dischargeCriteria}
+              type="text"
+              onChange={({ target }) => setDischargeCriteria(target.value)}
+              style={{ marginBottom: '1rem' }}
+            />
+          </>
+        )}
 
         <Grid>
           <Grid item>
