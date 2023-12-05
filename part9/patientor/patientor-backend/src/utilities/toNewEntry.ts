@@ -60,7 +60,6 @@ const parseDiagnosisCodes = (object: unknown): Array<Diagnosis["code"]> => {
   return object.diagnosisCodes as Array<Diagnosis["code"]>;
 };
 
-// healthCheckRating
 const parseHealthCheckRating = (
   healthCheckRating: unknown
 ): HealthCheckRating => {

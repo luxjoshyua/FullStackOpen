@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { Box, Typography, Card, Stack } from '@mui/material'
+import { useContext, useState } from 'react'
+import { Box, Typography, Card, Stack, Button } from '@mui/material'
 import { Work, MedicalServices } from '@mui/icons-material'
 
 import { GenderIcon } from '../Miscellaneous'
@@ -7,6 +7,7 @@ import { Patient } from '../../types'
 import EntryDetails from '../PatientEntryDetails'
 import { DiagnosisCodes } from '../Miscellaneous'
 import { DiagnosesContext } from '../../context'
+import AddEntryModal from '../AddEntryModal'
 
 interface Props {
   patient: Patient | null | undefined
@@ -14,6 +15,16 @@ interface Props {
 
 const PatientPage = ({ patient }: Props) => {
   const diagnoses = useContext(DiagnosesContext)
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [error, setError] = useState<string>()
+
+  const openModal = (): void => setModalOpen(true)
+  const closeModal = (): void => {
+    setModalOpen(false)
+    setError(undefined)
+  }
+
+  const submitNewEntry = () => 'Not implemented yet'
 
   return (
     <div className="single-patient-view">
@@ -95,6 +106,16 @@ const PatientPage = ({ patient }: Props) => {
           </div>
         )
       })}
+
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
+      <Button variant="contained" onClick={() => openModal()}>
+        Add New Entry
+      </Button>
     </div>
   )
 }

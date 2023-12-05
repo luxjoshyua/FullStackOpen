@@ -60,11 +60,6 @@ interface HospitalEntry extends BaseEntry {
   };
 }
 
-export interface SickLeave {
-  startDate: string;
-  endDate: string;
-}
-
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
