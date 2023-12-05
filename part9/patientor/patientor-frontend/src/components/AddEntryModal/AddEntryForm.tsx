@@ -45,7 +45,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [dischargeCriteria, setDischargeCriteria] = useState('')
   const [entryOptions, setEntryOptions] = useState('')
   const [sickLeaveStart, setSickLeaveStart] = useState('')
-  const [sickLeaveEnd, setSickLeaveEnd] = useState()
+  const [sickLeaveEnd, setSickLeaveEnd] = useState('')
 
   const diagnoses = useContext(DiagnosesContext)
 
@@ -204,17 +204,17 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <InputLabel>Sick Leave Start Date</InputLabel>
             <Input
               fullWidth
-              value={dischargeDate}
+              value={sickLeaveStart}
               type="date"
-              onChange={({ target }) => setDischargeDate(target.value)}
+              onChange={({ target }) => setSickLeaveStart(target.value)}
               style={{ marginBottom: '1rem' }}
             />
             <InputLabel>Sick Leave End Date</InputLabel>
             <Input
               fullWidth
-              value={dischargeCriteria}
+              value={sickLeaveEnd}
               type="date"
-              onChange={({ target }) => setDischargeCriteria(target.value)}
+              onChange={({ target }) => setSickLeaveEnd(target.value)}
               style={{ marginBottom: '1rem' }}
             />
           </>

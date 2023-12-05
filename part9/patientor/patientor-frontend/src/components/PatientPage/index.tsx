@@ -24,7 +24,9 @@ const PatientPage = ({ patient }: Props) => {
     setError(undefined)
   }
 
-  const submitNewEntry = () => 'Not implemented yet'
+  const submitNewEntry = () => {
+    console.log('firing....')
+  }
 
   return (
     <div className="single-patient-view">
