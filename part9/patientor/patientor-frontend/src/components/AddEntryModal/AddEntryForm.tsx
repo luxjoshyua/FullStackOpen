@@ -30,8 +30,6 @@ interface Props {
  * - employerName
  * - sickLeave - startDate, endDate
  * - healthCheckRating
- *
- *
  */
 
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
@@ -48,17 +46,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [sickLeaveEnd, setSickLeaveEnd] = useState('')
 
   const diagnoses = useContext(DiagnosesContext)
-
-  // const onGenderChange = (event: SelectChangeEvent<string>) => {
-  //   event.preventDefault()
-  //   if (typeof event.target.value === 'string') {
-  //     const value = event.target.value
-  //     const gender = Object.values(Gender).find((g) => g.toString() === value)
-  //     if (gender) {
-  //       setGender(gender)
-  //     }
-  //   }
-  // }
 
   const handleDiagnosisCodesChange = (event: SelectChangeEvent<string[]>) => {
     event.preventDefault()
@@ -118,8 +105,10 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   return (
     <div>
-      <Typography variant="h5">New entry</Typography>
-      <InputLabel>Entry options</InputLabel>
+      <Typography variant="h5" style={{ marginBottom: '.5rem' }}>
+        New entry
+      </Typography>
+      <InputLabel style={{ marginBottom: '.25rem' }}>Entry options</InputLabel>
       <Select
         label="Entry options"
         fullWidth
