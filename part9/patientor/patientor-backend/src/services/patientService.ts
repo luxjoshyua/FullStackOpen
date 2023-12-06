@@ -46,6 +46,8 @@ const addEntry = (patient: Patient, entry: EntryWithoutId): Entry => {
     ...entry,
   };
 
+  console.log(`NEW ENTRY BACKEND = `, newEntry);
+
   patient.entries.push(newEntry);
   return newEntry;
 };

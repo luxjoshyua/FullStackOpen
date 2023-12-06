@@ -44,9 +44,10 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [date, setDate] = useState("");
   const [employerName, setEmployerName] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<
-    Array<Diagnosis["code"]>
-  >([]);
+  // const [diagnosisCodes, setDiagnosisCodes] = useState<
+  //   Array<Diagnosis["code"]>
+  // >([]);
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [healthCheckRating, setHealthCheckRating] = useState(
     HealthCheckRating.LowRisk
   );
@@ -80,9 +81,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const handleDiagnosisCodesChange = (event: SelectChangeEvent<string[]>) => {
     event.preventDefault();
     const value = event.target.value;
-    typeof value === "string"
-      ? setDiagnosisCodes(value.split(", "))
-      : setDiagnosisCodes(value);
+    setDiagnosisCodes(value as string[]);
   };
 
   const addEntry = (event: SyntheticEvent) => {
@@ -95,8 +94,11 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
       diagnosisCodes,
     };
 
+    // console.log(`Diagnosis Codes`, diagnosisCodes);
+
     switch (entryOptions) {
       case "HealthCheck":
+        console.log("getting to HealthCheck submit entry");
         onSubmit({
           ...baseEntry,
           type: "HealthCheck",
@@ -104,6 +106,8 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         });
         break;
       case "Hospital":
+        console.log("getting to Hospital submit entry");
+        // console.log(baseEntry);
         onSubmit({
           ...baseEntry,
           type: "Hospital",
@@ -114,6 +118,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         });
         break;
       case "OccupationalHealthcare":
+        console.log("getting to OccupationalHealthcare submit entry");
         onSubmit({
           ...baseEntry,
           type: "OccupationalHealthcare",
@@ -195,11 +200,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             style={{ marginBottom: "1rem" }}
             input={<OutlinedInput label="Multiple Select" />}
           >
-            {diagnoses.map((diagnosis) => (
-              <MenuItem key={diagnosis.code} value={diagnosis.code}>
-                diagnosis code: {diagnosis.code}
-              </MenuItem>
-            ))}
+            {diagnoses.map((diagnosis) => {
+              return (
+                <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                  diagnosis code: {diagnosis.code}
+                </MenuItem>
+              );
+            })}
           </Select>
         </>
 
@@ -209,7 +216,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <Select
               label="Health Check Rating"
               fullWidth
-              value={healthCheckRating}
+              value=""
               onChange={handleHealthCheckRatingChange}
               style={{ marginBottom: "1rem" }}
               input={<OutlinedInput label="Health Check Rating" />}
