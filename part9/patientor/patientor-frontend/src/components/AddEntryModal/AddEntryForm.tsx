@@ -10,6 +10,9 @@ import {
   Input,
   OutlinedInput,
   Typography,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { EntryWithoutId, Diagnosis, HealthCheckRating } from "../../types";
 import { DiagnosesContext } from "../../context";
@@ -63,7 +66,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     event.preventDefault();
     // needs to be set to number type, otherwise will break
     const value = Number(event.target.value);
-    console.log(value);
+    // console.log(value);
 
     // const healthCheckRating = Object.values(HealthCheckRating);
 
@@ -78,10 +81,17 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
     // }
   };
 
-  const handleDiagnosisCodesChange = (event: SelectChangeEvent<string[]>) => {
-    event.preventDefault();
-    const value = event.target.value;
-    setDiagnosisCodes(value as string[]);
+  const handleDiagnosisCodesChange = (code: string) => {
+    const updatedCodes = [...diagnosisCodes];
+
+    if (updatedCodes.includes(code)) {
+      const index = updatedCodes.indexOf(code);
+      updatedCodes.splice(index, 1);
+    } else {
+      updatedCodes.push(code);
+    }
+
+    setDiagnosisCodes(updatedCodes);
   };
 
   const addEntry = (event: SyntheticEvent) => {
@@ -191,23 +201,20 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         />
         <>
           <InputLabel>Diagnosis Codes</InputLabel>
-          <Select
-            label="Diagnosis Codes"
-            fullWidth
-            multiple
-            value={diagnosisCodes}
-            onChange={handleDiagnosisCodesChange}
-            style={{ marginBottom: "1rem" }}
-            input={<OutlinedInput label="Multiple Select" />}
-          >
-            {diagnoses.map((diagnosis) => {
-              return (
-                <MenuItem key={diagnosis.code} value={diagnosis.code}>
-                  diagnosis code: {diagnosis.code}
-                </MenuItem>
-              );
-            })}
-          </Select>
+          <FormGroup>
+            {diagnoses.map((diagnosis) => (
+              <FormControlLabel
+                key={diagnosis.code}
+                control={
+                  <Checkbox
+                    checked={diagnosisCodes.includes(diagnosis.code)}
+                    onChange={() => handleDiagnosisCodesChange(diagnosis.code)}
+                  />
+                }
+                label={`${diagnosis.code} - ${diagnosis.name}`}
+              />
+            ))}
+          </FormGroup>
         </>
 
         {entryOptions == "HealthCheck" && (
