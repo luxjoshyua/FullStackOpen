@@ -5,6 +5,7 @@ import {
   SickLeave,
   HealthCheckRating,
   NewBaseEntry,
+  // HealthCheckRatingType,
 } from "../types";
 
 const isString = (text: unknown): text is string => {

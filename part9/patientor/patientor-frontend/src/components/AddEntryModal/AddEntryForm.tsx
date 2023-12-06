@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, useContext } from 'react'
+import { useState, SyntheticEvent, useContext } from "react";
 import {
   TextField,
   InputLabel,
@@ -10,92 +10,113 @@ import {
   Input,
   OutlinedInput,
   Typography,
-} from '@mui/material'
-import { EntryWithoutId, Diagnosis, HealthCheckRating } from '../../types'
-import { DiagnosesContext } from '../../context'
+} from "@mui/material";
+import { EntryWithoutId, Diagnosis, HealthCheckRating } from "../../types";
+import { DiagnosesContext } from "../../context";
 
 interface Props {
-  onCancel: () => void
-  onSubmit: (values: EntryWithoutId) => void
+  onCancel: () => void;
+  onSubmit: (values: EntryWithoutId) => void;
 }
 
 interface HealthCheckRatingOption {
-  value: number
-  label: string
+  value: number;
+  label: string;
 }
 
-const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(HealthCheckRating).map(
-  (value) => ({
+const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(
+  HealthCheckRating
+)
+  .filter((value) => typeof value === "number")
+  .map((value) => ({
     value: value as number,
     label: HealthCheckRating[value as number],
-  })
-)
+  }));
+
+/**
+ * TOFIX
+ * - HealthCheckRating is breaking
+ * Diagnoses is breaking
+ */
 
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
-  const [description, setDescription] = useState('')
-  const [date, setDate] = useState('')
-  const [employerName, setEmployerName] = useState('')
-  const [specialist, setSpecialist] = useState('')
-  const [diagnosisCodes, setDiagnosisCodes] = useState<Array<Diagnosis['code']>>([])
-  const [healthCheckRating, setHealthCheckRating] = useState(HealthCheckRating.Healthy)
-  const [dischargeDate, setDischargeDate] = useState('')
-  const [dischargeCriteria, setDischargeCriteria] = useState('')
-  const [entryOptions, setEntryOptions] = useState('')
-  const [sickLeaveStart, setSickLeaveStart] = useState('')
-  const [sickLeaveEnd, setSickLeaveEnd] = useState('')
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [employerName, setEmployerName] = useState("");
+  const [specialist, setSpecialist] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<
+    Array<Diagnosis["code"]>
+  >([]);
+  const [healthCheckRating, setHealthCheckRating] = useState(
+    HealthCheckRating.LowRisk
+  );
+  const [dischargeDate, setDischargeDate] = useState("");
+  const [dischargeCriteria, setDischargeCriteria] = useState("");
+  const [entryOptions, setEntryOptions] = useState("");
+  const [sickLeaveStart, setSickLeaveStart] = useState("");
+  const [sickLeaveEnd, setSickLeaveEnd] = useState("");
 
-  const diagnoses = useContext(DiagnosesContext)
+  const diagnoses = useContext(DiagnosesContext);
 
   const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
-    event.preventDefault()
+    event.preventDefault();
     // needs to be set to number type, otherwise will break
-    const value = Number(event.target.value)
-    console.log(value)
+    const value = Number(event.target.value);
+    console.log(value);
 
-    const healthCheckRating = Object.values(HealthCheckRating)
-    if (value && healthCheckRating.includes(value)) {
-      setHealthCheckRating(value)
+    // const healthCheckRating = Object.values(HealthCheckRating);
+
+    if (typeof value === "number") {
+      console.log("getting here.....");
+      setHealthCheckRating(value);
     }
-  }
+
+    // if (value && healthCheckRating.includes(value)) {
+    //   console.log("getting here.....");
+    //   setHealthCheckRating(value);
+    // }
+  };
 
   const handleDiagnosisCodesChange = (event: SelectChangeEvent<string[]>) => {
-    event.preventDefault()
-    const value = event.target.value
-    typeof value === 'string' ? setDiagnosisCodes(value.split(', ')) : setDiagnosisCodes(value)
-  }
+    event.preventDefault();
+    const value = event.target.value;
+    typeof value === "string"
+      ? setDiagnosisCodes(value.split(", "))
+      : setDiagnosisCodes(value);
+  };
 
   const addEntry = (event: SyntheticEvent) => {
-    event.preventDefault()
+    event.preventDefault();
 
     const baseEntry = {
       description,
       date,
       specialist,
       diagnosisCodes,
-    }
+    };
 
     switch (entryOptions) {
-      case 'HealthCheck':
+      case "HealthCheck":
         onSubmit({
           ...baseEntry,
-          type: 'HealthCheck',
+          type: "HealthCheck",
           healthCheckRating,
-        })
-        break
-      case 'Hospital':
+        });
+        break;
+      case "Hospital":
         onSubmit({
           ...baseEntry,
-          type: 'Hospital',
+          type: "Hospital",
           discharge: {
             date: dischargeDate,
             criteria: dischargeCriteria,
           },
-        })
-        break
-      case 'OccupationalHealthcare':
+        });
+        break;
+      case "OccupationalHealthcare":
         onSubmit({
           ...baseEntry,
-          type: 'OccupationalHealthcare',
+          type: "OccupationalHealthcare",
           employerName,
           sickLeave:
             sickLeaveStart && sickLeaveEnd
@@ -104,28 +125,31 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
                   endDate: dischargeCriteria,
                 }
               : undefined,
-        })
-        break
+        });
+        break;
       default:
-        break
+        break;
     }
-  }
+  };
 
   return (
     <div>
-      <Typography variant="h5" style={{ marginBottom: '.5rem' }}>
+      <Typography variant="h5" style={{ marginBottom: ".5rem" }}>
         New entry
       </Typography>
-      <InputLabel style={{ marginBottom: '.25rem' }}>Entry options</InputLabel>
+      <InputLabel style={{ marginBottom: ".25rem" }}>Entry options</InputLabel>
       <Select
         label="Entry options"
         fullWidth
         value={entryOptions}
         onChange={({ target }) => setEntryOptions(target.value)}
-        style={{ marginBottom: '1rem' }}>
+        style={{ marginBottom: "1rem" }}
+      >
         <MenuItem value="HealthCheck">Health Check</MenuItem>
         <MenuItem value="Hospital">Hospital</MenuItem>
-        <MenuItem value="OccupationalHealthcare">Occupational Healthcare</MenuItem>
+        <MenuItem value="OccupationalHealthcare">
+          Occupational Healthcare
+        </MenuItem>
       </Select>
 
       <form onSubmit={addEntry}>
@@ -134,7 +158,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           fullWidth
           value={description}
           onChange={({ target }) => setDescription(target.value)}
-          style={{ marginBottom: '1rem' }}
+          style={{ marginBottom: "1rem" }}
         />
         <InputLabel>Date</InputLabel>
         <Input
@@ -142,7 +166,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           value={date}
           type="date"
           onChange={({ target }) => setDate(target.value)}
-          style={{ marginBottom: '1rem' }}
+          style={{ marginBottom: "1rem" }}
         />
         <TextField
           label="Employer name"
@@ -150,7 +174,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           fullWidth
           value={employerName}
           onChange={({ target }) => setEmployerName(target.value)}
-          style={{ marginBottom: '1rem' }}
+          style={{ marginBottom: "1rem" }}
         />
         <TextField
           label="Specialist"
@@ -158,7 +182,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           fullWidth
           value={specialist}
           onChange={({ target }) => setSpecialist(target.value)}
-          style={{ marginBottom: '1rem' }}
+          style={{ marginBottom: "1rem" }}
         />
         <>
           <InputLabel>Diagnosis Codes</InputLabel>
@@ -168,8 +192,9 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             multiple
             value={diagnosisCodes}
             onChange={handleDiagnosisCodesChange}
-            style={{ marginBottom: '1rem' }}
-            input={<OutlinedInput label="Multiple Select" />}>
+            style={{ marginBottom: "1rem" }}
+            input={<OutlinedInput label="Multiple Select" />}
+          >
             {diagnoses.map((diagnosis) => (
               <MenuItem key={diagnosis.code} value={diagnosis.code}>
                 diagnosis code: {diagnosis.code}
@@ -178,26 +203,30 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           </Select>
         </>
 
-        {entryOptions == 'HealthCheck' && (
+        {entryOptions == "HealthCheck" && (
           <>
             <InputLabel>Health Check Rating</InputLabel>
             <Select
               label="Health Check Rating"
               fullWidth
-              value={healthCheckRating.toString()}
+              value={healthCheckRating}
               onChange={handleHealthCheckRatingChange}
-              style={{ marginBottom: '1rem' }}
-              input={<OutlinedInput label="Health Check Rating" />}>
-              {healthCheckRatingOptions.map((rating) => (
-                <MenuItem key={rating.label} value={rating.value}>
-                  {rating.label}
-                </MenuItem>
-              ))}
+              style={{ marginBottom: "1rem" }}
+              input={<OutlinedInput label="Health Check Rating" />}
+            >
+              {healthCheckRatingOptions.map((rating) => {
+                // console.log(rating)
+                return (
+                  <MenuItem key={rating.label} value={rating.value}>
+                    Health check rating: {rating.label}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </>
         )}
 
-        {entryOptions == 'OccupationalHealthcare' && (
+        {entryOptions == "OccupationalHealthcare" && (
           <>
             <InputLabel>Sick Leave Start Date</InputLabel>
             <Input
@@ -205,7 +234,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
               value={sickLeaveStart}
               type="date"
               onChange={({ target }) => setSickLeaveStart(target.value)}
-              style={{ marginBottom: '1rem' }}
+              style={{ marginBottom: "1rem" }}
             />
             <InputLabel>Sick Leave End Date</InputLabel>
             <Input
@@ -213,12 +242,12 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
               value={sickLeaveEnd}
               type="date"
               onChange={({ target }) => setSickLeaveEnd(target.value)}
-              style={{ marginBottom: '1rem' }}
+              style={{ marginBottom: "1rem" }}
             />
           </>
         )}
 
-        {entryOptions === 'Hospital' && (
+        {entryOptions === "Hospital" && (
           <>
             <InputLabel>Discharge Date</InputLabel>
             <Input
@@ -226,7 +255,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
               value={dischargeDate}
               type="date"
               onChange={({ target }) => setDischargeDate(target.value)}
-              style={{ marginBottom: '1rem' }}
+              style={{ marginBottom: "1rem" }}
             />
             <InputLabel>Discharge Criteria</InputLabel>
             <Input
@@ -234,7 +263,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
               value={dischargeCriteria}
               type="text"
               onChange={({ target }) => setDischargeCriteria(target.value)}
-              style={{ marginBottom: '1rem' }}
+              style={{ marginBottom: "1rem" }}
             />
           </>
         )}
@@ -244,26 +273,28 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <Button
               color="secondary"
               variant="contained"
-              style={{ float: 'left' }}
+              style={{ float: "left" }}
               type="button"
-              onClick={onCancel}>
+              onClick={onCancel}
+            >
               Cancel
             </Button>
           </Grid>
           <Grid item>
             <Button
               style={{
-                float: 'right',
+                float: "right",
               }}
               type="submit"
-              variant="contained">
+              variant="contained"
+            >
               Add
             </Button>
           </Grid>
         </Grid>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AddEntryForm
+export default AddEntryForm;

@@ -26,13 +26,11 @@ const PatientPage = ({ patient }: Props) => {
     setError(undefined)
   }
 
-  // console.log(patient)
-
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
       if (patient) {
         const entry = await patientService.addEntry(patient.id, values)
-        console.log(`ENTRY = `, entry, `PATIENT = `, patient)
+        // console.log(entry)
         patient = { ...patient, entries: patient.entries.concat(entry) }
         setModalOpen(false)
       }
