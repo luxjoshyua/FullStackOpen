@@ -8,7 +8,6 @@ import {
   Button,
   SelectChangeEvent,
   Input,
-  FormControl,
   OutlinedInput,
   Typography,
 } from '@mui/material'
@@ -20,17 +19,17 @@ interface Props {
   onSubmit: (values: EntryWithoutId) => void
 }
 
-/**
- * Props for AddEntryForm
- * - description
- * - date
- * - specialist
- * - diagnosisCodes
- * - discharge - date, criteria
- * - employerName
- * - sickLeave - startDate, endDate
- * - healthCheckRating
- */
+interface HealthCheckRatingOption {
+  value: number
+  label: string
+}
+
+const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(HealthCheckRating).map(
+  (value) => ({
+    value: value as number,
+    label: HealthCheckRating[value as number],
+  })
+)
 
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState('')
@@ -47,12 +46,21 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   const diagnoses = useContext(DiagnosesContext)
 
+  const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
+    event.preventDefault()
+    // needs to be set to number type, otherwise will break
+    const value = Number(event.target.value)
+    console.log(value)
+
+    const healthCheckRating = Object.values(HealthCheckRating)
+    if (value && healthCheckRating.includes(value)) {
+      setHealthCheckRating(value)
+    }
+  }
+
   const handleDiagnosisCodesChange = (event: SelectChangeEvent<string[]>) => {
     event.preventDefault()
-
     const value = event.target.value
-    // console.log(value)
-
     typeof value === 'string' ? setDiagnosisCodes(value.split(', ')) : setDiagnosisCodes(value)
   }
 
@@ -176,14 +184,15 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <Select
               label="Health Check Rating"
               fullWidth
-              value={healthCheckRating}
-              onChange={({ target }) => setHealthCheckRating(Number(target.value))}
+              value={healthCheckRating.toString()}
+              onChange={handleHealthCheckRatingChange}
               style={{ marginBottom: '1rem' }}
               input={<OutlinedInput label="Health Check Rating" />}>
-              <MenuItem value={HealthCheckRating.Healthy}>Healthy</MenuItem>
-              <MenuItem value={HealthCheckRating.LowRisk}>Low Risk</MenuItem>
-              <MenuItem value={HealthCheckRating.HighRisk}>High Risk</MenuItem>
-              <MenuItem value={HealthCheckRating.CriticalRisk}>Critical Risk</MenuItem>
+              {healthCheckRatingOptions.map((rating) => (
+                <MenuItem key={rating.label} value={rating.value}>
+                  {rating.label}
+                </MenuItem>
+              ))}
             </Select>
           </>
         )}

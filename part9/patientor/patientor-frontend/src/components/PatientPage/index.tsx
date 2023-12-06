@@ -1,13 +1,15 @@
 import { useContext, useState } from 'react'
+import axios from 'axios'
 import { Box, Typography, Card, Stack, Button } from '@mui/material'
 import { Work, MedicalServices } from '@mui/icons-material'
 
 import { GenderIcon } from '../Miscellaneous'
-import { Patient } from '../../types'
+import { Patient, EntryWithoutId } from '../../types'
 import EntryDetails from '../PatientEntryDetails'
 import { DiagnosisCodes } from '../Miscellaneous'
 import { DiagnosesContext } from '../../context'
 import AddEntryModal from '../AddEntryModal'
+import patientService from '../../services/patients'
 
 interface Props {
   patient: Patient | null | undefined
@@ -24,8 +26,30 @@ const PatientPage = ({ patient }: Props) => {
     setError(undefined)
   }
 
-  const submitNewEntry = () => {
-    console.log('firing....')
+  // console.log(patient)
+
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    try {
+      if (patient) {
+        const entry = await patientService.addEntry(patient.id, values)
+        console.log(`ENTRY = `, entry, `PATIENT = `, patient)
+        patient = { ...patient, entries: patient.entries.concat(entry) }
+        setModalOpen(false)
+      }
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === 'string') {
+          const message = e.response.data.replace('Something went wrong. Error: ', '')
+          console.error(message)
+          setError(message)
+        } else {
+          setError('Unrecognized axios error')
+        }
+      } else {
+        console.error('Unknown error', e)
+        setError('Unknown error')
+      }
+    }
   }
 
   return (

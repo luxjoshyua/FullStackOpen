@@ -2,6 +2,7 @@ import express from "express";
 import patientService from "../services/patientService";
 
 import toNewPatientEntry from "../utilities/utils";
+import toNewEntry from "../utilities/toNewEntry";
 
 const router = express.Router();
 
@@ -37,8 +38,18 @@ router.get("/:id", (req, res) => {
 router.post("/:id/entries", (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
-    // const newEntry =
+    const patient = patientService.getPatient(id);
+
+    if (!patient) {
+      res.status(404).send("Patient not found");
+      // need to return here, otherwise will continue and error
+      return;
+    }
+
+    const newEntry = toNewEntry(req.body as object);
+    const addedEntry = patientService.addEntry(patient, newEntry);
+    console.log(newEntry);
+    res.json(addedEntry);
   } catch (error: unknown) {
     let errorMessage = "Something went wrong.";
     if (error instanceof Error) {

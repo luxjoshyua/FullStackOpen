@@ -13,8 +13,9 @@ const getPatients = (): Patient[] => {
 };
 
 const getPatient = (id: string): Patient | undefined => {
-  const patient = data.find((patient) => patient.id === id);
-  return patient;
+  return data.find((patient) => patient.id === id);
+  // const patient = data.find((patient) => patient.id === id);
+  // return patient;
 };
 
 const getNonSSNPatientEntries = (): NonSSNPatientEntry[] => {
