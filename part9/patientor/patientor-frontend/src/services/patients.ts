@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Patient, PatientFormValues, EntryWithoutId, Entry } from "../types";
+import { Patient, PatientFormValues, EntryWithoutId } from "../types";
 
 import { apiBaseUrl } from "../constants";
 
@@ -16,8 +16,8 @@ const create = async (object: PatientFormValues) => {
 };
 
 const addEntry = async (patientId: string, object: EntryWithoutId) => {
-  // object contains diagnoisCodes
-  console.log(`OBJECT IN ADD ENTRY in the front = `, object);
+  // object contains diagnosisCodes
+  // console.log(`OBJECT IN ADD ENTRY in the front = `, object);
 
   const { data } = await axios.post(
     `${apiBaseUrl}/patients/${patientId}/entries`,
@@ -25,7 +25,7 @@ const addEntry = async (patientId: string, object: EntryWithoutId) => {
   );
 
   // data doesn't contain diagnosisCodes
-  console.log(`DATA IN ADD ENTRY in the front = `, data);
+  // console.log(`DATA IN ADD ENTRY in the front = `, data);
   return data;
 };
 

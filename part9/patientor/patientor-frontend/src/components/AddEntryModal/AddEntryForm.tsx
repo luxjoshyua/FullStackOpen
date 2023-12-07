@@ -108,7 +108,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
     switch (entryOptions) {
       case "HealthCheck":
-        // console.log("getting to HealthCheck submit entry");
         onSubmit({
           ...baseEntry,
           type: "HealthCheck",
@@ -116,8 +115,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         });
         break;
       case "Hospital":
-        // console.log("getting to Hospital submit entry");
-        // console.log(baseEntry);
         onSubmit({
           ...baseEntry,
           type: "Hospital",
@@ -128,7 +125,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         });
         break;
       case "OccupationalHealthcare":
-        // console.log("getting to OccupationalHealthcare submit entry");
         onSubmit({
           ...baseEntry,
           type: "OccupationalHealthcare",
