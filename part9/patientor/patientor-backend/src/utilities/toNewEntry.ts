@@ -4,8 +4,6 @@ import {
   Discharge,
   SickLeave,
   HealthCheckRating,
-  // NewBaseEntry,
-  // HealthCheckRatingType,
 } from "../types";
 
 const isString = (text: unknown): text is string => {
@@ -68,6 +66,8 @@ const isHealthCheckRating = (param: number): param is HealthCheckRating => {
 const parseHealthCheckRating = (
   healthCheckRating: unknown
 ): HealthCheckRating => {
+  console.log(`test what healthCheckRating is here, why is healthy 0 breaking`);
+
   if (
     !healthCheckRating ||
     !isNumber(healthCheckRating) ||
@@ -143,6 +143,7 @@ const toNewEntry = (object: unknown): EntryWithoutId => {
           healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
           diagnosisCodes: parseDiagnosisCodes(object),
         };
+        console.log(`newEntry: `, newEntry);
         return newEntry;
       } else {
         throw new Error("Incorrect or missing data");

@@ -16,16 +16,11 @@ const create = async (object: PatientFormValues) => {
 };
 
 const addEntry = async (patientId: string, object: EntryWithoutId) => {
-  // object contains diagnosisCodes
-  // console.log(`OBJECT IN ADD ENTRY in the front = `, object);
-
   const { data } = await axios.post(
     `${apiBaseUrl}/patients/${patientId}/entries`,
     object
   );
 
-  // data doesn't contain diagnosisCodes
-  // console.log(`DATA IN ADD ENTRY in the front = `, data);
   return data;
 };
 

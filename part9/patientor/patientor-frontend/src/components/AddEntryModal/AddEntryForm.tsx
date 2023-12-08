@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { EntryWithoutId, Diagnosis, HealthCheckRating } from "../../types";
+import { EntryWithoutId, HealthCheckRating } from "../../types";
 import { DiagnosesContext } from "../../context";
 
 interface Props {
@@ -38,8 +38,7 @@ const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(
 
 /**
  * TOFIX
- * - HealthCheckRating is breaking
- * Diagnoses is breaking
+ * - HealthCheckRating is breaking on option 0
  */
 
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
@@ -47,12 +46,9 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [date, setDate] = useState("");
   const [employerName, setEmployerName] = useState("");
   const [specialist, setSpecialist] = useState("");
-  // const [diagnosisCodes, setDiagnosisCodes] = useState<
-  //   Array<Diagnosis["code"]>
-  // >([]);
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [healthCheckRating, setHealthCheckRating] = useState(
-    HealthCheckRating.LowRisk
+    HealthCheckRating.Healthy
   );
   const [dischargeDate, setDischargeDate] = useState("");
   const [dischargeCriteria, setDischargeCriteria] = useState("");
@@ -62,23 +58,29 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   const diagnoses = useContext(DiagnosesContext);
 
+  // const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
+  //   event.preventDefault();
+  //   // needs to be set to number type, otherwise will break
+  //   const value = Number(event.target.value);
+
+  //   if (typeof value === "number") {
+  //     setHealthCheckRating(value);
+  //     console.log(`health check rating: ${healthCheckRating}`);
+  //   }
+  // };
+
   const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
     event.preventDefault();
-    // needs to be set to number type, otherwise will break
+
     const value = Number(event.target.value);
     // console.log(value);
 
-    // const healthCheckRating = Object.values(HealthCheckRating);
+    const healthCheckRating = Object.values(HealthCheckRating);
+    // console.log(healthCheckRating);
 
-    if (typeof value === "number") {
-      console.log("getting here.....");
+    if (value && healthCheckRating.includes(value)) {
       setHealthCheckRating(value);
     }
-
-    // if (value && healthCheckRating.includes(value)) {
-    //   console.log("getting here.....");
-    //   setHealthCheckRating(value);
-    // }
   };
 
   const handleDiagnosisCodesChange = (code: string) => {
@@ -104,15 +106,15 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
       diagnosisCodes,
     };
 
-    // console.log(`Diagnosis Codes`, diagnosisCodes);
-
     switch (entryOptions) {
       case "HealthCheck":
+        // console.log(typeof healthCheckRating, healthCheckRating);
         onSubmit({
           ...baseEntry,
           type: "HealthCheck",
           healthCheckRating,
         });
+
         break;
       case "Hospital":
         onSubmit({
@@ -215,20 +217,23 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
         {entryOptions == "HealthCheck" && (
           <>
-            <InputLabel>Health Check Rating</InputLabel>
+            <InputLabel sx={{ marginBottom: ".25rem" }}>
+              Health Check Rating
+            </InputLabel>
             <Select
               label="Health Check Rating"
               fullWidth
-              value=""
+              value={healthCheckRating.toString()}
+              // onChange={({ target }) =>
+              //   setHealthCheckRating(Number(target.value))
+              // }
               onChange={handleHealthCheckRatingChange}
               style={{ marginBottom: "1rem" }}
-              input={<OutlinedInput label="Health Check Rating" />}
             >
               {healthCheckRatingOptions.map((rating) => {
-                // console.log(rating)
                 return (
                   <MenuItem key={rating.label} value={rating.value}>
-                    Health check rating: {rating.label}
+                    {rating.label}
                   </MenuItem>
                 );
               })}

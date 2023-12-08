@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, Typography, Card, Stack, Button } from "@mui/material";
 import { Work, MedicalServices } from "@mui/icons-material";
@@ -19,6 +20,7 @@ const PatientPage = ({ patient }: Props) => {
   const diagnoses = useContext(DiagnosesContext);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+  const navigate = useNavigate();
 
   const openModal = (): void => setModalOpen(true);
   const closeModal = (): void => {
@@ -29,13 +31,14 @@ const PatientPage = ({ patient }: Props) => {
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
       if (patient) {
-        // console.log(`VALUES = `, values);
-        // it's breaking here, discharge is not working, not being passed along
         const entry = await patientService.addEntry(patient.id, values);
-        // console.log(entry);
-
         patient = { ...patient, entries: patient.entries.concat(entry) };
         setModalOpen(false);
+        console.log(
+          `form submitted, need to refresh page instead of just redirecting`
+        );
+        // navigate(`/patients/${patient.id}`);
+        navigate(`/`);
       }
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -131,15 +134,18 @@ const PatientPage = ({ patient }: Props) => {
                 color="text.secondary"
                 fontWeight="regular"
                 fontSize={18}
+                display={"flex"}
+                alignItems={"center"}
               >
-                <strong>date:</strong> {entry.date}
+                <strong style={{ marginRight: ".5em" }}>date:</strong>{" "}
+                {entry.date}
                 {entry.type === "OccupationalHealthcare" ? (
                   <>
                     <Work sx={{ marginLeft: ".5em" }} />
                   </>
                 ) : (
                   <>
-                    <MedicalServices />
+                    <MedicalServices sx={{ marginLeft: ".5em" }} />
                   </>
                 )}
               </Typography>
