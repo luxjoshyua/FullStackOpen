@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, useContext } from "react";
+import { useState, SyntheticEvent, useContext, ChangeEvent } from "react";
 import {
   TextField,
   InputLabel,
@@ -8,11 +8,11 @@ import {
   Button,
   SelectChangeEvent,
   Input,
-  OutlinedInput,
   Typography,
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Box,
 } from "@mui/material";
 import { EntryWithoutId, HealthCheckRating } from "../../types";
 import { DiagnosesContext } from "../../context";
@@ -50,6 +50,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [healthCheckRating, setHealthCheckRating] = useState(
     HealthCheckRating.Healthy
   );
+
   const [dischargeDate, setDischargeDate] = useState("");
   const [dischargeCriteria, setDischargeCriteria] = useState("");
   const [entryOptions, setEntryOptions] = useState("");
@@ -58,27 +59,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   const diagnoses = useContext(DiagnosesContext);
 
-  // const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
-  //   event.preventDefault();
-  //   // needs to be set to number type, otherwise will break
-  //   const value = Number(event.target.value);
-
-  //   if (typeof value === "number") {
-  //     setHealthCheckRating(value);
-  //     console.log(`health check rating: ${healthCheckRating}`);
-  //   }
-  // };
-
   const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
     event.preventDefault();
 
     const value = Number(event.target.value);
-    // console.log(value);
-
-    const healthCheckRating = Object.values(HealthCheckRating);
-    // console.log(healthCheckRating);
-
-    if (value && healthCheckRating.includes(value)) {
+    if (value >= 0 && value <= 3) {
+      console.log(value);
+      console.log("getting here");
       setHealthCheckRating(value);
     }
   };
@@ -108,13 +95,11 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
     switch (entryOptions) {
       case "HealthCheck":
-        // console.log(typeof healthCheckRating, healthCheckRating);
         onSubmit({
           ...baseEntry,
           type: "HealthCheck",
           healthCheckRating,
         });
-
         break;
       case "Hospital":
         onSubmit({
@@ -224,13 +209,11 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
               label="Health Check Rating"
               fullWidth
               value={healthCheckRating.toString()}
-              // onChange={({ target }) =>
-              //   setHealthCheckRating(Number(target.value))
-              // }
               onChange={handleHealthCheckRatingChange}
               style={{ marginBottom: "1rem" }}
             >
               {healthCheckRatingOptions.map((rating) => {
+                console.log(rating, typeof rating);
                 return (
                   <MenuItem key={rating.label} value={rating.value}>
                     {rating.label}

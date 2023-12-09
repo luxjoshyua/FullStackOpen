@@ -111,27 +111,4 @@ export const DiagnosisCodes = ({
       </>
     );
   }
-
-  // return (
-  //   <>
-  //     <Typography
-  //       component="div"
-  //       color="text.secondary"
-  //       fontSize={18}
-  //       fontWeight="bold"
-  //       paddingRight={'.5em'}>
-  //       Diagnoses:
-  //     </Typography>
-  //     {codes.map((code) => (
-  //       <div key={code}>
-  //         <Typography component="ul" color="text.secondary" fontWeight="regular" fontSize={18}>
-  //           <Typography component="li" color="text.secondary" fontWeight="regular" fontSize={16}>
-  //             <span style={{ fontWeight: 'bold', marginRight: '.25em' }}>{code}</span>
-  //             <span>{getDiagnosisDescription(diagnoses, code)}</span>
-  //           </Typography>
-  //         </Typography>
-  //       </div>
-  //     ))}
-  //   </>
-  // )
 };

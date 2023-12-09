@@ -3,7 +3,7 @@ import {
   EntryWithoutId,
   Discharge,
   SickLeave,
-  HealthCheckRating,
+  // HealthCheckRating,
 } from "../types";
 
 const isString = (text: unknown): text is string => {
@@ -12,6 +12,16 @@ const isString = (text: unknown): text is string => {
 
 const isNumber = (number: unknown): number is number => {
   return typeof number === "number" || number instanceof Number;
+};
+
+const parseNumber = (number: unknown): number => {
+  if (!number || !isNumber(number)) {
+    throw new Error(`Incorrect or missing number: ${number}`);
+  }
+
+  console.log("getting here");
+
+  return number;
 };
 
 const parseDescription = (description: unknown): string => {
@@ -59,27 +69,34 @@ const parseDiagnosisCodes = (object: unknown): Array<Diagnosis["code"]> => {
   return object.diagnosisCodes as Array<Diagnosis["code"]>;
 };
 
-const isHealthCheckRating = (param: number): param is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(param);
-};
+// const isHealthCheckRating = (param: number): param is HealthCheckRating => {
+//   return Object.values(HealthCheckRating).includes(param);
+// };
 
-const parseHealthCheckRating = (
-  healthCheckRating: unknown
-): HealthCheckRating => {
-  console.log(`test what healthCheckRating is here, why is healthy 0 breaking`);
+// const parseHealthCheckRating = (
+//   healthCheckRating: unknown
+// ): HealthCheckRating => {
+//   console.log(healthCheckRating, typeof healthCheckRating);
+//   // if (!healthCheckRating) {
+//   //   throw new Error(
+//   //     `Incorrect or missing healthCheckRating: ${healthCheckRating}`
+//   //   );
+//   // }
 
-  if (
-    !healthCheckRating ||
-    !isNumber(healthCheckRating) ||
-    !isHealthCheckRating(healthCheckRating)
-  ) {
-    throw new Error(
-      `Incorrect or missing healthCheckRating: ${healthCheckRating}`
-    );
-  }
+//   if (
+//     !healthCheckRating ||
+//     !isNumber(healthCheckRating)
+//     // || !isHealthCheckRating(healthCheckRating)
+//   ) {
+//     throw new Error(
+//       `Incorrect or missing healthCheckRating: ${healthCheckRating}`
+//     );
+//   }
 
-  return healthCheckRating;
-};
+//   console.log("getting here");
+
+//   return healthCheckRating;
+// };
 
 const parseEmployerName = (employerName: unknown): string => {
   if (!employerName || !isString(employerName)) {
@@ -140,7 +157,8 @@ const toNewEntry = (object: unknown): EntryWithoutId => {
           description: parseDescription(object.description),
           date: parseDate(object.date),
           specialist: parseSpecialist(object.specialist),
-          healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+          // healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+          healthCheckRating: parseNumber(object.healthCheckRating),
           diagnosisCodes: parseDiagnosisCodes(object),
         };
         console.log(`newEntry: `, newEntry);
