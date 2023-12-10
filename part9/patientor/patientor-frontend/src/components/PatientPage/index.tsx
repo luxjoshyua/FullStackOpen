@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Box, Typography, Card, Stack, Button } from "@mui/material";
 import { Work, MedicalServices } from "@mui/icons-material";
@@ -20,7 +19,6 @@ const PatientPage = ({ patient }: Props) => {
   const diagnoses = useContext(DiagnosesContext);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
-  const navigate = useNavigate();
 
   const openModal = (): void => setModalOpen(true);
   const closeModal = (): void => {
@@ -34,11 +32,7 @@ const PatientPage = ({ patient }: Props) => {
         const entry = await patientService.addEntry(patient.id, values);
         patient = { ...patient, entries: patient.entries.concat(entry) };
         setModalOpen(false);
-        console.log(
-          `form submitted, need to refresh page instead of just redirecting`
-        );
-        // navigate(`/patients/${patient.id}`);
-        navigate(`/`);
+        window.location.reload();
       }
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {

@@ -10,19 +10,19 @@ const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
 
-const isNumber = (number: unknown): number is number => {
-  return typeof number === "number" || number instanceof Number;
-};
+// const isNumber = (number: unknown): number is number => {
+//   return typeof number === "number" || number instanceof Number;
+// };
 
-const parseNumber = (number: unknown): number => {
-  if (!number || !isNumber(number)) {
-    throw new Error(`Incorrect or missing number: ${number}`);
-  }
+// const parseNumber = (number: unknown): number => {
+//   console.log(`what is number`, number, typeof number);
 
-  console.log("getting here");
+//   if (!number || !isNumber(number)) {
+//     throw new Error(`Incorrect or missing number: ${number}`);
+//   }
 
-  return number;
-};
+//   return Number(number);
+// };
 
 const parseDescription = (description: unknown): string => {
   if (!description || !isString(description)) {
@@ -158,7 +158,7 @@ const toNewEntry = (object: unknown): EntryWithoutId => {
           date: parseDate(object.date),
           specialist: parseSpecialist(object.specialist),
           // healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
-          healthCheckRating: parseNumber(object.healthCheckRating),
+          healthCheckRating: Number(object.healthCheckRating),
           diagnosisCodes: parseDiagnosisCodes(object),
         };
         console.log(`newEntry: `, newEntry);

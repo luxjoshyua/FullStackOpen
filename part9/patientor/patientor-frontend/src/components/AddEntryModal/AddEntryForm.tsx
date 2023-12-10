@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, useContext, ChangeEvent } from "react";
+import React, { useState, SyntheticEvent, useContext } from "react";
 import {
   TextField,
   InputLabel,
@@ -12,7 +12,10 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  Box,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import { EntryWithoutId, HealthCheckRating } from "../../types";
 import { DiagnosesContext } from "../../context";
@@ -36,11 +39,6 @@ const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(
     label: HealthCheckRating[value as number],
   }));
 
-/**
- * TOFIX
- * - HealthCheckRating is breaking on option 0
- */
-
 const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -50,7 +48,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [healthCheckRating, setHealthCheckRating] = useState(
     HealthCheckRating.Healthy
   );
-
   const [dischargeDate, setDischargeDate] = useState("");
   const [dischargeCriteria, setDischargeCriteria] = useState("");
   const [entryOptions, setEntryOptions] = useState("");
@@ -59,13 +56,24 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 
   const diagnoses = useContext(DiagnosesContext);
 
-  const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
+  // const handleHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
+  //   event.preventDefault();
+
+  //   const value = Number(event.target.value);
+  //   if (value >= 0 && value <= 3) {
+  //     console.log(value);
+  //     console.log("getting here");
+  //     setHealthCheckRating(value);
+  //   }
+  // };
+
+  const handleHealthCheckRatingChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     event.preventDefault();
 
-    const value = Number(event.target.value);
+    const value = Number(event.target.getAttribute("value"));
     if (value >= 0 && value <= 3) {
-      console.log(value);
-      console.log("getting here");
       setHealthCheckRating(value);
     }
   };
@@ -201,27 +209,29 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         </>
 
         {entryOptions == "HealthCheck" && (
-          <>
-            <InputLabel sx={{ marginBottom: ".25rem" }}>
-              Health Check Rating
-            </InputLabel>
-            <Select
-              label="Health Check Rating"
-              fullWidth
-              value={healthCheckRating.toString()}
-              onChange={handleHealthCheckRatingChange}
-              style={{ marginBottom: "1rem" }}
-            >
-              {healthCheckRatingOptions.map((rating) => {
-                console.log(rating, typeof rating);
-                return (
-                  <MenuItem key={rating.label} value={rating.value}>
-                    {rating.label}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </>
+          <div style={{ marginBottom: "20px" }}>
+            <FormControl>
+              <FormLabel sx={{ marginBottom: ".25rem" }}>
+                Health Check Rating
+              </FormLabel>
+              <RadioGroup
+                aria-label="Health Check Rating"
+                name="Health Check Rating"
+                value={healthCheckRating}
+                onChange={handleHealthCheckRatingChange}
+                row
+              >
+                {healthCheckRatingOptions.map((rating) => (
+                  <FormControlLabel
+                    control={<Radio />}
+                    key={rating.label}
+                    value={rating.value}
+                    label={rating.label}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </div>
         )}
 
         {entryOptions == "OccupationalHealthcare" && (
