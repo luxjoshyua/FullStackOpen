@@ -127,8 +127,8 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           sickLeave:
             sickLeaveStart && sickLeaveEnd
               ? {
-                  startDate: dischargeDate,
-                  endDate: dischargeCriteria,
+                  startDate: sickLeaveStart,
+                  endDate: sickLeaveEnd,
                 }
               : undefined,
         });
