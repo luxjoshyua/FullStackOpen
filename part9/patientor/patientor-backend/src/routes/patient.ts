@@ -7,7 +7,6 @@ import toNewEntry from "../utilities/toNewEntry";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
-  // res.send(patientService.getNonSSNPatientEntries());
   res.send(patientService.getPatients());
 });
 
@@ -48,7 +47,6 @@ router.post("/:id/entries", (req, res) => {
 
     const newEntry = toNewEntry(req.body as object);
     const addedEntry = patientService.addEntry(patient, newEntry);
-    // console.log(`addedEntry: `, addedEntry);
     res.json(addedEntry);
   } catch (error: unknown) {
     let errorMessage = "Something went wrong.";
