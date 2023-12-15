@@ -16,9 +16,7 @@ Specific subjects are:
 - GitHub Actions
 - Docker
 
-The repo is a WIP that contains my solutions to the various exercises.
-
-Up to 6.2
+The repo is a WIP that contains my solutions to the various exercises. Parts 1-9 have been completed and marked by the university. Part 10 - the react native app - can be viewed in a separate repo [over here](https://github.com/luxjoshyua/FullStackOpen-part10-react-native).
 
 ### Certificate of Completion - Units 1 to 5
 
