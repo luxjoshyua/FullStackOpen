@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useApolloClient, useQuery, useMutation, useSubscription } from '@apollo/client'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 
 import Persons from './components/Persons'
 import { ALL_PERSONS, PERSON_ADDED } from './queries/queries'
